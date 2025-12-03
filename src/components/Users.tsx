@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
+// @ts-ignore
 import { fetchFromAPI } from "../api";
 
+type User = { id: number; name: string };
+
 export default function Users() {
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchFromAPI("Users/Index")
       .then(setUsers)
-      .catch(err => setError(err.message));
+      .catch((err: any) => setError(err.message));
   }, []);
 
   return (
