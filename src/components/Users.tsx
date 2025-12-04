@@ -9,7 +9,7 @@ export default function Users() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchFromAPI("Users")
+    fetchFromAPI("Users/Index")
       .then(setUsers)
       .catch((err: any) => setError(err.message));
   }, []);
