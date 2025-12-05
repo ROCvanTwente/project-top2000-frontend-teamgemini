@@ -21,7 +21,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             className="cursor-pointer flex items-center gap-3"
             onClick={() => onNavigate('home')}
           >
-            <div className="bg-[var(--color-gray-medium)] px-4 py-3 rounded-lg border border-white/10">
+            <div className="bg-[var(--color-gray-medium)] text-center w-50 m-4 py-1 rounded-lg border border-white/10">
               <h1 className="text-white">TOP 2000</h1>
             </div>
           </div>
