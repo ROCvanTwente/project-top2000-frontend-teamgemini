@@ -14,14 +14,14 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   const { user, logout } = useAuth();
 
   return (
-    <header className="bg-[var(--color-gray-dark)] text-white sticky top-0 z-50 shadow-lg">
+    <header className="bg-(--color-gray-dark) text-white sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div 
             className="cursor-pointer flex items-center gap-3"
             onClick={() => onNavigate('home')}
           >
-            <div className="bg-[var(--color-gray-medium)] text-center w-50 m-4 py-1 rounded-lg border border-white/10">
+            <div className="bg-(--color-gray-medium) text-center w-50 m-4 py-1 rounded-lg border border-white/10">
               <h1 className="text-white">TOP 2000</h1>
             </div>
           </div>
@@ -70,7 +70,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 DJ's
               </button>
               {djMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 bg-white text-[var(--color-black)] rounded-lg shadow-xl py-2 min-w-[200px]">
+                <div className="absolute top-full left-0 mt-2 bg-white text-black rounded-lg shadow-xl py-2 min-w-[200px]">
                   <a
                     href="https://nl.wikipedia.org/wiki/Bart_Arens"
                     target="_blank"
