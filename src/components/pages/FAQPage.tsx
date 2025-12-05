@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 
 interface FAQItem {
   question: string;
@@ -57,42 +56,65 @@ export function FAQPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-12 bg-black"></div>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '3rem 0' }}>
+      <div style={{ maxWidth: '896px', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+          <div style={{ width: '4px', height: '3rem', backgroundColor: 'black' }}></div>
           <h1>Veelgestelde Vragen</h1>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <div className="flex items-start gap-4 mb-6">
-            <HelpCircle className="text-black flex-shrink-0" size={32} />
-            <p className="text-gray-700">
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '8px', 
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          padding: '2rem',
+          marginBottom: '2rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.5rem' }}>
+            <span style={{ fontSize: '2rem', flexShrink: 0 }}>❓</span>
+            <p style={{ color: '#4b5563' }}>
               Hieronder vind je antwoorden op de meest gestelde vragen over de Top 2000. 
               Staat je vraag er niet bij? Neem dan contact met ons op via de contactpagina.
             </p>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="bg-white rounded-lg shadow-md overflow-hidden"
+              style={{ 
+                backgroundColor: 'white', 
+                borderRadius: '8px', 
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                overflow: 'hidden'
+              }}
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
+                style={{
+                  width: '100%',
+                  padding: '1rem 1.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
               >
-                <h3 className="pr-4">{faq.question}</h3>
-                {openIndex === index ? (
-                  <ChevronUp className="flex-shrink-0 text-black" size={24} />
-                ) : (
-                  <ChevronDown className="flex-shrink-0 text-gray-400" size={24} />
-                )}
+                <h3 style={{ paddingRight: '1rem', margin: 0 }}>{faq.question}</h3>
+                <span style={{ 
+                  flexShrink: 0, 
+                  fontSize: '1.5rem',
+                  color: openIndex === index ? 'black' : '#9ca3af'
+                }}>
+                  {openIndex === index ? '▲' : '▼'}
+                </span>
               </button>
               {openIndex === index && (
-                <div className="px-6 pb-4 text-gray-700">
+                <div style={{ padding: '0 1.5rem 1rem 1.5rem', color: '#4b5563' }}>
                   <p>{faq.answer}</p>
                 </div>
               )}
@@ -100,14 +122,28 @@ export function FAQPage() {
           ))}
         </div>
 
-        <div className="mt-8 bg-black rounded-lg p-8 text-white text-center">
-          <h2 className="text-white mb-4">Nog meer vragen?</h2>
-          <p className="mb-6">
+        <div style={{ 
+          marginTop: '2rem', 
+          backgroundColor: 'black', 
+          borderRadius: '8px',
+          padding: '2rem',
+          color: 'white',
+          textAlign: 'center'
+        }}>
+          <h2 style={{ color: 'white', marginBottom: '1rem' }}>Nog meer vragen?</h2>
+          <p style={{ marginBottom: '1.5rem' }}>
             Neem contact met ons op voor meer informatie over de Top 2000
           </p>
           <a
             href="#contact"
-            className="inline-block bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors"
+            style={{
+              display: 'inline-block',
+              backgroundColor: 'white',
+              color: 'black',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '8px',
+              textDecoration: 'none'
+            }}
           >
             Naar contactpagina
           </a>
