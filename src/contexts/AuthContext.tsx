@@ -21,6 +21,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (email: string, password: string): boolean => {
+    // WARNING: Direct password comparison is for DEMO purposes only!
+    // In production, use proper password hashing (bcrypt, argon2) and compare hashes
     const foundUser = users.find(u => u.email === email && u.password === password);
     if (foundUser) {
       const userWithoutPassword = { ...foundUser, password: '' };

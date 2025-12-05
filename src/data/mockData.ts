@@ -29,6 +29,8 @@ export interface User {
   id: string;
   email: string;
   role: 'user' | 'admin';
+  // WARNING: Plaintext passwords are for DEMO/MOCK purposes only!
+  // In production, NEVER store plaintext passwords - use proper hashing (bcrypt, argon2, etc.)
   password: string;
 }
 

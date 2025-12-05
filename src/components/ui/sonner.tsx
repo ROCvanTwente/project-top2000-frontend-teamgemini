@@ -1,10 +1,9 @@
-"use client";
-
-import { useTheme } from "next-themes";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme();
+  // Using 'light' theme as default for Vite React app
+  // In a real app, you might use React Context or localStorage for theme management
+  const theme = "light";
 
   return (
     <Sonner
