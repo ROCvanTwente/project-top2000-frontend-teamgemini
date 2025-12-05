@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Original Figma project folder (now integrated into src/)
+project
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
