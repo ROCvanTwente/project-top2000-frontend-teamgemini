@@ -71,7 +71,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <ImageWithFallback
               src={image.url}
               alt={image.title}
-              className="w-full h-full object-cover"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
             <div style={{
               position: 'absolute',
@@ -160,11 +160,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
       {/* Content */}
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 1rem' }}>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: window.innerWidth >= 768 ? '1fr 1fr' : '1fr',
-          gap: '3rem'
-        }}>
+        <div className="responsive-grid-2">
           {/* Top 5 2024 */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>

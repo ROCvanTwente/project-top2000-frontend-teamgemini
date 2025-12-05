@@ -40,7 +40,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
           </div>
 
           {/* Desktop Navigation */}
-          <nav style={{ display: window.innerWidth >= 768 ? 'flex' : 'none', alignItems: 'center', gap: '1.5rem' }}>
+          <nav className="hide-on-mobile" style={{ alignItems: 'center', gap: '1.5rem' }}>
             <button
               onClick={() => onNavigate('home')}
               style={{ 
@@ -288,8 +288,8 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
+            className="show-on-mobile"
             style={{ 
-              display: window.innerWidth < 768 ? 'block' : 'none',
               background: 'none',
               border: 'none',
               color: 'white',
@@ -305,8 +305,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav style={{ 
-            display: window.innerWidth < 768 ? 'flex' : 'none',
+          <nav className="show-on-mobile" style={{ 
             flexDirection: 'column',
             gap: '0.75rem',
             marginTop: '1rem',

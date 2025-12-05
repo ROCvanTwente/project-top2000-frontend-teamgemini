@@ -132,11 +132,7 @@ export default function App() {
             borderTop: '1px solid #4b5563'
           }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: window.innerWidth >= 768 ? 'repeat(4, 1fr)' : '1fr',
-                gap: '2rem'
-              }}>
+              <div className="responsive-grid-4">
                 <div>
                   <div style={{ 
                     backgroundColor: 'var(--color-gray-medium)',
