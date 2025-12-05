@@ -119,54 +119,103 @@ export default function App() {
   return (
     <AuthProvider>
       <PlaylistProvider>
-        <div className="min-h-screen bg-gray-50">
+        <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
           <Header onNavigate={handleNavigate} currentPage={navigation.page} />
           {renderPage()}
           
           {/* Footer */}
-          <footer className="bg-[var(--color-gray-dark)] text-white py-12 mt-12 border-t border-gray-700">
-            <div className="max-w-7xl mx-auto px-4">
-              <div className="grid md:grid-cols-4 gap-8">
+          <footer style={{ 
+            backgroundColor: 'var(--color-gray-dark)', 
+            color: 'white', 
+            padding: '3rem 0',
+            marginTop: '3rem',
+            borderTop: '1px solid #4b5563'
+          }}>
+            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: window.innerWidth >= 768 ? 'repeat(4, 1fr)' : '1fr',
+                gap: '2rem'
+              }}>
                 <div>
-                  <div className="bg-[var(--color-gray-medium)] px-4 py-3 rounded-lg inline-block mb-4 border border-white/10">
-                    <h3 className="text-white">TOP 2000</h3>
+                  <div style={{ 
+                    backgroundColor: 'var(--color-gray-medium)',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '8px',
+                    display: 'inline-block',
+                    marginBottom: '1rem',
+                    border: '1px solid rgba(255,255,255,0.1)'
+                  }}>
+                    <h3 style={{ color: 'white', margin: 0 }}>TOP 2000</h3>
                   </div>
-                  <p className="text-white/80 text-sm">
+                  <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem' }}>
                     De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op NPO Radio 2.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-white mb-4">Navigatie</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>
+                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Navigatie</h3>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('home')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         Home
                       </button>
                     </li>
-                    <li>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('rankings')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         Jaaroverzichten
                       </button>
                     </li>
-                    <li>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('artists')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         Artiesten
                       </button>
                     </li>
-                    <li>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('songs')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         Nummers
                       </button>
@@ -175,28 +224,52 @@ export default function App() {
                 </div>
 
                 <div>
-                  <h3 className="text-white mb-4">Informatie</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>
+                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Informatie</h3>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('history')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         Geschiedenis
                       </button>
                     </li>
-                    <li>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('faq')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         FAQ
                       </button>
                     </li>
-                    <li>
+                    <li style={{ marginBottom: '0.5rem' }}>
                       <button
                         onClick={() => handleNavigate('contact')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        style={{ 
+                          background: 'none',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: 0
+                        }}
                       >
                         Contact
                       </button>
@@ -205,19 +278,26 @@ export default function App() {
                 </div>
 
                 <div>
-                  <h3 className="text-white mb-4">Contact</h3>
-                  <ul className="space-y-2 text-sm text-white/80">
-                    <li>NPO Radio 2</li>
-                    <li>Media Park</li>
-                    <li>1217 WE Hilversum</li>
-                    <li className="mt-4">info@top2000.nl</li>
+                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Contact</h3>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)' }}>
+                    <li style={{ marginBottom: '0.5rem' }}>NPO Radio 2</li>
+                    <li style={{ marginBottom: '0.5rem' }}>Media Park</li>
+                    <li style={{ marginBottom: '0.5rem' }}>1217 WE Hilversum</li>
+                    <li style={{ marginTop: '1rem' }}>info@top2000.nl</li>
                   </ul>
                 </div>
               </div>
 
-              <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/60 text-sm">
-                <p>© 2024 TOP 2000 - NPO Radio 2. Alle rechten voorbehouden.</p>
-                <p className="mt-2">Demo website - Niet officieel</p>
+              <div style={{ 
+                borderTop: '1px solid rgba(255,255,255,0.2)',
+                marginTop: '2rem',
+                paddingTop: '2rem',
+                textAlign: 'center',
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: '0.875rem'
+              }}>
+                <p style={{ margin: 0 }}>© 2024 TOP 2000 - NPO Radio 2. Alle rechten voorbehouden.</p>
+                <p style={{ marginTop: '0.5rem' }}>Demo website - Niet officieel</p>
               </div>
             </div>
           </footer>
