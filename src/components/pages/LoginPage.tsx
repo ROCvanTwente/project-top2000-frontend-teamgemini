@@ -88,7 +88,7 @@ export function LoginPage({ onNavigate }: LoginPageProps) {
               <h3 className="mb-2 text-yellow-900">⚠️ Backend Niet Verbonden</h3>
               <p className="text-sm text-yellow-800">
                 De login functionaliteit moet worden geïmplementeerd door verbinding te maken met uw backend API.
-                Zie <code className="bg-yellow-100 px-1 rounded">src/contexts/AuthContext.tsx</code> voor implementatie details.
+                Zie de AuthContext component en API_INTEGRATION.md voor implementatie details.
               </p>
             </div>
           </div>

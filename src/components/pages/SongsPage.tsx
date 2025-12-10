@@ -130,7 +130,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
             <h3 className="mb-2 text-yellow-900">⚠️ Geen Data Geladen</h3>
             <p className="text-sm text-yellow-800">
               Verbind met uw backend API om songs, artists en rankings te laden.
-              Zie <code className="bg-yellow-100 px-1 rounded">src/components/pages/SongsPage.tsx</code> voor implementatie details.
+              Zie de TODO comments in deze component voor implementatie details.
             </p>
           </div>
         )}

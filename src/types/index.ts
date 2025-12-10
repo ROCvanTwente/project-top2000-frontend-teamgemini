@@ -39,7 +39,7 @@ export interface Playlist {
   userId: string;
   name: string;
   songIds: string[];
-  createdAt: Date;
+  createdAt: Date | string; // API returns string (ISO 8601), convert to Date if needed
 }
 
 export interface DJ {
