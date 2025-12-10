@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Trash2, Music, List } from 'lucide-react';
 import { usePlaylist } from '../../contexts/PlaylistContext';
-import { songs, artists } from '../../data/mockData';
+import type { Song, Artist } from '../../types';
 
 interface PlaylistsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -14,19 +14,26 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(
     playlists.length > 0 ? playlists[0].id : null
   );
+  const [songs, _setSongs] = useState<Song[]>([]);
+  const [artists, _setArtists] = useState<Artist[]>([]);
 
-  const handleCreatePlaylist = (e: React.FormEvent) => {
+  useEffect(() => {
+    // TODO: Fetch songs and artists from your backend API
+    // Example: fetch('/api/songs'), fetch('/api/artists')
+  }, []);
+
+  const handleCreatePlaylist = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPlaylistName.trim()) {
-      createPlaylist(newPlaylistName);
+      await createPlaylist(newPlaylistName);
       setNewPlaylistName('');
       setShowCreateForm(false);
     }
   };
 
-  const handleDeletePlaylist = (id: string) => {
+  const handleDeletePlaylist = async (id: string) => {
     if (confirm('Weet je zeker dat je deze afspeellijst wilt verwijderen?')) {
-      deletePlaylist(id);
+      await deletePlaylist(id);
       if (selectedPlaylist === id) {
         setSelectedPlaylist(playlists.length > 1 ? playlists[0].id : null);
       }

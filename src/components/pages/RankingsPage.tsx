@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
-import { songs, artists, rankings } from '../../data/mockData';
+import type { Song, Artist, Ranking } from '../../types';
 
 interface RankingsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -10,10 +10,18 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
   const [selectedYear, setSelectedYear] = useState(2024);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'position' | 'artist' | 'title'>('position');
+  const [songs, _setSongs] = useState<Song[]>([]);
+  const [artists, _setArtists] = useState<Artist[]>([]);
+  const [rankings, _setRankings] = useState<Ranking[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch data from your backend API
+    // Example: fetch('/api/songs'), fetch('/api/artists'), fetch('/api/rankings')
+  }, []);
 
   const availableYears = useMemo(() => {
     return [...new Set(rankings.map(r => r.year))].sort((a, b) => b - a);
-  }, []);
+  }, [rankings]);
 
   const yearRankings = useMemo(() => {
     const yearData = rankings

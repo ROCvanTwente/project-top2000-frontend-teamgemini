@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import { songs, artists, rankings } from '../../data/mockData';
+import type { Song, Artist, Ranking } from '../../types';
 
 interface StatisticsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -10,11 +10,19 @@ export function StatisticsPage({ onNavigate: _onNavigate }: StatisticsPageProps)
   const [selectedYear, setSelectedYear] = useState<number>(2024);
   const [topArtistsCount, setTopArtistsCount] = useState<number>(3);
   const [selectedStatistic, setSelectedStatistic] = useState<string>('fallers');
+  const [songs, _setSongs] = useState<Song[]>([]);
+  const [artists, _setArtists] = useState<Artist[]>([]);
+  const [rankings, _setRankings] = useState<Ranking[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch data from your backend API
+    // Example: fetch('/api/songs'), fetch('/api/artists'), fetch('/api/rankings')
+  }, []);
 
   // Get available years
   const availableYears = useMemo(() => {
     return Array.from(new Set(rankings.map(r => r.year))).sort((a, b) => b - a);
-  }, []);
+  }, [rankings]);
 
   // 1. Dalers (Fallers)
   const fallers = useMemo(() => {

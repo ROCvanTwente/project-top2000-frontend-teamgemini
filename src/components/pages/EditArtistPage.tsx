@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Save } from 'lucide-react';
-import { artists } from '../../data/mockData';
+import type { Artist } from '../../types';
 
 interface EditArtistPageProps {
   artistId: string;
@@ -8,14 +8,30 @@ interface EditArtistPageProps {
 }
 
 export function EditArtistPage({ artistId, onNavigate }: EditArtistPageProps) {
-  const artist = artists.find(a => a.id === artistId);
-  
+  const [artist, _setArtist] = useState<Artist | null>(null);
   const [formData, setFormData] = useState({
-    bio: artist?.bio || '',
-    wikipediaLink: artist?.wikipediaLink || '',
-    website: artist?.website || '',
-    photo: artist?.photo || ''
+    bio: '',
+    wikipediaLink: '',
+    website: '',
+    photo: ''
   });
+
+  useEffect(() => {
+    // TODO: Fetch artist data from your backend API
+    // Example:
+    // const fetchArtist = async () => {
+    //   const response = await fetch(`/api/artists/${artistId}`);
+    //   const data = await response.json();
+    //   setArtist(data);
+    //   setFormData({
+    //     bio: data.bio || '',
+    //     wikipediaLink: data.wikipediaLink || '',
+    //     website: data.website || '',
+    //     photo: data.photo || ''
+    //   });
+    // };
+    // fetchArtist();
+  }, [artistId]);
 
   if (!artist) {
     return (

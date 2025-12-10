@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { songs, artists, rankings } from '../../data/mockData';
+import type { Song, Artist, Ranking } from '../../types';
 
 const carouselImages = [
   {
@@ -26,6 +26,14 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [songs, _setSongs] = useState<Song[]>([]);
+  const [artists, _setArtists] = useState<Artist[]>([]);
+  const [rankings, _setRankings] = useState<Ranking[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch data from your backend API
+    // Example: fetch('/api/songs'), fetch('/api/artists'), fetch('/api/rankings')
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ExternalLink, Music, Globe } from 'lucide-react';
-import { artists, songs } from '../../data/mockData';
+import type { Artist, Song } from '../../types';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 
 interface ArtistDetailPageProps {
@@ -8,8 +9,13 @@ interface ArtistDetailPageProps {
 }
 
 export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps) {
-  const artist = artists.find(a => a.id === artistId);
-  const artistSongs = songs.filter(s => s.artistId === artistId);
+  const [artist, _setArtist] = useState<Artist | null>(null);
+  const [artistSongs, _setArtistSongs] = useState<Song[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch artist and their songs from your backend API
+    // Example: fetch(`/api/artists/${artistId}`), fetch(`/api/songs?artistId=${artistId}`)
+  }, [artistId]);
 
   if (!artist) {
     return (

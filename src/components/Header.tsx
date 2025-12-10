@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { djs } from '../data/mockData';
+import { useState, useEffect } from 'react';
+import type { DJ } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
@@ -10,7 +10,13 @@ interface HeaderProps {
 export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [djMenuOpen, setDjMenuOpen] = useState(false);
+  const [djs, _setDjs] = useState<DJ[]>([]);
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    // TODO: Fetch DJs data from your backend API
+    // Example: fetch('/api/djs')
+  }, []);
 
   return (
     <header style={{ 

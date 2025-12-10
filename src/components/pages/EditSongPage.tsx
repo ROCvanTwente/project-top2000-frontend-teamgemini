@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Save } from 'lucide-react';
-import { songs, artists } from '../../data/mockData';
+import type { Song, Artist } from '../../types';
 
 interface EditSongPageProps {
   songId: string;
@@ -8,8 +8,13 @@ interface EditSongPageProps {
 }
 
 export function EditSongPage({ songId, onNavigate }: EditSongPageProps) {
-  const song = songs.find(s => s.id === songId);
-  const artist = song ? artists.find(a => a.id === song.artistId) : null;
+  const [song, _setSong] = useState<Song | null>(null);
+  const [artist, _setArtist] = useState<Artist | null>(null);
+
+  useEffect(() => {
+    // TODO: Fetch song and artist data from your backend API
+    // Example: fetch(`/api/songs/${songId}`), fetch(`/api/artists/${song.artistId}`)
+  }, [songId]);
   
   const [formData, setFormData] = useState({
     lyrics: song?.lyrics || '',

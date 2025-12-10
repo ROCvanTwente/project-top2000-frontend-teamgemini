@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
-import { songs, artists, rankings } from '../../data/mockData';
+import type { Song, Artist, Ranking } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 
@@ -10,9 +10,26 @@ interface SongDetailPageProps {
 }
 
 export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
-  const song = songs.find(s => s.id === songId);
-  const artist = song ? artists.find(a => a.id === song.artistId) : null;
-  const songRankings = rankings.filter(r => r.songId === songId).sort((a, b) => b.year - a.year);
+  const [song, _setSong] = useState<Song | null>(null);
+  const [artist, _setArtist] = useState<Artist | null>(null);
+  const [songRankings, _setSongRankings] = useState<Ranking[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch song, artist, and rankings data from your backend API
+    // Example:
+    // const fetchData = async () => {
+    //   const songRes = await fetch(`/api/songs/${songId}`);
+    //   const songData = await songRes.json();
+    //   setSong(songData);
+    //   const artistRes = await fetch(`/api/artists/${songData.artistId}`);
+    //   const artistData = await artistRes.json();
+    //   setArtist(artistData);
+    //   const rankingsRes = await fetch(`/api/rankings?songId=${songId}`);
+    //   const rankingsData = await rankingsRes.json();
+    //   setSongRankings(rankingsData.sort((a, b) => b.year - a.year));
+    // };
+    // fetchData();
+  }, [songId]);
   
   const { user } = useAuth();
   const { playlists, addSongToPlaylist } = usePlaylist();
@@ -34,8 +51,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     );
   }
 
-  const handleAddToPlaylist = (playlistId: string) => {
-    const success = addSongToPlaylist(playlistId, songId);
+  const handleAddToPlaylist = async (playlistId: string) => {
+    const success = await addSongToPlaylist(playlistId, songId);
     if (success) {
       alert('Nummer toegevoegd aan afspeellijst!');
     } else {

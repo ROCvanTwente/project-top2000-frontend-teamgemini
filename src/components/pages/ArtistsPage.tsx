@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, Music } from 'lucide-react';
-import { artists, songs, rankings } from '../../data/mockData';
+import type { Artist, Song, Ranking } from '../../types';
 
 interface ArtistsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -9,6 +9,14 @@ interface ArtistsPageProps {
 export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'count'>('name');
+  const [artists, _setArtists] = useState<Artist[]>([]);
+  const [songs, _setSongs] = useState<Song[]>([]);
+  const [rankings, _setRankings] = useState<Ranking[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch data from your backend API
+    // Example: fetch('/api/artists'), fetch('/api/songs'), fetch('/api/rankings')
+  }, []);
 
   const artistsWithCount = useMemo(() => {
     return artists.map(artist => {
@@ -25,7 +33,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
         noteringen: noteringen
       };
     });
-  }, []);
+  }, [artists, songs, rankings]);
 
   const filteredAndSortedArtists = useMemo(() => {
     let filtered = artistsWithCount;

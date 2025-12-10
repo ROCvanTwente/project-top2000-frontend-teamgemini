@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Edit, Music, User } from 'lucide-react';
-import { artists, songs } from '../../data/mockData';
+import type { Artist, Song } from '../../types';
 
 interface AdminPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -9,6 +9,13 @@ interface AdminPageProps {
 export function AdminPage({ onNavigate }: AdminPageProps) {
   const [activeTab, setActiveTab] = useState<'artists' | 'songs'>('artists');
   const [searchTerm, setSearchTerm] = useState('');
+  const [artists, _setArtists] = useState<Artist[]>([]);
+  const [songs, _setSongs] = useState<Song[]>([]);
+
+  useEffect(() => {
+    // TODO: Fetch artists and songs from your backend API
+    // Example: fetch('/api/artists'), fetch('/api/songs')
+  }, []);
 
   const filteredArtists = artists.filter(artist =>
     artist.name.toLowerCase().includes(searchTerm.toLowerCase())

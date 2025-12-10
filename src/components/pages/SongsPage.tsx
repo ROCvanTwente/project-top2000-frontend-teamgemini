@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, Music2 } from 'lucide-react';
-import { songs, artists, rankings } from '../../data/mockData';
+import type { Song, Artist, Ranking } from '../../types';
 
 interface SongsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -9,6 +9,37 @@ interface SongsPageProps {
 export function SongsPage({ onNavigate }: SongsPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'artist' | 'count'>('title');
+  const [songs, _setSongs] = useState<Song[]>([]);
+  const [artists, _setArtists] = useState<Artist[]>([]);
+  const [rankings, _setRankings] = useState<Ranking[]>([]);
+  const [loading, _setLoading] = useState(true);
+
+  useEffect(() => {
+    // TODO: Fetch data from your backend API
+    // Example implementation:
+    // const fetchData = async () => {
+    //   try {
+    //     const [songsRes, artistsRes, rankingsRes] = await Promise.all([
+    //       fetch('/api/songs'),
+    //       fetch('/api/artists'),
+    //       fetch('/api/rankings')
+    //     ]);
+    //     const songsData = await songsRes.json();
+    //     const artistsData = await artistsRes.json();
+    //     const rankingsData = await rankingsRes.json();
+    //     setSongs(songsData);
+    //     setArtists(artistsData);
+    //     setRankings(rankingsData);
+    //   } catch (error) {
+    //     console.error('Failed to fetch data:', error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    // fetchData();
+
+    _setLoading(false);
+  }, []);
 
   const songsWithArtist = useMemo(() => {
     return songs.map(song => {
@@ -26,7 +57,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
         noteringen: yearsInTop.length
       };
     });
-  }, []);
+  }, [songs, artists, rankings]);
 
   const filteredAndSortedSongs = useMemo(() => {
     let filtered = songsWithArtist;
@@ -93,10 +124,23 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
           </div>
         </div>
 
+        {/* Backend connection warning */}
+        {!loading && songs.length === 0 && (
+          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 mb-4">
+            <h3 className="mb-2 text-yellow-900">⚠️ Geen Data Geladen</h3>
+            <p className="text-sm text-yellow-800">
+              Verbind met uw backend API om songs, artists en rankings te laden.
+              Zie <code className="bg-yellow-100 px-1 rounded">src/components/pages/SongsPage.tsx</code> voor implementatie details.
+            </p>
+          </div>
+        )}
+
         {/* Results count */}
-        <div className="mb-4 text-gray-600">
-          {filteredAndSortedSongs.length} {filteredAndSortedSongs.length === 1 ? 'nummer' : 'nummers'} gevonden
-        </div>
+        {songs.length > 0 && (
+          <div className="mb-4 text-gray-600">
+            {filteredAndSortedSongs.length} {filteredAndSortedSongs.length === 1 ? 'nummer' : 'nummers'} gevonden
+          </div>
+        )}
 
         {/* Songs grid */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">

@@ -12,15 +12,15 @@ export function LoginPage({ onNavigate }: LoginPageProps) {
   const [error, setError] = useState('');
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    const success = login(email, password);
+    const success = await login(email, password);
     if (success) {
       onNavigate('home');
     } else {
-      setError('Ongeldige inloggegevens');
+      setError('Login functionaliteit is nog niet geïmplementeerd. Verbind met uw backend API.');
     }
   };
 
@@ -84,22 +84,12 @@ export function LoginPage({ onNavigate }: LoginPageProps) {
           </form>
 
           <div className="mt-8 pt-8 border-t border-gray-200">
-            <h3 className="mb-4">Demo accounts</h3>
-            <div className="space-y-3 text-sm">
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="mb-1">Normale gebruiker:</div>
-                <div className="text-gray-600">
-                  Email: user@top2000.nl<br />
-                  Wachtwoord: user123
-                </div>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="mb-1">Beheerder:</div>
-                <div className="text-gray-600">
-                  Email: admin@top2000.nl<br />
-                  Wachtwoord: admin123
-                </div>
-              </div>
+            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4">
+              <h3 className="mb-2 text-yellow-900">⚠️ Backend Niet Verbonden</h3>
+              <p className="text-sm text-yellow-800">
+                De login functionaliteit moet worden geïmplementeerd door verbinding te maken met uw backend API.
+                Zie <code className="bg-yellow-100 px-1 rounded">src/contexts/AuthContext.tsx</code> voor implementatie details.
+              </p>
             </div>
           </div>
         </div>
