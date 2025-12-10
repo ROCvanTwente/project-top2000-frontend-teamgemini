@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Music, List } from 'lucide-react';
-import { usePlaylist } from '../../contexts/PlaylistContext';
-import type { Song, Artist } from '../../types';
+import type { Song, Artist, Playlist } from '../../types';
 
 interface PlaylistsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
 export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
-  const { playlists, createPlaylist, deletePlaylist, removeSongFromPlaylist } = usePlaylist();
+  // TODO: Fetch playlists from your backend API
+  const playlists: Playlist[] = [];
+  
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(
@@ -25,7 +26,8 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
   const handleCreatePlaylist = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPlaylistName.trim()) {
-      await createPlaylist(newPlaylistName);
+      // TODO: Create playlist via your backend API
+      console.warn('Create playlist not implemented');
       setNewPlaylistName('');
       setShowCreateForm(false);
     }
@@ -33,11 +35,17 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
 
   const handleDeletePlaylist = async (id: string) => {
     if (confirm('Weet je zeker dat je deze afspeellijst wilt verwijderen?')) {
-      await deletePlaylist(id);
+      // TODO: Delete playlist via your backend API
+      console.warn('Delete playlist not implemented');
       if (selectedPlaylist === id) {
         setSelectedPlaylist(playlists.length > 1 ? playlists[0].id : null);
       }
     }
+  };
+
+  const removeSongFromPlaylist = async (_playlistId: string, _songId: string) => {
+    // TODO: Remove song from playlist via your backend API
+    console.warn('Remove song from playlist not implemented');
   };
 
   const currentPlaylist = playlists.find(p => p.id === selectedPlaylist);

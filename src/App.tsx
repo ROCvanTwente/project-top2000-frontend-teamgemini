@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { AuthProvider } from './contexts/AuthContext';
-import { PlaylistProvider } from './contexts/PlaylistContext';
 import { Header } from './components/Header';
 import { HomePage } from './components/pages/HomePage';
 import { RankingsPage } from './components/pages/RankingsPage';
@@ -117,11 +115,9 @@ export default function App() {
   };
 
   return (
-    <AuthProvider>
-      <PlaylistProvider>
-        <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-          <Header onNavigate={handleNavigate} currentPage={navigation.page} />
-          {renderPage()}
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <Header onNavigate={handleNavigate} currentPage={navigation.page} />
+      {renderPage()}
           
           {/* Footer */}
           <footer style={{ 
@@ -298,7 +294,5 @@ export default function App() {
             </div>
           </footer>
         </div>
-      </PlaylistProvider>
-    </AuthProvider>
   );
 }

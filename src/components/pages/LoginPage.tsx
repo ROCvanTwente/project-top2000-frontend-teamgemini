@@ -1,27 +1,34 @@
 import { useState } from 'react';
 import { LogIn, User, Lock } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
 }
 
-export function LoginPage({ onNavigate }: LoginPageProps) {
+export function LoginPage({ onNavigate: _onNavigate }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    const success = await login(email, password);
-    if (success) {
-      onNavigate('home');
-    } else {
-      setError('Login functionaliteit is nog niet geïmplementeerd. Verbind met uw backend API.');
-    }
+    // TODO: Implement login with your backend API
+    // Example:
+    // const response = await fetch('/api/auth/login', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email, password })
+    // });
+    // if (response.ok) {
+    //   onNavigate('home');
+    // } else {
+    //   setError('Invalid credentials');
+    // }
+    
+    console.warn('Login not implemented - connect to your backend API');
+    setError('Login functionaliteit is nog niet geïmplementeerd. Verbind met uw backend API.');
   };
 
   return (

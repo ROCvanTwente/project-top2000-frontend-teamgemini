@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
-import type { Song, Artist, Ranking } from '../../types';
-import { useAuth } from '../../contexts/AuthContext';
-import { usePlaylist } from '../../contexts/PlaylistContext';
+import type { Song, Artist, Ranking, Playlist } from '../../types';
 
 interface SongDetailPageProps {
   songId: string;
@@ -31,8 +29,9 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     // fetchData();
   }, [songId]);
   
-  const { user } = useAuth();
-  const { playlists, addSongToPlaylist } = usePlaylist();
+  // TODO: Implement user state management with your backend
+  const user = null; // Replace with your authentication logic
+  const playlists: Playlist[] = []; // TODO: Fetch from your backend
   const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
 
   if (!song || !artist) {
@@ -51,13 +50,10 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     );
   }
 
-  const handleAddToPlaylist = async (playlistId: string) => {
-    const success = await addSongToPlaylist(playlistId, songId);
-    if (success) {
-      alert('Nummer toegevoegd aan afspeellijst!');
-    } else {
-      alert('Dit nummer staat al in deze afspeellijst');
-    }
+  const handleAddToPlaylist = async (_playlistId: string) => {
+    // TODO: Add song to playlist via your backend API
+    console.warn('Add to playlist not implemented');
+    alert('Afspeellijst functionaliteit is nog niet geïmplementeerd');
     setShowPlaylistMenu(false);
   };
 

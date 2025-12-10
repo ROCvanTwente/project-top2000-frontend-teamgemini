@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { DJ } from '../types';
-import { useAuth } from '../contexts/AuthContext';
+import type { DJ, User } from '../types';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
@@ -11,7 +10,14 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [djMenuOpen, setDjMenuOpen] = useState(false);
   const [djs, _setDjs] = useState<DJ[]>([]);
-  const { user, logout } = useAuth();
+  const [user, _setUser] = useState<User | null>(null);
+  
+  // TODO: Implement user state management with your backend
+  // const user = ...; // Replace with your authentication logic
+  const logout = () => {
+    // TODO: Implement logout with your backend
+    console.warn('Logout not implemented');
+  };
 
   useEffect(() => {
     // TODO: Fetch DJs data from your backend API
