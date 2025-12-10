@@ -2,7 +2,7 @@ interface ArtistsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
-export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
+export function ArtistsPage({ onNavigate: _onNavigate }: ArtistsPageProps) {
   // All data filtering, searching, sorting, and counting should be done in Razor/backend
 
   return (

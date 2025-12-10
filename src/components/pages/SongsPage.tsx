@@ -1,10 +1,10 @@
-import { Music2 } from 'lucide-react';
+
 
 interface SongsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
-export function SongsPage({ onNavigate }: SongsPageProps) {
+export function SongsPage({ onNavigate: _onNavigate }: SongsPageProps) {
   // All data filtering, searching, and sorting should be done in Razor/backend
 
   return (

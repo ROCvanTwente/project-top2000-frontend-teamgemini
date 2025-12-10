@@ -4,7 +4,7 @@ interface PlaylistsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
-export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
+export function PlaylistsPage({ onNavigate: _onNavigate }: PlaylistsPageProps) {
   // All playlist creation, deletion, and management logic should be done in Razor/backend
 
   return (

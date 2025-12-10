@@ -2,7 +2,7 @@ interface RankingsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
-export function RankingsPage({ onNavigate }: RankingsPageProps) {
+export function RankingsPage({ onNavigate: _onNavigate }: RankingsPageProps) {
   // All data filtering, searching, and sorting should be done in Razor/backend
 
   return (
