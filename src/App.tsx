@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { AuthProvider } from './contexts/AuthContext';
-import { PlaylistProvider } from './contexts/PlaylistContext';
 import { Header } from './components/Header';
 import { HomePage } from './components/pages/HomePage';
 import { RankingsPage } from './components/pages/RankingsPage';
@@ -9,15 +7,6 @@ import { ArtistDetailPage } from './components/pages/ArtistDetailPage';
 import { ArtistSongsPage } from './components/pages/ArtistSongsPage';
 import { SongsPage } from './components/pages/SongsPage';
 import { SongDetailPage } from './components/pages/SongDetailPage';
-import { HistoryPage } from './components/pages/HistoryPage';
-import { FAQPage } from './components/pages/FAQPage';
-import { ContactPage } from './components/pages/ContactPage';
-import { LoginPage } from './components/pages/LoginPage';
-import { PlaylistsPage } from './components/pages/PlaylistsPage';
-import { AdminPage } from './components/pages/AdminPage';
-import { EditArtistPage } from './components/pages/EditArtistPage';
-import { EditSongPage } from './components/pages/EditSongPage';
-import { StatisticsPage } from './components/pages/StatisticsPage';
 
 type PageType = 
   | 'home' 
@@ -26,16 +15,7 @@ type PageType =
   | 'artist-detail' 
   | 'artist-songs'
   | 'songs' 
-  | 'song-detail' 
-  | 'history' 
-  | 'faq' 
-  | 'contact' 
-  | 'login'
-  | 'playlists'
-  | 'admin'
-  | 'edit-artist'
-  | 'edit-song'
-  | 'statistics';
+  | 'song-detail';
 
 interface NavigationState {
   page: PageType;
@@ -83,45 +63,15 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         );
-      case 'statistics':
-        return <StatisticsPage onNavigate={handleNavigate} />;
-      case 'history':
-        return <HistoryPage />;
-      case 'faq':
-        return <FAQPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'login':
-        return <LoginPage onNavigate={handleNavigate} />;
-      case 'playlists':
-        return <PlaylistsPage onNavigate={handleNavigate} />;
-      case 'admin':
-        return <AdminPage onNavigate={handleNavigate} />;
-      case 'edit-artist':
-        return (
-          <EditArtistPage
-            artistId={navigation.params?.artistId}
-            onNavigate={handleNavigate}
-          />
-        );
-      case 'edit-song':
-        return (
-          <EditSongPage
-            songId={navigation.params?.songId}
-            onNavigate={handleNavigate}
-          />
-        );
       default:
         return <HomePage onNavigate={handleNavigate} />;
     }
   };
 
   return (
-    <AuthProvider>
-      <PlaylistProvider>
-        <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-          <Header onNavigate={handleNavigate} currentPage={navigation.page} />
-          {renderPage()}
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <Header onNavigate={handleNavigate} currentPage={navigation.page} />
+      {renderPage()}
           
           {/* Footer */}
           <footer style={{ 
@@ -219,59 +169,7 @@ export default function App() {
                   </ul>
                 </div>
 
-                <div>
-                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Informatie</h3>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    <li style={{ marginBottom: '0.5rem' }}>
-                      <button
-                        onClick={() => handleNavigate('history')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
-                      >
-                        Geschiedenis
-                      </button>
-                    </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
-                      <button
-                        onClick={() => handleNavigate('faq')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
-                      >
-                        FAQ
-                      </button>
-                    </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
-                      <button
-                        onClick={() => handleNavigate('contact')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
-                      >
-                        Contact
-                      </button>
-                    </li>
-                  </ul>
-                </div>
+
 
                 <div>
                   <h3 style={{ color: 'white', marginBottom: '1rem' }}>Contact</h3>
@@ -297,8 +195,6 @@ export default function App() {
               </div>
             </div>
           </footer>
-        </div>
-      </PlaylistProvider>
-    </AuthProvider>
+    </div>
   );
 }

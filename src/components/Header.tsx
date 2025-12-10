@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { djs } from '../data/mockData';
-import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
@@ -10,7 +9,6 @@ interface HeaderProps {
 export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [djMenuOpen, setDjMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
 
   return (
     <header style={{ 
@@ -94,20 +92,6 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               Nummers
             </button>
             
-            <button
-              onClick={() => onNavigate('statistics')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'statistics' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'statistics' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              Statistieken
-            </button>
-            
             {/* DJ's Menu */}
             <div 
               style={{ position: 'relative' }}
@@ -169,121 +153,6 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 </div>
               )}
             </div>
-
-            <button
-              onClick={() => onNavigate('history')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'history' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'history' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              Geschiedenis
-            </button>
-            <button
-              onClick={() => onNavigate('faq')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'faq' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'faq' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => onNavigate('contact')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'contact' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'contact' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              Contact
-            </button>
-
-            {user && (
-              <>
-                <button
-                  onClick={() => onNavigate('playlists')}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: currentPage === 'playlists' ? '#d1d5db' : 'white',
-                    textDecoration: currentPage === 'playlists' ? 'underline' : 'none',
-                    cursor: 'pointer',
-                    padding: '0.5rem'
-                  }}
-                >
-                  Mijn Lijsten
-                </button>
-                {user.role === 'admin' && (
-                  <button
-                    onClick={() => onNavigate('admin')}
-                    style={{ 
-                      background: 'none', 
-                      border: 'none', 
-                      color: currentPage === 'admin' ? '#d1d5db' : 'white',
-                      textDecoration: currentPage === 'admin' ? 'underline' : 'none',
-                      cursor: 'pointer',
-                      padding: '0.5rem'
-                    }}
-                  >
-                    Beheer
-                  </button>
-                )}
-              </>
-            )}
-
-            {user ? (
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '0.75rem',
-                marginLeft: '1rem',
-                borderLeft: '1px solid rgba(255,255,255,0.3)',
-                paddingLeft: '1rem'
-              }}>
-                <span>👤</span>
-                <span style={{ fontSize: '0.875rem' }}>{user.email}</span>
-                <button
-                  onClick={logout}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: 'white', 
-                    cursor: 'pointer',
-                    padding: '0.25rem'
-                  }}
-                  title="Uitloggen"
-                >
-                  ⇥
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => onNavigate('login')}
-                style={{ 
-                  backgroundColor: 'white',
-                  color: 'black',
-                  border: 'none',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  marginLeft: '1rem'
-                }}
-              >
-                Inloggen
-              </button>
-            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -363,117 +232,6 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             >
               Nummers
             </button>
-            <button
-              onClick={() => { onNavigate('statistics'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              Statistieken
-            </button>
-            <button
-              onClick={() => { onNavigate('history'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              Geschiedenis
-            </button>
-            <button
-              onClick={() => { onNavigate('faq'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => { onNavigate('contact'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
-            >
-              Contact
-            </button>
-            {user && (
-              <button
-                onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
-              >
-                Mijn Lijsten
-              </button>
-            )}
-            {user?.role === 'admin' && (
-              <button
-                onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
-              >
-                Beheer
-              </button>
-            )}
-            {user ? (
-              <button
-                onClick={() => { logout(); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
-              >
-                Uitloggen ({user.email})
-              </button>
-            ) : (
-              <button
-                onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
-              >
-                Inloggen
-              </button>
-            )}
 
             {/* DJ Menu in Mobile */}
             <div style={{ paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.2)' }}>

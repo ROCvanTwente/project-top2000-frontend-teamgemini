@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Play, Calendar, TrendingUp } from 'lucide-react';
 import { songs, artists, rankings } from '../../data/mockData';
-import { useAuth } from '../../contexts/AuthContext';
-import { usePlaylist } from '../../contexts/PlaylistContext';
 
 interface SongDetailPageProps {
   songId: string;
@@ -13,10 +10,6 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   const song = songs.find(s => s.id === songId);
   const artist = song ? artists.find(a => a.id === song.artistId) : null;
   const songRankings = rankings.filter(r => r.songId === songId).sort((a, b) => b.year - a.year);
-  
-  const { user } = useAuth();
-  const { playlists, addSongToPlaylist } = usePlaylist();
-  const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
 
   if (!song || !artist) {
     return (
@@ -33,16 +26,6 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
       </div>
     );
   }
-
-  const handleAddToPlaylist = (playlistId: string) => {
-    const success = addSongToPlaylist(playlistId, songId);
-    if (success) {
-      alert('Nummer toegevoegd aan afspeellijst!');
-    } else {
-      alert('Dit nummer staat al in deze afspeellijst');
-    }
-    setShowPlaylistMenu(false);
-  };
 
   const maxPosition = Math.max(...songRankings.map(r => r.position));
   const chartWidth = 600;
@@ -71,57 +54,14 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
             {/* Song Info */}
             <div className="md:w-2/3 p-8">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <h1 className="mb-2">{song.title}</h1>
-                  <button
-                    onClick={() => onNavigate('artist-detail', { artistId: artist.id })}
-                    className="text-xl text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors"
-                  >
-                    {artist.name}
-                  </button>
-                </div>
-                {user && (
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowPlaylistMenu(!showPlaylistMenu)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[var(--bright-blue)] text-white rounded-lg hover:bg-[var(--vivid-purple)] transition-colors"
-                    >
-                      <Plus size={18} />
-                      Toevoegen aan lijst
-                    </button>
-                    {showPlaylistMenu && (
-                      <div className="absolute right-0 top-full mt-2 bg-white border-2 border-gray-200 rounded-lg shadow-xl py-2 min-w-[200px] z-10">
-                        {playlists.length === 0 ? (
-                          <div className="px-4 py-2 text-gray-500 text-sm">
-                            Geen afspeellijsten
-                          </div>
-                        ) : (
-                          playlists.map(playlist => (
-                            <button
-                              key={playlist.id}
-                              onClick={() => handleAddToPlaylist(playlist.id)}
-                              className="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
-                            >
-                              {playlist.name}
-                            </button>
-                          ))
-                        )}
-                        <div className="border-t border-gray-200 mt-2 pt-2">
-                          <button
-                            onClick={() => {
-                              setShowPlaylistMenu(false);
-                              onNavigate('playlists');
-                            }}
-                            className="block w-full text-left px-4 py-2 text-[var(--bright-blue)] hover:bg-gray-100 transition-colors"
-                          >
-                            Nieuwe lijst maken
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+              <div className="mb-6">
+                <h1 className="mb-2">{song.title}</h1>
+                <button
+                  onClick={() => onNavigate('artist-detail', { artistId: artist.id })}
+                  className="text-xl text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors"
+                >
+                  {artist.name}
+                </button>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
