@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { songs, artists, rankings } from '../../data/mockData';
 
 const carouselImages = [
   {
@@ -27,13 +26,6 @@ interface HomePageProps {
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
   };
@@ -41,18 +33,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
   };
-
-  // Get top 5 for 2024
-  const top5Rankings = rankings
-    .filter(r => r.year === 2024)
-    .sort((a, b) => a.position - b.position)
-    .slice(0, 5);
-
-  const top5Songs = top5Rankings.map(ranking => {
-    const song = songs.find(s => s.id === ranking.songId);
-    const artist = song ? artists.find(a => a.id === song.artistId) : null;
-    return { ranking, song, artist };
-  });
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -168,45 +148,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <h2 style={{ margin: 0 }}>Top 5 van 2024</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {top5Songs.map(({ ranking, song, artist }) => {
-                if (!song || !artist) return null;
-                return (
-                  <div
-                    key={ranking.songId}
-                    style={{
-                      backgroundColor: 'white',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      padding: '1rem',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => onNavigate('song-detail', { songId: song.id })}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div style={{
-                        flexShrink: 0,
-                        width: '48px',
-                        height: '48px',
-                        backgroundColor: 'black',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white'
-                      }}>
-                        <span style={{ fontSize: '1.25rem' }}>{ranking.position}</span>
-                      </div>
-                      <div style={{ flexGrow: 1 }}>
-                        <h3 style={{ margin: 0, marginBottom: '0.25rem' }}>
-                          {song.title}
-                        </h3>
-                        <p style={{ color: '#6b7280', margin: 0 }}>{artist.name}</p>
-                      </div>
-                      <span style={{ fontSize: '1.5rem' }}>▶</span>
-                    </div>
-                  </div>
-                );
-              })}
+              {/* Top 5 songs will be provided by backend/Razor */}
             </div>
             <button
               onClick={() => onNavigate('rankings')}
