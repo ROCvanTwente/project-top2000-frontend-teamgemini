@@ -1,3 +1,4 @@
+import '../App.css';
 import { useState } from 'react';
 import { djs } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,15 +14,8 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   const { user, logout } = useAuth();
 
   return (
-    <header style={{ 
-      backgroundColor: 'var(--color-gray-dark)', 
-      color: 'white', 
-      position: 'sticky', 
-      top: 0, 
-      zIndex: 50,
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '1rem' }}>
+    <header>
+      <div className='headerDiv'>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div 
             style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
@@ -40,7 +34,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hide-on-mobile" style={{ alignItems: 'center', gap: '1.5rem' }}>
+          <nav className="hide-on-mobile">
             <button
               onClick={() => onNavigate('home')}
               style={{ 

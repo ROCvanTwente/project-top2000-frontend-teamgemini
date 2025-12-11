@@ -51,10 +51,12 @@ export default function App() {
 
   const handleNavigate = (page: string, params?: any) => {
     setNavigation({ page: page as PageType, params });
+    // For a smooth scroll when going to a new page
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const renderPage = () => {
+    // To switch between the different pages
     switch (navigation.page) {
       case 'home':
         return <HomePage onNavigate={handleNavigate} />;
@@ -63,6 +65,7 @@ export default function App() {
       case 'artists':
         return <ArtistsPage onNavigate={handleNavigate} />;
       case 'artist-detail':
+        // making sure you go to the details from the artist you clicked on
         return (
           <ArtistDetailPage
             artistId={navigation.params?.artistId}
@@ -70,6 +73,7 @@ export default function App() {
           />
         );
       case 'artist-songs':
+        // Songs of the artist you clicked on
         return (
           <ArtistSongsPage
             artistId={navigation.params?.artistId}
@@ -77,8 +81,10 @@ export default function App() {
           />
         );
       case 'songs':
+        // Songs page
         return <SongsPage onNavigate={handleNavigate} />;
       case 'song-detail':
+        // Details of the song you clicked on
         return (
           <SongDetailPage
             songId={navigation.params?.songId}
@@ -113,8 +119,6 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         );
-      default:
-        return <HomePage onNavigate={handleNavigate} />;
     }
   };
 
@@ -122,6 +126,7 @@ export default function App() {
     <AuthProvider>
       <PlaylistProvider>
         <div className='logoDiv'>
+          {/* Header - Everything between header and footer */}
           <Header onNavigate={handleNavigate} currentPage={navigation.page} />
           {renderPage()}
           
@@ -134,7 +139,7 @@ export default function App() {
                     <h3 className='footerH3Tag'>TOP 2000</h3>
                   </div>
                   <p className='footerPTag'>
-                    De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op NPO Radio 2.
+                    De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op ROC Radio 2.
                   </p>
                 </div>
 
@@ -142,6 +147,7 @@ export default function App() {
                   <h3 className='footerUlH3Tag'>Navigatie</h3>
                   <ul className='footerUl'>
                     <li className='footerLi'>
+                      {/* Navigate to page */}
                       <button
                         onClick={() => handleNavigate('home')}
                         className='footerButton'
@@ -209,7 +215,7 @@ export default function App() {
                 <div>
                   <h3 className='footerUlH3Tag'>Contact</h3>
                   <ul className='footerUl footerPTag'>
-                    <li className='footerLi'>NPO Radio 2</li>
+                    <li className='footerLi'>ROC Radio 2</li>
                     <li className='footerLi'>Media Park</li>
                     <li className='footerLi'>1217 WE Hilversum</li>
                     <li className='footerLi'>info@top2000.nl</li>
@@ -218,7 +224,7 @@ export default function App() {
               </div>
 
               <div className='footerBottomText'>
-                <p className='footerRights'>© 2024 TOP 2000 - NPO Radio 2. Alle rechten voorbehouden.</p>
+                <p className='footerRights'>© 2024 TOP 2000 - ROC Radio 2. Alle rechten voorbehouden.</p>
                 <p className='footerDemoWebsite'>Demo website - Niet officieel</p>
               </div>
             </div>
