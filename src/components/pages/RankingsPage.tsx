@@ -18,14 +18,21 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedYear, setSelectedYear] = useState<number>(2023); // standaard jaar
+  const [selectedYear, setSelectedYear] = useState<number>(2023);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"position" | "artist" | "title">("position");
 
-  // Haal data op voor het geselecteerde jaar
-  useEffect(() => {
-    if (!selectedYear) return;
+  // Vast bereik van jaren: 1999 t/m 2024
+  const availableYears = useMemo(() => {
+    const start = 1999;
+    const end = 2024;
+    const years = [];
+    for (let y = end; y >= start; y--) years.push(y);
+    return years;
+  }, []);
 
+  // Fetch data op basis van geselecteerd jaar
+  useEffect(() => {
     setLoading(true);
     setError(null);
 
@@ -46,13 +53,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
       });
   }, [selectedYear]);
 
-  // Alle beschikbare jaren op basis van data (optioneel)
-  const availableYears = useMemo(() => {
-    const years = [...new Set(rankings.map((r) => r.releaseYear))];
-    return years.length > 0 ? years.sort((a, b) => b - a) : [selectedYear];
-  }, [rankings, selectedYear]);
-
-  // Rankings gefilterd op zoekterm en sortering
   const filteredRankings = useMemo(() => {
     let data = [...rankings];
 
@@ -86,7 +86,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="grid md:grid-cols-3 gap-4">
-            {/* Jaar selector */}
             <div>
               <label className="block mb-2">
                 <Filter size={16} className="inline mr-2" />
@@ -105,7 +104,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
               </select>
             </div>
 
-            {/* Zoekbalk */}
             <div>
               <label className="block mb-2">
                 <Search size={16} className="inline mr-2" />
@@ -120,7 +118,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
               />
             </div>
 
-            {/* Sorteer */}
             <div>
               <label className="block mb-2">Sorteren op</label>
               <select
@@ -159,7 +156,14 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
                     className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4">{r.position}</td>
-                    <td className="px-6 py-4">{r.title}</td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => onNavigate("song-detail", { songId: r.songId })}
+                        className="text-left hover:underline text-blue-600"
+                      >
+                        {r.title}
+                      </button>
+                    </td>
                     <td className="px-6 py-4">{r.artist}</td>
                     <td className="px-6 py-4">{r.releaseYear}</td>
                   </tr>
