@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 // @ts-ignore - api.js is plain JS
-import { fetchFromAPI } from '../../api.js';
+import { fetchFromAPI } from '../../api';
 
 interface ArtistsPageProps {
   onNavigate: (page: string, params?: any) => void;
