@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Menu, X, User, LogOut } from 'lucide-react';
 import { djs } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -14,79 +13,155 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   const { user, logout } = useAuth();
 
   return (
-    <header className="bg-(--color-gray-dark) text-white sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+    <header style={{ 
+      backgroundColor: 'var(--color-gray-dark)', 
+      color: 'white', 
+      position: 'sticky', 
+      top: 0, 
+      zIndex: 50,
+      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+    }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div 
-            className="cursor-pointer flex items-center gap-3"
+            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
             onClick={() => onNavigate('home')}
           >
-            <div className="bg-(--color-gray-medium) text-center w-50 m-4 py-1 rounded-lg border border-white/10">
-              <h1 className="text-white">TOP 2000</h1>
+            <div style={{ 
+              backgroundColor: 'var(--color-gray-medium)', 
+              textAlign: 'center', 
+              width: '200px', 
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <h1 style={{ color: 'white', margin: 0, fontSize: '1.5rem' }}>TOP 2000</h1>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hide-on-mobile" style={{ alignItems: 'center', gap: '1.5rem' }}>
             <button
               onClick={() => onNavigate('home')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'home' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'home' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'home' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Home
             </button>
             <button
               onClick={() => onNavigate('rankings')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'rankings' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'rankings' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'rankings' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Jaaroverzichten
             </button>
             <button
               onClick={() => onNavigate('artists')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'artists' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'artists' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'artists' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Artiesten
             </button>
             <button
               onClick={() => onNavigate('songs')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'songs' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'songs' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'songs' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Nummers
             </button>
             
             <button
               onClick={() => onNavigate('statistics')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'statistics' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'statistics' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'statistics' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Statistieken
             </button>
             
             {/* DJ's Menu */}
             <div 
-              className="relative"
+              style={{ position: 'relative' }}
               onMouseEnter={() => setDjMenuOpen(true)}
               onMouseLeave={() => setDjMenuOpen(false)}
             >
-              <button className="hover:text-gray-300 transition-colors">
+              <button style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}>
                 DJ's
               </button>
               {djMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 bg-white text-black rounded-lg shadow-xl py-2 min-w-[200px]">
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  left: 0, 
+                  marginTop: '0.5rem',
+                  backgroundColor: 'white',
+                  color: 'black',
+                  borderRadius: '8px',
+                  boxShadow: '0 10px 15px rgba(0,0,0,0.3)',
+                  padding: '0.5rem 0',
+                  minWidth: '200px'
+                }}>
                   <a
                     href="https://nl.wikipedia.org/wiki/Bart_Arens"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-4 py-2 hover:bg-gray-100 transition-colors"
+                    style={{ 
+                      display: 'block', 
+                      padding: '0.5rem 1rem',
+                      color: 'black',
+                      textDecoration: 'none'
+                    }}
                   >
                     Bart Arens (Opening)
                   </a>
-                  <div className="border-t border-gray-200 my-2"></div>
+                  <div style={{ borderTop: '1px solid #e5e7eb', margin: '0.5rem 0' }}></div>
                   {djs.map(dj => (
                     <a
                       key={dj.name}
                       href={dj.wikipediaLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block px-4 py-2 hover:bg-gray-100 transition-colors"
+                      style={{ 
+                        display: 'block', 
+                        padding: '0.5rem 1rem',
+                        color: 'black',
+                        textDecoration: 'none'
+                      }}
                     >
                       {dj.name}
                     </a>
@@ -97,19 +172,40 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
             <button
               onClick={() => onNavigate('history')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'history' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'history' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'history' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Geschiedenis
             </button>
             <button
               onClick={() => onNavigate('faq')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'faq' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'faq' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'faq' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               FAQ
             </button>
             <button
               onClick={() => onNavigate('contact')}
-              className={`hover:text-gray-300 transition-colors ${currentPage === 'contact' ? 'text-gray-300 underline' : ''}`}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: currentPage === 'contact' ? '#d1d5db' : 'white',
+                textDecoration: currentPage === 'contact' ? 'underline' : 'none',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Contact
             </button>
@@ -118,14 +214,28 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               <>
                 <button
                   onClick={() => onNavigate('playlists')}
-                  className={`hover:text-gray-300 transition-colors ${currentPage === 'playlists' ? 'text-gray-300 underline' : ''}`}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: currentPage === 'playlists' ? '#d1d5db' : 'white',
+                    textDecoration: currentPage === 'playlists' ? 'underline' : 'none',
+                    cursor: 'pointer',
+                    padding: '0.5rem'
+                  }}
                 >
                   Mijn Lijsten
                 </button>
                 {user.role === 'admin' && (
                   <button
                     onClick={() => onNavigate('admin')}
-                    className={`hover:text-gray-300 transition-colors ${currentPage === 'admin' ? 'text-gray-300 underline' : ''}`}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: currentPage === 'admin' ? '#d1d5db' : 'white',
+                      textDecoration: currentPage === 'admin' ? 'underline' : 'none',
+                      cursor: 'pointer',
+                      padding: '0.5rem'
+                    }}
                   >
                     Beheer
                   </button>
@@ -134,21 +244,42 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             )}
 
             {user ? (
-              <div className="flex items-center gap-3 ml-4 border-l border-white/30 pl-4">
-                <User size={20} />
-                <span className="text-sm">{user.email}</span>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.75rem',
+                marginLeft: '1rem',
+                borderLeft: '1px solid rgba(255,255,255,0.3)',
+                paddingLeft: '1rem'
+              }}>
+                <span>👤</span>
+                <span style={{ fontSize: '0.875rem' }}>{user.email}</span>
                 <button
                   onClick={logout}
-                  className="hover:text-gray-300 transition-colors"
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: 'white', 
+                    cursor: 'pointer',
+                    padding: '0.25rem'
+                  }}
                   title="Uitloggen"
                 >
-                  <LogOut size={20} />
+                  ⇥
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => onNavigate('login')}
-                className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors ml-4"
+                style={{ 
+                  backgroundColor: 'white',
+                  color: 'black',
+                  border: 'none',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  marginLeft: '1rem'
+                }}
               >
                 Inloggen
               </button>
@@ -157,68 +288,144 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="show-on-mobile"
+            style={{ 
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '1.5rem',
+              padding: '0.5rem'
+            }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? '✕' : '☰'}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4 flex flex-col gap-3">
+          <nav className="show-on-mobile" style={{ 
+            flexDirection: 'column',
+            gap: '0.75rem',
+            marginTop: '1rem',
+            paddingBottom: '1rem'
+          }}>
             <button
               onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Home
             </button>
             <button
               onClick={() => { onNavigate('rankings'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Jaaroverzichten
             </button>
             <button
               onClick={() => { onNavigate('artists'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Artiesten
             </button>
             <button
               onClick={() => { onNavigate('songs'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Nummers
             </button>
             <button
               onClick={() => { onNavigate('statistics'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Statistieken
             </button>
             <button
               onClick={() => { onNavigate('history'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Geschiedenis
             </button>
             <button
               onClick={() => { onNavigate('faq'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               FAQ
             </button>
             <button
               onClick={() => { onNavigate('contact'); setMobileMenuOpen(false); }}
-              className="text-left hover:text-gray-300 transition-colors"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'white', 
+                textAlign: 'left',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
             >
               Contact
             </button>
             {user && (
               <button
                 onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
-                className="text-left hover:text-gray-300 transition-colors"
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'white', 
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  padding: '0.5rem'
+                }}
               >
                 Mijn Lijsten
               </button>
@@ -226,7 +433,14 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             {user?.role === 'admin' && (
               <button
                 onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}
-                className="text-left hover:text-gray-300 transition-colors"
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'white', 
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  padding: '0.5rem'
+                }}
               >
                 Beheer
               </button>
@@ -234,27 +448,47 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             {user ? (
               <button
                 onClick={() => { logout(); setMobileMenuOpen(false); }}
-                className="text-left hover:text-gray-300 transition-colors"
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'white', 
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  padding: '0.5rem'
+                }}
               >
                 Uitloggen ({user.email})
               </button>
             ) : (
               <button
                 onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }}
-                className="text-left hover:text-gray-300 transition-colors"
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'white', 
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  padding: '0.5rem'
+                }}
               >
                 Inloggen
               </button>
             )}
 
             {/* DJ Menu in Mobile */}
-            <div className="pt-2 border-t border-white/20">
-              <p className="text-white/60 text-sm mb-2">DJ's</p>
+            <div style={{ paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.2)' }}>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>DJ's</p>
               <a
                 href="https://nl.wikipedia.org/wiki/Bart_Arens"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block py-1 text-left hover:text-gray-300 transition-colors text-sm"
+                style={{ 
+                  display: 'block', 
+                  padding: '0.25rem 0',
+                  color: 'white',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem'
+                }}
               >
                 Bart Arens (Opening)
               </a>
@@ -264,7 +498,13 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                   href={dj.wikipediaLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block py-1 text-left hover:text-gray-300 transition-colors text-sm"
+                  style={{ 
+                    display: 'block', 
+                    padding: '0.25rem 0',
+                    color: 'white',
+                    textDecoration: 'none',
+                    fontSize: '0.875rem'
+                  }}
                 >
                   {dj.name}
                 </a>
