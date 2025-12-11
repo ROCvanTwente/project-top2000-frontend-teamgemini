@@ -36,6 +36,7 @@ export function ArtistsPage({ onNavigate: _onNavigate }: ArtistsPageProps) {
     setLoading(true);
     fetch('https://localhost:7003/artist')
       .then((res) => {
+        console.log(res)
         if (!res.ok) throw new Error('Fout bij ophalen data');
         return res.json();
       })
