@@ -1,0 +1,81 @@
+/* Footer CSS styling */
+
+footer {
+    background: linear-gradient(to right, rgb(114, 6, 6), rgb(239, 20, 20));
+    color: white;
+    padding: 3rem 0;
+    margin-top: 3rem;
+    border-top: 1px solid #4b5563;
+}
+
+.FooterDiv {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.logoFooter {
+    background-color: Black;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logoDiv {
+    min-height: 100vh;
+    background-color: #f9fafb;
+}
+
+.footerH3Tag {
+    color: white;
+    margin: 0;
+}
+
+.footerPTag {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.875rem;
+}
+
+.footerUlH3Tag {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.footerUl {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footerLi {
+    margin-bottom: 0.5rem;
+}
+
+.footerButton {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.875rem;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+}
+
+.footerBottomText {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin-top: 2rem;
+    padding-top: 2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+}
+
+.footerRights {
+    margin: 0;
+}
+
+.footerDemoWebsite {
+    margin-top: 0.5rem;
+}

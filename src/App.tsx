@@ -1,4 +1,6 @@
+// Imported pages and components
 import { useState } from 'react';
+import "./App.css";
 import { AuthProvider } from './contexts/AuthContext';
 import { PlaylistProvider } from './contexts/PlaylistContext';
 import { Header } from './components/Header';
@@ -119,99 +121,54 @@ export default function App() {
   return (
     <AuthProvider>
       <PlaylistProvider>
-        <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+        <div className='logoDiv'>
           <Header onNavigate={handleNavigate} currentPage={navigation.page} />
           {renderPage()}
           
           {/* Footer */}
-          <footer style={{ 
-            backgroundColor: 'var(--color-gray-dark)', 
-            color: 'white', 
-            padding: '3rem 0',
-            marginTop: '3rem',
-            borderTop: '1px solid #4b5563'
-          }}>
-            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
+          <footer>
+            <div className='FooterDiv'>
               <div className="responsive-grid-4">
                 <div>
-                  <div style={{ 
-                    backgroundColor: 'var(--color-gray-medium)',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    display: 'inline-block',
-                    marginBottom: '1rem',
-                    border: '1px solid rgba(255,255,255,0.1)'
-                  }}>
-                    <h3 style={{ color: 'white', margin: 0 }}>TOP 2000</h3>
+                  <div className='logo'>
+                    <h3 className='footerH3Tag'>TOP 2000</h3>
                   </div>
-                  <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem' }}>
+                  <p className='footerPTag'>
                     De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op NPO Radio 2.
                   </p>
                 </div>
 
                 <div>
-                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Navigatie</h3>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                  <h3 className='footerUlH3Tag'>Navigatie</h3>
+                  <ul className='footerUl'>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('home')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         Home
                       </button>
                     </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('rankings')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         Jaaroverzichten
                       </button>
                     </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('artists')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         Artiesten
                       </button>
                     </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('songs')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         Nummers
                       </button>
@@ -220,52 +177,28 @@ export default function App() {
                 </div>
 
                 <div>
-                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Informatie</h3>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                  <h3 className='footerUlH3Tag'>Informatie</h3>
+                  <ul className='footerUl'>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('history')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         Geschiedenis
                       </button>
                     </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('faq')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         FAQ
                       </button>
                     </li>
-                    <li style={{ marginBottom: '0.5rem' }}>
+                    <li className='footerLi'>
                       <button
                         onClick={() => handleNavigate('contact')}
-                        style={{ 
-                          background: 'none',
-                          border: 'none',
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          padding: 0
-                        }}
+                        className='footerButton'
                       >
                         Contact
                       </button>
@@ -274,26 +207,19 @@ export default function App() {
                 </div>
 
                 <div>
-                  <h3 style={{ color: 'white', marginBottom: '1rem' }}>Contact</h3>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)' }}>
-                    <li style={{ marginBottom: '0.5rem' }}>NPO Radio 2</li>
-                    <li style={{ marginBottom: '0.5rem' }}>Media Park</li>
-                    <li style={{ marginBottom: '0.5rem' }}>1217 WE Hilversum</li>
-                    <li style={{ marginTop: '1rem' }}>info@top2000.nl</li>
+                  <h3 className='footerUlH3Tag'>Contact</h3>
+                  <ul className='footerUl footerPTag'>
+                    <li className='footerLi'>NPO Radio 2</li>
+                    <li className='footerLi'>Media Park</li>
+                    <li className='footerLi'>1217 WE Hilversum</li>
+                    <li className='footerLi'>info@top2000.nl</li>
                   </ul>
                 </div>
               </div>
 
-              <div style={{ 
-                borderTop: '1px solid rgba(255,255,255,0.2)',
-                marginTop: '2rem',
-                paddingTop: '2rem',
-                textAlign: 'center',
-                color: 'rgba(255,255,255,0.6)',
-                fontSize: '0.875rem'
-              }}>
-                <p style={{ margin: 0 }}>© 2024 TOP 2000 - NPO Radio 2. Alle rechten voorbehouden.</p>
-                <p style={{ marginTop: '0.5rem' }}>Demo website - Niet officieel</p>
+              <div className='footerBottomText'>
+                <p className='footerRights'>© 2024 TOP 2000 - NPO Radio 2. Alle rechten voorbehouden.</p>
+                <p className='footerDemoWebsite'>Demo website - Niet officieel</p>
               </div>
             </div>
           </footer>
