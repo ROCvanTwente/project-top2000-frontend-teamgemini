@@ -156,7 +156,8 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
                 {filteredRankings.map((r) => (
                   <tr
                     key={r.songId}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                    onClick={() => onNavigate("song", { songId: r.songId })}
+                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4">{r.position}</td>
                     <td className="px-6 py-4">{r.title}</td>
