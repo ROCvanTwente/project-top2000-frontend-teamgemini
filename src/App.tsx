@@ -124,14 +124,14 @@ export default function App() {
           {renderPage()}
           
           {/* Footer */}
-          <footer className="bg-[var(--color-gray-dark)] text-white py-12 mt-12 border-t border-gray-700">
+          <footer className="bg-linear-to-r from-red-900 to-red-500 text-white py-12 mt-12 border-t border-gray-700">
             <div className="max-w-7xl mx-auto px-4">
               <div className="grid md:grid-cols-4 gap-8">
                 <div>
-                  <div className="bg-[var(--color-gray-medium)] px-4 py-3 rounded-lg inline-block mb-4 border border-white/10">
+                  <div className="bg-black px-4 py-3 rounded-lg inline-block mb-4 border border-white/10">
                     <h3 className="text-white">TOP 2000</h3>
                   </div>
-                  <p className="text-white/80 text-sm">
+                  <p className="text-white/90 text-sm">
                     De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op NPO Radio 2.
                   </p>
                 </div>
@@ -142,7 +142,7 @@ export default function App() {
                     <li>
                       <button
                         onClick={() => handleNavigate('home')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-white/80 hover:underline underline-offset-4 decoration-red-600"
                       >
                         Home
                       </button>
@@ -150,7 +150,7 @@ export default function App() {
                     <li>
                       <button
                         onClick={() => handleNavigate('rankings')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-white/80 hover:underline underline-offset-4 decoration-red-600"
                       >
                         Jaaroverzichten
                       </button>
@@ -158,7 +158,7 @@ export default function App() {
                     <li>
                       <button
                         onClick={() => handleNavigate('artists')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-white/80 hover:underline underline-offset-4 decoration-red-600"
                       >
                         Artiesten
                       </button>
@@ -166,7 +166,7 @@ export default function App() {
                     <li>
                       <button
                         onClick={() => handleNavigate('songs')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-white/80 hover:underline underline-offset-4 decoration-red-600"
                       >
                         Nummers
                       </button>
@@ -180,7 +180,7 @@ export default function App() {
                     <li>
                       <button
                         onClick={() => handleNavigate('history')}
-                        className="text-white/80 hover:text-white transition-colors"
+                        className="text-white/80 hover:underline underline-offset-4 decoration-red-600"
                       >
                         Geschiedenis
                       </button>
@@ -207,15 +207,15 @@ export default function App() {
                 <div>
                   <h3 className="text-white mb-4">Contact</h3>
                   <ul className="space-y-2 text-sm text-white/80">
-                    <li>NPO Radio 2</li>
-                    <li>Media Park</li>
+                    <li>ROC Radio</li>
+                    <li>TeamGemini</li>
                     <li>1217 WE Hilversum</li>
                     <li className="mt-4">info@top2000.nl</li>
                   </ul>
                 </div>
               </div>
 
-              <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/60 text-sm">
+              <div className="border-t border-white/40 mt-8 pt-8 text-center text-white/70 text-sm">
                 <p>© 2024 TOP 2000 - NPO Radio 2. Alle rechten voorbehouden.</p>
                 <p className="mt-2">Demo website - Niet officieel</p>
               </div>
