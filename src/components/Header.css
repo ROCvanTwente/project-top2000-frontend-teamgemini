@@ -1,0 +1,170 @@
+/* Header Styles */
+.header {
+  background-color: var(--color-gray-dark);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-logo-box {
+  background-color: var(--color-gray-medium);
+  text-align: center;
+  width: 200px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-logo-box h1 {
+  color: white;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+/* Navigation */
+.header-nav {
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-nav-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.header-nav-button.active {
+  color: #d1d5db;
+  text-decoration: underline;
+}
+
+/* DJ Menu */
+.dj-menu {
+  position: relative;
+}
+
+.dj-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background-color: white;
+  color: black;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 0;
+  min-width: 200px;
+}
+
+.dj-menu-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: black;
+  text-decoration: none;
+}
+
+.dj-menu-divider {
+  border-top: 1px solid #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+/* User Section */
+.header-user-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  padding-left: 1rem;
+}
+
+.header-user-email {
+  font-size: 0.875rem;
+}
+
+.header-logout-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.header-login-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.mobile-nav-button {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.mobile-dj-section {
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-dj-title {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-dj-link {
+  display: block;
+  padding: 0.25rem 0;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
