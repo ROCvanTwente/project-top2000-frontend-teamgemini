@@ -34,8 +34,7 @@ export function ArtistsPage({ onNavigate: _onNavigate }: ArtistsPageProps) {
   // Fetch alle artiesten bij load
   useEffect(() => {
     setLoading(true);
-    fetch("https://jouw-project.vercel.app/artists")
-
+    fetch('https://localhost:7003/artist')
       .then((res) => {
         if (!res.ok) throw new Error('Fout bij ophalen data');
         return res.json();
