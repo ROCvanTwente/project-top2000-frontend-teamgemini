@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // @ts-ignore
-import { fetchFromAPI } from "../api";
+import { fetchFromAPI } from "../api.js";
 
 type User = { id: number; name: string };
 
