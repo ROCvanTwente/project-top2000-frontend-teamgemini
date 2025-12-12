@@ -21,15 +21,8 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
             onClick={() => onNavigate('home')}
           >
-            <div style={{ 
-              backgroundColor: 'var(--color-gray-medium)', 
-              textAlign: 'center', 
-              width: '200px', 
-              padding: '0.5rem 1rem',
-              borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.1)'
-            }}>
-              <h1 style={{ color: 'white', margin: 0, fontSize: '1.5rem' }}>TOP 2000</h1>
+            <div className='navLogo'>
+              <h1 className='navLogoText'>TOP 2000</h1>
             </div>
           </div>
 
@@ -37,67 +30,32 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
           <nav className="hide-on-mobile">
             <button
               onClick={() => onNavigate('home')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'home' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'home' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`footerButton ${currentPage === 'home' ? 'home' : ''}`}
             >
               Home
             </button>
             <button
               onClick={() => onNavigate('rankings')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'rankings' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'rankings' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`footerButton ${currentPage === 'rankings' ? 'rankings' : ''}`}
             >
               Jaaroverzichten
             </button>
             <button
               onClick={() => onNavigate('artists')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'artists' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'artists' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`footerButton ${currentPage === 'artists' ? 'artists' : ''}`}
             >
               Artiesten
             </button>
             <button
               onClick={() => onNavigate('songs')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'songs' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'songs' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`footerButton ${currentPage === 'songs' ? 'songs' : ''}`}
             >
               Nummers
             </button>
             
             <button
               onClick={() => onNavigate('statistics')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'statistics' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'statistics' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`footerButton ${currentPage === 'statistics' ? 'statistics' : ''}`}
             >
               Statistieken
             </button>

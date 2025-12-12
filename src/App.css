@@ -102,8 +102,35 @@ nav {
     gap: 1.5rem;
 }
 
-.navButton {
+.navLogo {
+    background-color: Black;
+    text-align: center;
+    width: 200px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.navLogoText {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.footerButton {
     background: none;
     border: none;
-    color: currentPage === 'rankings' ? '#'
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.footerButton.home,
+.footerButton.rankings,
+.footerButton.artists,
+.footerButton.songs,
+.footerButton.statistics {
+    color: #d1d5db;
+    text-decoration: underline;
 }
