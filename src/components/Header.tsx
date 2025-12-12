@@ -2,6 +2,7 @@ import '../App.css';
 import { useState } from 'react';
 import { djs } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
+import './Header.css';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
@@ -14,106 +15,76 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   const { user, logout } = useAuth();
 
   return (
-    <header>
-      <div className='headerDiv'>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div 
-            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
-            onClick={() => onNavigate('home')}
-          >
-            <div className='navLogo'>
-              <h1 className='navLogoText'>TOP 2000</h1>
+    <header className="header">
+      <div className="header-container">
+        <div className="header-content">
+          <div className="header-logo" onClick={() => onNavigate('home')}>
+            <div className="header-logo-box">
+              <h1>TOP 2000</h1>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hide-on-mobile">
+          <nav className="hide-on-mobile header-nav">
             <button
               onClick={() => onNavigate('home')}
-              className={`footerButton ${currentPage === 'home' ? 'home' : ''}`}
+              className={`header-nav-button ${currentPage === 'home' ? 'active' : ''}`}
             >
               Home
             </button>
             <button
               onClick={() => onNavigate('rankings')}
-              className={`footerButton ${currentPage === 'rankings' ? 'rankings' : ''}`}
+              className={`header-nav-button ${currentPage === 'rankings' ? 'active' : ''}`}
             >
               Jaaroverzichten
             </button>
             <button
               onClick={() => onNavigate('artists')}
-              className={`footerButton ${currentPage === 'artists' ? 'artists' : ''}`}
+              className={`header-nav-button ${currentPage === 'artists' ? 'active' : ''}`}
             >
               Artiesten
             </button>
             <button
               onClick={() => onNavigate('songs')}
-              className={`footerButton ${currentPage === 'songs' ? 'songs' : ''}`}
+              className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}
             >
               Nummers
             </button>
             
             <button
               onClick={() => onNavigate('statistics')}
-              className={`footerButton ${currentPage === 'statistics' ? 'statistics' : ''}`}
+              className={`header-nav-button ${currentPage === 'statistics' ? 'active' : ''}`}
             >
               Statistieken
             </button>
             
             {/* DJ's Menu */}
             <div 
-              style={{ position: 'relative' }}
+              className="dj-menu"
               onMouseEnter={() => setDjMenuOpen(true)}
               onMouseLeave={() => setDjMenuOpen(false)}
             >
-              <button style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}>
+              <button className="header-nav-button">
                 DJ's
               </button>
               {djMenuOpen && (
-                <div style={{ 
-                  position: 'absolute', 
-                  top: '100%', 
-                  left: 0, 
-                  marginTop: '0.5rem',
-                  backgroundColor: 'white',
-                  color: 'black',
-                  borderRadius: '8px',
-                  boxShadow: '0 10px 15px rgba(0,0,0,0.3)',
-                  padding: '0.5rem 0',
-                  minWidth: '200px'
-                }}>
+                <div className="dj-menu-dropdown">
                   <a
                     href="https://nl.wikipedia.org/wiki/Bart_Arens"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ 
-                      display: 'block', 
-                      padding: '0.5rem 1rem',
-                      color: 'black',
-                      textDecoration: 'none'
-                    }}
+                    className="dj-menu-link"
                   >
                     Bart Arens (Opening)
                   </a>
-                  <div style={{ borderTop: '1px solid #e5e7eb', margin: '0.5rem 0' }}></div>
+                  <div className="dj-menu-divider"></div>
                   {djs.map(dj => (
                     <a
                       key={dj.name}
                       href={dj.wikipediaLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ 
-                        display: 'block', 
-                        padding: '0.5rem 1rem',
-                        color: 'black',
-                        textDecoration: 'none'
-                      }}
+                      className="dj-menu-link"
                     >
                       {dj.name}
                     </a>
@@ -124,40 +95,19 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
             <button
               onClick={() => onNavigate('history')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'history' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'history' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`header-nav-button ${currentPage === 'history' ? 'active' : ''}`}
             >
               Geschiedenis
             </button>
             <button
               onClick={() => onNavigate('faq')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'faq' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'faq' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`header-nav-button ${currentPage === 'faq' ? 'active' : ''}`}
             >
               FAQ
             </button>
             <button
               onClick={() => onNavigate('contact')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: currentPage === 'contact' ? '#d1d5db' : 'white',
-                textDecoration: currentPage === 'contact' ? 'underline' : 'none',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className={`header-nav-button ${currentPage === 'contact' ? 'active' : ''}`}
             >
               Contact
             </button>
@@ -166,28 +116,14 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               <>
                 <button
                   onClick={() => onNavigate('playlists')}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: currentPage === 'playlists' ? '#d1d5db' : 'white',
-                    textDecoration: currentPage === 'playlists' ? 'underline' : 'none',
-                    cursor: 'pointer',
-                    padding: '0.5rem'
-                  }}
+                  className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}
                 >
                   Mijn Lijsten
                 </button>
                 {user.role === 'admin' && (
                   <button
                     onClick={() => onNavigate('admin')}
-                    style={{ 
-                      background: 'none', 
-                      border: 'none', 
-                      color: currentPage === 'admin' ? '#d1d5db' : 'white',
-                      textDecoration: currentPage === 'admin' ? 'underline' : 'none',
-                      cursor: 'pointer',
-                      padding: '0.5rem'
-                    }}
+                    className={`header-nav-button ${currentPage === 'admin' ? 'active' : ''}`}
                   >
                     Beheer
                   </button>
@@ -196,25 +132,12 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             )}
 
             {user ? (
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '0.75rem',
-                marginLeft: '1rem',
-                borderLeft: '1px solid rgba(255,255,255,0.3)',
-                paddingLeft: '1rem'
-              }}>
+              <div className="header-user-section">
                 <span>👤</span>
-                <span style={{ fontSize: '0.875rem' }}>{user.email}</span>
+                <span className="header-user-email">{user.email}</span>
                 <button
                   onClick={logout}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: 'white', 
-                    cursor: 'pointer',
-                    padding: '0.25rem'
-                  }}
+                  className="header-logout-button"
                   title="Uitloggen"
                 >
                   ⇥
@@ -223,15 +146,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             ) : (
               <button
                 onClick={() => onNavigate('login')}
-                style={{ 
-                  backgroundColor: 'white',
-                  color: 'black',
-                  border: 'none',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  marginLeft: '1rem'
-                }}
+                className="header-login-button"
               >
                 Inloggen
               </button>
@@ -240,15 +155,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="show-on-mobile"
-            style={{ 
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '1.5rem',
-              padding: '0.5rem'
-            }}
+            className="show-on-mobile mobile-menu-button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? '✕' : '☰'}
@@ -257,127 +164,59 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="show-on-mobile" style={{ 
-            flexDirection: 'column',
-            gap: '0.75rem',
-            marginTop: '1rem',
-            paddingBottom: '1rem'
-          }}>
+          <nav className="show-on-mobile mobile-nav">
             <button
               onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Home
             </button>
             <button
               onClick={() => { onNavigate('rankings'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Jaaroverzichten
             </button>
             <button
               onClick={() => { onNavigate('artists'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Artiesten
             </button>
             <button
               onClick={() => { onNavigate('songs'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Nummers
             </button>
             <button
               onClick={() => { onNavigate('statistics'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Statistieken
             </button>
             <button
               onClick={() => { onNavigate('history'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Geschiedenis
             </button>
             <button
               onClick={() => { onNavigate('faq'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               FAQ
             </button>
             <button
               onClick={() => { onNavigate('contact'); setMobileMenuOpen(false); }}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'white', 
-                textAlign: 'left',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
+              className="mobile-nav-button"
             >
               Contact
             </button>
             {user && (
               <button
                 onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
+                className="mobile-nav-button"
               >
                 Mijn Lijsten
               </button>
@@ -385,14 +224,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             {user?.role === 'admin' && (
               <button
                 onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
+                className="mobile-nav-button"
               >
                 Beheer
               </button>
@@ -400,47 +232,27 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             {user ? (
               <button
                 onClick={() => { logout(); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
+                className="mobile-nav-button"
               >
                 Uitloggen ({user.email})
               </button>
             ) : (
               <button
                 onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'white', 
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  padding: '0.5rem'
-                }}
+                className="mobile-nav-button"
               >
                 Inloggen
               </button>
             )}
 
             {/* DJ Menu in Mobile */}
-            <div style={{ paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.2)' }}>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>DJ's</p>
+            <div className="mobile-dj-section">
+              <p className="mobile-dj-title">DJ's</p>
               <a
                 href="https://nl.wikipedia.org/wiki/Bart_Arens"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ 
-                  display: 'block', 
-                  padding: '0.25rem 0',
-                  color: 'white',
-                  textDecoration: 'none',
-                  fontSize: '0.875rem'
-                }}
+                className="mobile-dj-link"
               >
                 Bart Arens (Opening)
               </a>
@@ -450,13 +262,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                   href={dj.wikipediaLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ 
-                    display: 'block', 
-                    padding: '0.25rem 0',
-                    color: 'white',
-                    textDecoration: 'none',
-                    fontSize: '0.875rem'
-                  }}
+                  className="mobile-dj-link"
                 >
                   {dj.name}
                 </a>
