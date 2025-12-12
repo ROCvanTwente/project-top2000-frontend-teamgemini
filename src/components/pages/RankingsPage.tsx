@@ -22,7 +22,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"position" | "artist" | "title">("position");
 
-  // Vast bereik van jaren: 1999 t/m 2024
   const availableYears = useMemo(() => {
     const start = 1999;
     const end = 2024;
@@ -31,12 +30,11 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     return years;
   }, []);
 
-  // Fetch data op basis van geselecteerd jaar
   useEffect(() => {
     setLoading(true);
     setError(null);
 
-    fetch(`https://localhost:7003/top2000/${selectedYear}`)
+    fetch(`https://teamgeminitestapi.runasp.net/top2000/${selectedYear}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Geen data gevonden voor jaar ${selectedYear}`);
         return res.json();
@@ -83,7 +81,7 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
           <h1>TOP 2000 Jaaroverzichten</h1>
         </div>
 
-        {/* Filters */}
+       
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="grid md:grid-cols-3 gap-4">
             <div>
@@ -133,7 +131,7 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
           </div>
         </div>
 
-        {/* Resultaten */}
+        
         <div className="mb-4 text-gray-600">
           {filteredRankings.length} {filteredRankings.length === 1 ? "nummer" : "nummers"} gevonden
         </div>
