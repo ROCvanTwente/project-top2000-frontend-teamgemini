@@ -1,6 +1,6 @@
 /* Header Styles */
 .header {
-  background-color: var(--color-gray-dark);
+  background: linear-gradient(to right, rgb(114, 6, 6), rgb(239, 20, 20));
   color: white;
   position: sticky;
   top: 0;
@@ -28,7 +28,7 @@
 }
 
 .header-logo-box {
-  background-color: var(--color-gray-medium);
+  background-color: black;
   text-align: center;
   width: 200px;
   padding: 0.5rem 1rem;
