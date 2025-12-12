@@ -34,7 +34,7 @@ export function ArtistsPage({ onNavigate: _onNavigate }: ArtistsPageProps) {
   // Fetch alle artiesten bij load
   useEffect(() => {
     setLoading(true);
-    fetch('https://teamgeminitestapi.runasp.net/artist')
+    fetch('https://localhost:7003/artist')
       .then((res) => {
         console.log(res)
         if (!res.ok) throw new Error('Fout bij ophalen data');
@@ -61,7 +61,7 @@ export function ArtistsPage({ onNavigate: _onNavigate }: ArtistsPageProps) {
     if (minSongs !== '') params.set('minSongs', String(minSongs));
 
     try {
-      const res = await fetch(`https://teamgeminitestapi.runasp.net/artist/filter?${params.toString()}`);
+      const res = await fetch(`https://localhost:7003/artist/filter?${params.toString()}`);
       if (!res.ok) throw new Error('Fout bij ophalen filtered data');
       const data: Artist[] = await res.json();
       setArtists(data);

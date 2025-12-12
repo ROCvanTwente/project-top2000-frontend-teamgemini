@@ -34,7 +34,7 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     setLoading(true);
     setError(null);
 
-    fetch(`https://teamgeminitestapi.runasp.net/top2000/${selectedYear}`)
+    fetch(`https://localhost:7003/top2000/${selectedYear}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Geen data gevonden voor jaar ${selectedYear}`);
         return res.json();
