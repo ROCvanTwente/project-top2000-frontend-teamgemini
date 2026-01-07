@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Top9Songs from '../Songs';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
@@ -186,43 +186,49 @@ interface SongsPageProps {
 
 export function SongsPage({ onNavigate: _onNavigate }: SongsPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [allSongs, setAllSongs] = useState<Song[]>([]);
-  const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
+  const [searchResults, setSearchResults] = useState<Song[]>([]);
   const [selectedSong, setSelectedSong] = useState<SongDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  useEffect(() => {
-    const fetchAllSongs = async () => {
-      try {
-        setLoading(true);
-        // Fetch all songs from 2025 (or latest year)
-        const data = await fetchFromAPI('top2000/2025');
-        setAllSongs(data);
-        setFilteredSongs(data);
-      } catch (err) {
-        console.error('Error fetching all songs:', err);
-        setError('Failed to load all songs. Make sure the backend is running.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllSongs();
-  }, []);
-
-  useEffect(() => {
-    // Filter songs based on search term
-    if (!searchTerm.trim()) {
-      setFilteredSongs(allSongs);
-    } else {
-      const filtered = allSongs.filter(song =>
-        song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        song.artist.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredSongs(filtered);
+  const performSearch = async (term: string) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      setHasSearched(false);
+      return;
     }
-  }, [searchTerm, allSongs]);
+
+    try {
+      setLoading(true);
+      setError(null);
+      // Fetch all songs from 2025 and filter them
+      const data = await fetchFromAPI('top2000/2025');
+      const filtered = data.filter((song: Song) =>
+        song.title.toLowerCase().includes(term.toLowerCase()) ||
+        song.artist.toLowerCase().includes(term.toLowerCase())
+      );
+      setSearchResults(filtered);
+      setHasSearched(true);
+    } catch (err) {
+      console.error('Error searching songs:', err);
+      setError('Failed to search songs. Make sure the backend is running.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    // Debounce search - only search after user stops typing for 500ms
+    const timeoutId = setTimeout(() => {
+      performSearch(value);
+    }, 500);
+    
+    return () => clearTimeout(timeoutId);
+  };
 
   const handleSongClick = async (songId: number) => {
     try {
@@ -261,61 +267,74 @@ export function SongsPage({ onNavigate: _onNavigate }: SongsPageProps) {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                 placeholder="Zoek op titel of artiest..."
               />
             </div>
-            {searchTerm && (
+            {searchTerm && hasSearched && (
               <p className="mt-2 text-sm text-gray-600">
-                {filteredSongs.length} resultaten voor "{searchTerm}"
+                {searchResults.length} resultaten voor "{searchTerm}"
               </p>
             )}
           </div>
         </div>
 
-        {/* Songs List */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          {loading ? (
-            <div className="p-8 text-center text-gray-500">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              Laden van alle nummers...
-            </div>
-          ) : error ? (
-            <div className="p-8 text-center text-red-500">
-              {error}
-            </div>
-          ) : filteredSongs.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              {searchTerm ? `Geen nummers gevonden voor "${searchTerm}"` : 'Geen nummers beschikbaar'}
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
-              {filteredSongs.map((song) => (
-                <div
-                  key={song.songId}
-                  onClick={() => handleSongClick(song.songId)}
-                  className="p-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200 flex items-center justify-between"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                      {song.position}
+        {/* Songs List - Only show when searched */}
+        {hasSearched && (
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            {loading ? (
+              <div className="p-8 text-center text-gray-500">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                Zoeken naar nummers...
+              </div>
+            ) : error ? (
+              <div className="p-8 text-center text-red-500">
+                {error}
+              </div>
+            ) : searchResults.length === 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                {searchTerm ? `Geen nummers gevonden voor "${searchTerm}"` : 'Geen nummers beschikbaar'}
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                {searchResults.map((song) => (
+                  <div
+                    key={song.songId}
+                    onClick={() => handleSongClick(song.songId)}
+                    className="p-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200 flex items-center justify-between"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        {song.position}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 hover:text-blue-600">
+                          {song.title}
+                        </h3>
+                        <p className="text-gray-600">{song.artist}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 hover:text-blue-600">
-                        {song.title}
-                      </h3>
-                      <p className="text-gray-600">{song.artist}</p>
+                    <div className="text-sm text-gray-500">
+                      {song.releaseYear}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    {song.releaseYear}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Instructional text when no search has been performed */}
+        {!hasSearched && !loading && (
+          <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
+            <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Zoek naar je favoriete nummers</h3>
+            <p>Gebruik de zoekbalk hierboven om nummers te vinden op titel of artiest.</p>
+          </div>
+        )}
       </div>
       
       {/* Song Details Popup */}
