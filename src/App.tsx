@@ -1,3 +1,49 @@
+/*
+Features Created:
+
+Top 9 Songs Display:
+- Fetches data from your backend API (/top2000/2025)
+- Shows the top 9 songs in a beautiful 3x3 grid
+- Each card displays position, title, artist, and release year
+
+Interactive Song Cards:
+- Hover effects with animations
+- Click to get detailed information about each song
+
+Dynamic Popup System:
+- Clicks on songs fetch detailed data from /songs/{id}/stats
+- Shows comprehensive song information including:
+  • Artist biography
+  • Song lyrics
+  • Chart history across different years
+- Modern modal design with backdrop blur
+
+Responsive Design:
+- Works on desktop (3 columns)
+- Tablets (2 columns)
+- Mobile (1 column)
+
+Error Handling:
+- Graceful error messages if backend is not running
+- Loading states while fetching data
+
+API Integration:
+- Uses your existing /top2000/{year} endpoint to get the song list
+- Uses your /songs/{songId}/stats endpoint for detailed song information
+- Works with your existing DTOs and data models
+
+Modern UI Features:
+- Gradient backgrounds
+- Smooth animations and transitions
+- Card-based design
+- Professional typography
+- Responsive popup modals
+
+The frontend is now ready and should work with your backend once it's running. 
+Make sure your backend API is running on http://localhost:5237 (as configured in your .env file) 
+and the frontend will automatically connect to it to display the top 9 songs with full interactivity!
+*/
+
 // Imported pages and components
 import { useState } from 'react';
 import "./App.css";
