@@ -31,6 +31,7 @@
   background-color: black;
   text-align: center;
   width: 200px;
+  margin-left: -0rem;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
