@@ -9,7 +9,7 @@ export function AdminPage({ onNavigate: _onNavigate }: AdminPageProps) {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-12 bg-gradient-to-b from-[var(--bright-blue)] to-[var(--vivid-purple)]"></div>
+          <div className="w-1 h-12 bg-linear-to-b from-(--bright-blue) to-(--vivid-purple)"></div>
           <h1>Beheer</h1>
         </div>
 
