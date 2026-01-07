@@ -1,12 +1,11 @@
 
+import Top9Songs from '../Songs';
 
 interface SongsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
 export function SongsPage({ onNavigate: _onNavigate }: SongsPageProps) {
-  // All data filtering, searching, and sorting should be done in Razor/backend
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -14,6 +13,9 @@ export function SongsPage({ onNavigate: _onNavigate }: SongsPageProps) {
           <div className="w-1 h-12 bg-gradient-to-b from-[var(--color-gray-dark)] to-[var(--color-gray-medium)]"></div>
           <h1>Alle Nummers in de TOP 2000</h1>
         </div>
+
+        {/* Top 9 Songs Section */}
+        <Top9Songs />
 
         {/* Songs grid - data should be provided by backend/Razor */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">

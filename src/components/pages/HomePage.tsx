@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import Top9Songs from '../Songs';
 
 const carouselImages = [
   {
@@ -244,9 +243,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </div>
         </div>
       </div>
-
-      {/* Top 9 Songs Section */}
-      <Top9Songs />
     </div>
   );
 }
