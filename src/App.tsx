@@ -1,4 +1,3 @@
-// Imported pages and components
 import { useState } from 'react';
 import "./App.css";
 import { AuthProvider } from './contexts/AuthContext';
@@ -45,92 +44,50 @@ interface NavigationState {
 }
 
 export default function App() {
-  const [navigation, setNavigation] = useState<NavigationState>({
-    page: 'home'
-  });
+  const [navigation, setNavigation] = useState<NavigationState>({ page: 'home' });
 
   const handleNavigate = (page: string, params?: any) => {
     setNavigation({ page: page as PageType, params });
-    // For a smooth scroll when going to a new page
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const renderPage = () => {
-    // To switch between the different pages
     switch (navigation.page) {
-      case 'home':
-        return <HomePage onNavigate={handleNavigate} />;
-      case 'rankings':
-        return <RankingsPage onNavigate={handleNavigate} />;
-      case 'artists':
-        return <ArtistsPage onNavigate={handleNavigate} />;
+      case 'home': return <HomePage onNavigate={handleNavigate} />;
+      case 'rankings': return <RankingsPage onNavigate={handleNavigate} />;
+      case 'artists': return <ArtistsPage onNavigate={handleNavigate} />;
       case 'artist-detail':
-        // making sure you go to the details from the artist you clicked on
-        return (
-          <ArtistDetailPage
-            artistId={navigation.params?.artistId}
-            onNavigate={handleNavigate}
-          />
-        );
+        return <ArtistDetailPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
       case 'artist-songs':
-        // Songs of the artist you clicked on
-        return (
-          <ArtistSongsPage
-            artistId={navigation.params?.artistId}
-            onNavigate={handleNavigate}
-          />
-        );
+        return <ArtistSongsPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
       case 'songs':
-        // Songs page
         return <SongsPage onNavigate={handleNavigate} />;
       case 'song-detail':
-        // Details of the song you clicked on
-        return (
-          <SongDetailPage
-            songId={navigation.params?.songId}
-            onNavigate={handleNavigate}
-          />
-        );
-      case 'statistics':
-        return <StatisticsPage onNavigate={handleNavigate} />;
-      case 'history':
-        return <HistoryPage />;
-      case 'faq':
-        return <FAQPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'login':
-        return <LoginPage onNavigate={handleNavigate} />;
-      case 'playlists':
-        return <PlaylistsPage onNavigate={handleNavigate} />;
-      case 'admin':
-        return <AdminPage onNavigate={handleNavigate} />;
-      case 'edit-artist':
-        return (
-          <EditArtistPage
-            artistId={navigation.params?.artistId}
-            onNavigate={handleNavigate}
-          />
-        );
-      case 'edit-song':
-        return (
-          <EditSongPage
-            songId={navigation.params?.songId}
-            onNavigate={handleNavigate}
-          />
-        );
+        return <SongDetailPage songId={navigation.params?.songId} onNavigate={handleNavigate} />;
+      case 'statistics': return <StatisticsPage onNavigate={handleNavigate} />;
+      case 'history': return <HistoryPage />;
+      case 'faq': return <FAQPage />;
+      case 'contact': return <ContactPage />;
+      case 'login': return <LoginPage onNavigate={handleNavigate} />;
+      case 'playlists': return <PlaylistsPage onNavigate={handleNavigate} />;
+      case 'admin': return <AdminPage onNavigate={handleNavigate} />;
+      case 'edit-artist': return <EditArtistPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
+      case 'edit-song': return <EditSongPage songId={navigation.params?.songId} onNavigate={handleNavigate} />;
     }
   };
 
   return (
     <AuthProvider>
       <PlaylistProvider>
-        <div className='logoDiv'>
-          {/* Header - Everything between header and footer */}
+        {/* Flex container die schermhoogte gebruikt */}
+        <div className="flex flex-col min-h-screen">
           <Header onNavigate={handleNavigate} currentPage={navigation.page} />
-          {renderPage()}
-          
-          {/* Footer */}
+
+          {/* Main content groeit zodat footer naar beneden blijft */}
+          <main className="flex-grow">
+            {renderPage()}
+          </main>
+
           <footer>
             <div className='FooterDiv'>
               <div className="responsive-grid-4">
@@ -138,87 +95,35 @@ export default function App() {
                   <div className='logo'>
                     <h3 className='footerH3Tag'>TOP 2000</h3>
                   </div>
-                  <p className='footerPTag'>
-                    De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op ROC Radio 2.
-                  </p>
+                  <p className='footerPTag'>De beste muziek aller tijden, elk jaar tussen Kerst en Oud & Nieuw op ROC Radio 2.</p>
                 </div>
 
                 <div>
                   <h3 className='footerUlH3Tag'>Navigatie</h3>
                   <ul className='footerUl'>
-                    <li className='footerLi'>
-                      {/* Navigate to page */}
-                      <button
-                        onClick={() => handleNavigate('home')}
-                        className='footerButton'
-                      >
-                        Home
-                      </button>
-                    </li>
-                    <li className='footerLi'>
-                      <button
-                        onClick={() => handleNavigate('rankings')}
-                        className='footerButton'
-                      >
-                        Jaaroverzichten
-                      </button>
-                    </li>
-                    <li className='footerLi'>
-                      <button
-                        onClick={() => handleNavigate('artists')}
-                        className='footerButton'
-                      >
-                        Artiesten
-                      </button>
-                    </li>
-                    <li className='footerLi'>
-                      <button
-                        onClick={() => handleNavigate('songs')}
-                        className='footerButton'
-                      >
-                        Nummers
-                      </button>
-                    </li>
+                    <li><button onClick={() => handleNavigate('home')} className='footerButton'>Home</button></li>
+                    <li><button onClick={() => handleNavigate('rankings')} className='footerButton'>Jaaroverzichten</button></li>
+                    <li><button onClick={() => handleNavigate('artists')} className='footerButton'>Artiesten</button></li>
+                    <li><button onClick={() => handleNavigate('songs')} className='footerButton'>Nummers</button></li>
                   </ul>
                 </div>
 
                 <div>
                   <h3 className='footerUlH3Tag'>Informatie</h3>
                   <ul className='footerUl'>
-                    <li className='footerLi'>
-                      <button
-                        onClick={() => handleNavigate('history')}
-                        className='footerButton'
-                      >
-                        Geschiedenis
-                      </button>
-                    </li>
-                    <li className='footerLi'>
-                      <button
-                        onClick={() => handleNavigate('faq')}
-                        className='footerButton'
-                      >
-                        FAQ
-                      </button>
-                    </li>
-                    <li className='footerLi'>
-                      <button
-                        onClick={() => handleNavigate('contact')}
-                        className='footerButton'
-                      >
-                        Contact
-                      </button>
-                    </li>
+                    <li><button onClick={() => handleNavigate('history')} className='footerButton'>Geschiedenis</button></li>
+                    <li><button onClick={() => handleNavigate('faq')} className='footerButton'>FAQ</button></li>
+                    <li><button onClick={() => handleNavigate('contact')} className='footerButton'>Contact</button></li>
                   </ul>
                 </div>
 
                 <div>
                   <h3 className='footerUlH3Tag'>Contact</h3>
                   <ul className='footerUl footerPTag'>
-                    <li className='footerLi'>ROC Radio 2</li>
-                    <li className='footerLi'>Media Park</li>
-                    <li className='footerLi'>1217 WE Hilversum</li>
-                    <li className='footerLi'>info@top2000.nl</li>
+                    <li>ROC Radio 2</li>
+                    <li>Media Park</li>
+                    <li>1217 WE Hilversum</li>
+                    <li>info@top2000.nl</li>
                   </ul>
                 </div>
               </div>
