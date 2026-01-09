@@ -21,7 +21,9 @@ body {
   background: var(--color-white);
   color: var(--color-gray-dark);
   line-height: 1.6;
+  
 }
+
 
 /* Simple Typography */
 h1 {
