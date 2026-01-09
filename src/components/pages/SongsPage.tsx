@@ -1,11 +1,11 @@
 
-import React, { useState } from 'react';
-import Top9Songs from '../Songs';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, Music2, X } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
 interface SongsPageProps {
-  onNavigate: (page: string, params?: any) => void;
+  // No props needed for popup implementation
 }
 
 interface SongApi {
@@ -26,12 +26,39 @@ interface SongUI {
   highestPosition: number | null;
 }
 
-export function SongsPage({ onNavigate }: SongsPageProps) {
+// Popup component for song details
+interface SongPopupProps {
+  song: SongUI;
+  onClose: () => void;
+}
+
+const SongPopup: React.FC<SongPopupProps> = ({ song, onClose }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
+    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold">{song.title}</h2>
+        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <X size={24} />
+        </button>
+      </div>
+      <div className="space-y-3">
+        <p><strong>Artiest:</strong> {song.artistName}</p>
+        <p><strong>Jaar:</strong> {song.releaseYear ?? 'Onbekend'}</p>
+        <p><strong>Aantal noteringen:</strong> {song.noteringen}</p>
+        <p><strong>Hoogste positie:</strong> {song.highestPosition ? `#${song.highestPosition}` : 'Niet beschikbaar'}</p>
+      </div>
+    </div>
+  </div>
+);
+
+export function SongsPage({}: SongsPageProps) {
   const [songs, setSongs] = useState<SongApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'artist' | 'count'>('title');
+  const [selectedSong, setSelectedSong] = useState<SongUI | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetch('https://localhost:7003/songs')
@@ -59,12 +86,18 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
         song.artistName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    return [...filtered].sort((a,b) => {
+    const sorted = [...filtered].sort((a,b) => {
       if(sortBy==='title') return a.title.localeCompare(b.title);
       if(sortBy==='artist') return a.artistName.localeCompare(b.artistName);
       return b.noteringen - a.noteringen;
     });
-  }, [songsForUI, searchTerm, sortBy]);
+    
+    // Show only 9 songs if not searching and not showing all
+    if (!searchTerm && !showAll) {
+      return sorted.slice(0, 9);
+    }
+    return sorted;
+  }, [songsForUI, searchTerm, sortBy, showAll]);
 
   if(loading) return <div className="text-center py-20">Laden…</div>;
   if(error) return <div className="text-center py-20 text-red-500">{error}</div>;
@@ -96,13 +129,30 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
           </div>
         </div>
 
-        <div className="mb-4 text-gray-600">{filteredAndSortedSongs.length} {filteredAndSortedSongs.length===1?'nummer':'nummers'} gevonden</div>
+        <div className="mb-4 flex justify-between items-center">
+          <div className="text-gray-600">
+            {searchTerm ? 
+              `${filteredAndSortedSongs.length} ${filteredAndSortedSongs.length===1?'nummer':'nummers'} gevonden` :
+              showAll ? 
+                `Alle ${songsForUI.length} nummers weergegeven` :
+                `Eerste 9 van ${songsForUI.length} nummers`
+            }
+          </div>
+          {!searchTerm && !showAll && songsForUI.length > 9 && (
+            <button 
+              onClick={() => setShowAll(true)}
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              Toon alle nummers
+            </button>
+          )}
+        </div>
 
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="divide-y divide-gray-100">
             {filteredAndSortedSongs.map(song => (
               <div key={song.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}>
+                onClick={() => setSelectedSong(song)}>
                 <div className="flex items-center gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white">
                     <Music2 size={24} />
@@ -124,6 +174,14 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
           )}
         </div>
       </div>
+      
+      {/* Popup for song details */}
+      {selectedSong && (
+        <SongPopup 
+          song={selectedSong} 
+          onClose={() => setSelectedSong(null)} 
+        />
+      )}
     </div>
   );
 }
