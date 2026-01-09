@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlaylist } from '../../contexts/PlaylistContext';
