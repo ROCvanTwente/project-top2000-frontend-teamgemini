@@ -61,7 +61,7 @@ export function SongsPage({}: SongsPageProps) {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    fetch('https://teamgeminiapi.runasp.net/songs')
+    fetch('http://teamgeminiapi.runasp.net/songs')
       .then(res => { if(!res.ok) throw new Error('Kon nummers niet laden'); return res.json(); })
       .then((data: SongApi[]) => { setSongs(data); setLoading(false); })
       .catch(err => { setError(err.message); setLoading(false); });
