@@ -1,5 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Search, Filter } from "lucide-react";
+// @ts-ignore
+import { fetchFromAPI } from '../../api.js';
 
 interface RankingsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -29,26 +31,25 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     for (let y = end; y >= start; y--) years.push(y);
     return years;
   }, []);
+// hier was de oude fetch code voor het ophalen van de songs
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    fetch(`https://localhost:7003/top2000/${selectedYear}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Geen data gevonden voor jaar ${selectedYear}`);
-        return res.json();
-      })
-      .then((data: Ranking[]) => {
+    const loadRankings = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data: Ranking[] = await fetchFromAPI(`top2000/${selectedYear}`);
         setRankings(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err: any) {
         console.error(err);
         setError(err.message);
         setRankings([]);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    loadRankings();
   }, [selectedYear]);
 
   const filteredRankings = useMemo(() => {

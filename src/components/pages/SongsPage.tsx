@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Music2, X } from 'lucide-react';
 // @ts-ignore
@@ -59,12 +58,21 @@ export function SongsPage({}: SongsPageProps) {
   const [sortBy, setSortBy] = useState<'title' | 'artist' | 'count'>('title');
   const [selectedSong, setSelectedSong] = useState<SongUI | null>(null);
   const [showAll, setShowAll] = useState(false);
-
+// hier was de oude fetch code voor het ophalen van de songs
   useEffect(() => {
-    fetch('https://localhost:7003/songs')
-      .then(res => { if(!res.ok) throw new Error('Kon nummers niet laden'); return res.json(); })
-      .then((data: SongApi[]) => { setSongs(data); setLoading(false); })
-      .catch(err => { setError(err.message); setLoading(false); });
+    const loadSongs = async () => {
+      try {
+        setLoading(true);
+        const data: SongApi[] = await fetchFromAPI('songs');
+        setSongs(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadSongs();
   }, []);
 
   const songsForUI: SongUI[] = useMemo(() => {
