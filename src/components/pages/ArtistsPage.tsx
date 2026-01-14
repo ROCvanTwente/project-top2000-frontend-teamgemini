@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, User, X } from 'lucide-react';
+// @ts-ignore
+import { fetchFromAPI } from '../../api.js';
 
 interface ArtistsPageProps {
   // No props needed for popup implementation
@@ -79,12 +81,22 @@ export function ArtistsPage({}: ArtistsPageProps) {
   const [sortBy, setSortBy] = useState<'name' | 'songs'>('name');
   const [selectedArtist, setSelectedArtist] = useState<ArtistUI | null>(null);
   const [showAll, setShowAll] = useState(false);
+// hier was de oude fetch code voor het ophalen van de songs
 
   useEffect(() => {
-    fetch('https://localhost:7003/artist')
-      .then(res => { if(!res.ok) throw new Error('Kon artiesten niet laden'); return res.json(); })
-      .then((data: ArtistApi[]) => { setArtists(data); setLoading(false); })
-      .catch(err => { setError(err.message); setLoading(false); });
+    const loadArtists = async () => {
+      try {
+        setLoading(true);
+        const data: ArtistApi[] = await fetchFromAPI('artist');
+        setArtists(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadArtists();
   }, []);
 
   const artistsForUI: ArtistUI[] = useMemo(() => {

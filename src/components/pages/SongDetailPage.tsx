@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlaylist } from '../../contexts/PlaylistContext';
+// @ts-ignore
+import { fetchFromAPI } from '../../api.js';
 
 interface SongDetailPageProps {
   songId: string | number;
@@ -32,19 +34,23 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
   const { user } = useAuth();
   const { playlists, addSongToPlaylist } = usePlaylist();
+// hier was de oude fetch code voor het ophalen van de songs
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    fetch(`https://localhost:7003/songs/${songId}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Kon nummer niet laden');
-        return res.json();
-      })
-      .then((data: SongApi) => setSong(data))
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
+    const loadSong = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data: SongApi = await fetchFromAPI(`songs/${songId}`);
+        setSong(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadSong();
   }, [songId]);
 
   if (loading) return <div className="text-center py-20">Laden…</div>;
