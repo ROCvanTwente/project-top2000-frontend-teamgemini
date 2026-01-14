@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Music2, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Search, Music2 } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
@@ -31,8 +31,6 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'artist' | 'count'>('title');
-  const [selectedSong, setSelectedSong] = useState<SongUI | null>(null);
-  const [showAll, setShowAll] = useState(false);
 // hier was de oude fetch code voor het ophalen van de songs
   useEffect(() => {
     const loadSongs = async () => {
