@@ -5,11 +5,6 @@ import { usePlaylist } from '../../contexts/PlaylistContext';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
-interface SongDetailPageProps {
-  songId: string | number;
-  onNavigate: (page: string, params?: any) => void;
-}
-
 interface Ranking {
   year: number;
   position: number;
@@ -26,6 +21,11 @@ interface SongApi {
   rankings?: Ranking[];
 }
 
+interface SongDetailPageProps {
+  songId: string;
+  onNavigate: (page: string, params?: any) => void;
+}
+
 export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   const [song, setSong] = useState<SongApi | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,6 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
   const { user } = useAuth();
   const { playlists, addSongToPlaylist } = usePlaylist();
-// hier was de oude fetch code voor het ophalen van de songs
 
   useEffect(() => {
     const loadSong = async () => {
@@ -70,8 +69,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const songRankings = song.rankings?.sort((a, b) => b.year - a.year) || [];
-  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map(r => r.position)) : 2000;
+  const songRankings = song.rankings?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
   const chartWidth = 600;
 
   return (
@@ -180,7 +179,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   ))}
 
                   <polyline
-                    points={songRankings.map((r,i) => {
+                    points={songRankings.map((r: Ranking, i: number) => {
                       const x = 60 + (i/(songRankings.length-1||1))*(chartWidth-80);
                       const y = 40 + (r.position/maxPosition)*220;
                       return `${x},${y}`;
@@ -190,7 +189,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                     strokeWidth="3"
                   />
 
-                  {songRankings.map((r,i) => {
+                  {songRankings.map((r: Ranking, i: number) => {
                     const x = 60 + (i/(songRankings.length-1||1))*(chartWidth-80);
                     const y = 40 + (r.position/maxPosition)*220;
                     return (
@@ -222,7 +221,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {songRankings.map((r,i)=>{
+                  {songRankings.map((r: Ranking, i: number)=>{
                     const prev = songRankings[i+1];
                     const change = prev ? prev.position - r.position : null;
                     return (

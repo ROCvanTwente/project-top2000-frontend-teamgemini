@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Search, User, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Search, User } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
 interface ArtistsPageProps {
-  // No props needed for popup implementation
+  onNavigate?: (page: string, params?: any) => void;
 }
 
 // Song interface for API response
@@ -37,49 +37,12 @@ interface ArtistUI {
   songsCount: number;
 }
 
-// Popup component for artist details
-interface ArtistPopupProps {
-  artist: ArtistUI;
-  onClose: () => void;
-}
-
-const ArtistPopup: React.FC<ArtistPopupProps> = ({ artist, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
-      <div className="flex justify-between items-start mb-4">
-        <h2 className="text-xl font-bold">{artist.name}</h2>
-        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-          <X size={24} />
-        </button>
-      </div>
-      <div className="space-y-3">
-        {artist.photo && (
-          <img 
-            src={artist.photo} 
-            alt={artist.name}
-            className="w-full h-48 object-cover rounded-lg"
-          />
-        )}
-        <p><strong>Naam:</strong> {artist.name}</p>
-        <p><strong>Aantal nummers:</strong> {artist.songsCount}</p>
-        {artist.biography && (
-          <div>
-            <strong>Biografie:</strong>
-            <p className="mt-1 text-sm text-gray-700">{artist.biography}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
-export function ArtistsPage({}: ArtistsPageProps) {
+export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [artists, setArtists] = useState<ArtistApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'songs'>('name');
-  const [selectedArtist, setSelectedArtist] = useState<ArtistUI | null>(null);
   const [showAll, setShowAll] = useState(false);
 // hier was de oude fetch code voor het ophalen van de songs
 
@@ -180,24 +143,26 @@ export function ArtistsPage({}: ArtistsPageProps) {
           <div className="divide-y divide-gray-100">
             {filteredAndSortedArtists.map(artist => (
               <div key={artist.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                onClick={() => setSelectedArtist(artist)}>
+                onClick={() => onNavigate?.('artist-detail', { artistId: artist.id.toString() })}>
                 <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white">
-                    <User size={24} />
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white overflow-hidden">
+                    {artist.photo ? (
+                      <img 
+                        src={artist.photo} 
+                        alt={artist.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User size={24} />
+                    )}
                   </div>
                   <div className="flex-grow">
                     <h3 className="mb-1 hover:text-[var(--color-gray-medium)]">{artist.name}</h3>
                     <p className="text-gray-600 text-sm">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</p>
                   </div>
-                  {artist.photo && (
-                    <div className="flex-shrink-0">
-                      <img 
-                        src={artist.photo} 
-                        alt={artist.name}
-                        className="w-12 h-12 object-cover rounded-full"
-                      />
-                    </div>
-                  )}
+                  <div className="text-right">
+                    <div className="text-sm px-3 py-1 bg-[var(--color-gray-dark)] text-white rounded-full">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -208,14 +173,6 @@ export function ArtistsPage({}: ArtistsPageProps) {
           )}
         </div>
       </div>
-      
-      {/* Popup for artist details */}
-      {selectedArtist && (
-        <ArtistPopup 
-          artist={selectedArtist} 
-          onClose={() => setSelectedArtist(null)} 
-        />
-      )}
     </div>
   );
 }

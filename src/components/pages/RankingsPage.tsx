@@ -152,17 +152,14 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
                 {filteredRankings.map((r) => (
                   <tr
                     key={r.songId}
-                    onClick={() => onNavigate("song", { songId: r.songId })}
+                    onClick={() => onNavigate("song-detail", { songId: r.songId })}
                     className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4">{r.position}</td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => onNavigate("song-detail", { songId: r.songId })}
-                        className="text-left hover:underline text-blue-600"
-                      >
+                      <span className="text-blue-600 hover:underline">
                         {r.title}
-                      </button>
+                      </span>
                     </td>
                     <td className="px-6 py-4">{r.artist}</td>
                     <td className="px-6 py-4">{r.releaseYear}</td>
