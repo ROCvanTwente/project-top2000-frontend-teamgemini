@@ -10,15 +10,21 @@ interface Ranking {
   position: number;
 }
 
+interface SongStats {
+  timesListed: number;
+  highestPosition: number | null;
+  firstYear?: number;
+  lastYear?: number;
+}
+
 interface SongApi {
   songId: number;
   title: string;
   artist: string;
   releaseYear: number | null;
-  timesListed: number;
-  highestPosition: number | null;
-  youtubeLink?: string;
-  rankings?: Ranking[];
+  stats: SongStats;
+  youtube?: string;
+  top2000Positions?: Ranking[];
 }
 
 interface SongDetailPageProps {
@@ -41,6 +47,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
         setLoading(true);
         setError(null);
         const data: SongApi = await fetchFromAPI(`songs/${songId}`);
+        console.log('Song data received:', data); // Debug log to see what we get
         setSong(data);
       } catch (err: any) {
         setError(err.message);
@@ -69,7 +76,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const songRankings = song.rankings?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  const songRankings = song.top2000Positions?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
   const chartWidth = 600;
 
@@ -144,13 +151,13 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <TrendingUp size={18} /> <span className="text-sm">Noteringen</span>
                   </div>
-                  <div className="text-2xl text-[var(--vivid-purple)]">{song.timesListed}x</div>
+                  <div className="text-2xl text-[var(--vivid-purple)]">{song.stats.timesListed}x</div>
                 </div>
               </div>
 
-              {song.youtubeLink && (
+              {song.youtube && (
                 <a
-                  href={song.youtubeLink}
+                  href={song.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
