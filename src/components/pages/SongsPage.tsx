@@ -31,6 +31,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'artist' | 'count'>('title');
+  const [showAll, setShowAll] = useState(false);
 // hier was de oude fetch code voor het ophalen van de songs
   useEffect(() => {
     const loadSongs = async () => {
@@ -61,18 +62,25 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
 
   const filteredAndSortedSongs = useMemo(() => {
     let filtered = songsForUI;
-    if(searchTerm) {
+    
+    if (searchTerm) {
       filtered = filtered.filter(song =>
         song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         song.artistName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    return [...filtered].sort((a,b) => {
-      if(sortBy==='title') return a.title.localeCompare(b.title);
-      if(sortBy==='artist') return a.artistName.localeCompare(b.artistName);
+    
+    // Limit to 9 songs if not searching and not showing all
+    if (!searchTerm && !showAll) {
+      filtered = filtered.slice(0, 9);
+    }
+    
+    return [...filtered].sort((a, b) => {
+      if (sortBy === 'title') return a.title.localeCompare(b.title);
+      if (sortBy === 'artist') return a.artistName.localeCompare(b.artistName);
       return b.noteringen - a.noteringen;
     });
-  }, [songsForUI, searchTerm, sortBy]);
+  }, [songsForUI, searchTerm, sortBy, showAll]);
 
   if(loading) return <div className="text-center py-20">Laden…</div>;
   if(error) return <div className="text-center py-20 text-red-500">{error}</div>;
@@ -126,6 +134,18 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
               </div>
             ))}
           </div>
+
+          {/* Show More button - only show if not searching, not showing all, and there are more than 9 songs */}
+          {!searchTerm && !showAll && songsForUI.length > 9 && (
+            <div className="text-center py-6">
+              <button 
+                onClick={() => setShowAll(true)}
+                className="px-6 py-2 bg-[var(--color-gray-dark)] text-white rounded-lg hover:bg-[var(--color-gray-medium)] transition-colors"
+              >
+                Toon alle {songsForUI.length} nummers
+              </button>
+            </div>
+          )}
 
           {filteredAndSortedSongs.length===0 && (
             <div className="text-center py-12 text-gray-500">Geen nummers gevonden voor deze zoekopdracht</div>
