@@ -55,13 +55,13 @@ export default function App() {
     switch (navigation.page) {
       case 'home': return <HomePage onNavigate={handleNavigate} />;
       case 'rankings': return <RankingsPage onNavigate={handleNavigate} />;
-      case 'artists': return <ArtistsPage />;
+      case 'artists': return <ArtistsPage onNavigate={handleNavigate} />;
       case 'artist-detail':
         return <ArtistDetailPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
       case 'artist-songs':
         return <ArtistSongsPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
       case 'songs':
-        return <SongsPage />;
+        return <SongsPage onNavigate={handleNavigate} />;
       case 'song-detail':
         return <SongDetailPage songId={navigation.params?.songId} onNavigate={handleNavigate} />;
       case 'statistics': return <StatisticsPage onNavigate={handleNavigate} />;

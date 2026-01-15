@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlaylist } from '../../contexts/PlaylistContext';
-
-interface SongDetailPageProps {
-  songId: string | number;
-  onNavigate: (page: string, params?: any) => void;
-}
+// @ts-ignore
+import { fetchFromAPI } from '../../api.js';
 
 interface Ranking {
   year: number;
@@ -24,6 +21,11 @@ interface SongApi {
   rankings?: Ranking[];
 }
 
+interface SongDetailPageProps {
+  songId: string;
+  onNavigate: (page: string, params?: any) => void;
+}
+
 export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   const [song, setSong] = useState<SongApi | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,17 +36,20 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   const { playlists, addSongToPlaylist } = usePlaylist();
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    fetch(`https://localhost:7003/songs/${songId}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Kon nummer niet laden');
-        return res.json();
-      })
-      .then((data: SongApi) => setSong(data))
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
+    const loadSong = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data: SongApi = await fetchFromAPI(`songs/${songId}`);
+        setSong(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadSong();
   }, [songId]);
 
   if (loading) return <div className="text-center py-20">Laden…</div>;
@@ -64,8 +69,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const songRankings = song.rankings?.sort((a, b) => b.year - a.year) || [];
-  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map(r => r.position)) : 2000;
+  const songRankings = song.rankings?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
   const chartWidth = 600;
 
   return (
@@ -174,7 +179,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   ))}
 
                   <polyline
-                    points={songRankings.map((r,i) => {
+                    points={songRankings.map((r: Ranking, i: number) => {
                       const x = 60 + (i/(songRankings.length-1||1))*(chartWidth-80);
                       const y = 40 + (r.position/maxPosition)*220;
                       return `${x},${y}`;
@@ -184,7 +189,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                     strokeWidth="3"
                   />
 
-                  {songRankings.map((r,i) => {
+                  {songRankings.map((r: Ranking, i: number) => {
                     const x = 60 + (i/(songRankings.length-1||1))*(chartWidth-80);
                     const y = 40 + (r.position/maxPosition)*220;
                     return (
@@ -216,7 +221,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {songRankings.map((r,i)=>{
+                  {songRankings.map((r: Ranking, i: number)=>{
                     const prev = songRankings[i+1];
                     const change = prev ? prev.position - r.position : null;
                     return (
