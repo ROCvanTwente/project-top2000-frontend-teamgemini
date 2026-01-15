@@ -78,7 +78,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
   const songRankings = song.top2000Positions?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
-  const chartWidth = 600;
+  // Make chart width responsive to number of years - minimum 800px, add 80px per year beyond 8 years
+  const chartWidth = Math.max(800, songRankings.length * 80);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -176,8 +177,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
             {/* Chart */}
             <div className="mb-8 overflow-x-auto">
-              <div className="min-w-[600px]">
-                <svg width="100%" height="300">
+              <div style={{ minWidth: `${chartWidth}px` }}>
+                <svg width="100%" height="300" viewBox={`0 0 ${chartWidth} 300`}>
                   {[0, 500, 1000, 1500, 2000].map(pos => (
                     <g key={pos}>
                       <line x1="60" y1={40 + (pos / maxPosition) * 220} x2={chartWidth} y2={40 + (pos / maxPosition) * 220} stroke="#e5e7eb" strokeWidth="1"/>
@@ -202,7 +203,15 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                     return (
                       <g key={r.year}>
                         <circle cx={x} cy={y} r={5} fill="#2B6BE4"/>
-                        <text x={x} y={280} textAnchor="middle" className="text-xs fill-gray-700">{r.year}</text>
+                        <text 
+                          x={x} 
+                          y={280} 
+                          textAnchor="middle" 
+                          className="text-xs fill-gray-700"
+                          transform={songRankings.length > 10 ? `rotate(-45 ${x} 280)` : undefined}
+                        >
+                          {r.year}
+                        </text>
                       </g>
                     );
                   })}
