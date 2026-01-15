@@ -57,6 +57,8 @@ export default function App() {
       case 'artists': return <ArtistsPage onNavigate={handleNavigate} />;
       case 'artist-detail':
         return <ArtistDetailPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
+      case 'songs':
+        return <SongsPage onNavigate={handleNavigate} />;
       case 'artist-songs':
         return <SongsPage onNavigate={handleNavigate} />;
       case 'song-detail':
