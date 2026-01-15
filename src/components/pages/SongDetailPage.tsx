@@ -57,7 +57,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   if (!song) return (
     <div className="min-h-screen bg-gray-50 py-12 text-center">
       <h2>Nummer niet gevonden</h2>
-      <button onClick={() => onNavigate('songs')} className="mt-4 text-[var(--bright-blue)] hover:underline">
+      <button onClick={() => onNavigate('songs')} className="mt-4 text-(--bright-blue) hover:underline">
         Terug naar overzicht
       </button>
     </div>
@@ -79,7 +79,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
         <button
           onClick={() => onNavigate('songs')}
-          className="flex items-center gap-2 text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors mb-8"
+          className="flex items-center gap-2 text-(--bright-blue) hover:text-(--vivid-purple) transition-colors mb-8"
         >
           <ArrowLeft size={20} /> Terug naar alle nummers
         </button>
@@ -88,7 +88,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="md:flex">
             {/* Album Cover */}
-            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
+            <div className="md:w-1/3 bg-linear-to-br from-(--bright-blue) to-(--vivid-purple) aspect-square flex items-center justify-center">
               <div className="text-white text-center p-8">
                 <Play size={80} className="mx-auto mb-4" />
                 <h2 className="text-white mb-2">{song.title}</h2>
@@ -101,14 +101,14 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h1 className="mb-2">{song.title}</h1>
-                  <p className="text-xl text-[var(--bright-blue)]">{song.artist}</p>
+                  <p className="text-xl text-(--bright-blue)">{song.artist}</p>
                 </div>
 
                 {user && (
                   <div className="relative">
                     <button
                       onClick={() => setShowPlaylistMenu(!showPlaylistMenu)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[var(--bright-blue)] text-white rounded-lg hover:bg-[var(--vivid-purple)] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-(--bright-blue) text-white rounded-lg hover:bg-(--vivid-purple) transition-colors"
                     >
                       <Plus size={18} /> Toevoegen aan lijst
                     </button>
@@ -138,13 +138,13 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <Calendar size={18} /> <span className="text-sm">Uitgegeven</span>
                   </div>
-                  <div className="text-2xl text-[var(--bright-blue)]">{song.releaseYear ?? '-'}</div>
+                  <div className="text-2xl text-(--bright-blue)">{song.releaseYear ?? '-'}</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <TrendingUp size={18} /> <span className="text-sm">Noteringen</span>
                   </div>
-                  <div className="text-2xl text-[var(--vivid-purple)]">{song.timesListed}x</div>
+                  <div className="text-2xl text-(--vivid-purple)">{song.timesListed}x</div>
                 </div>
               </div>
 
@@ -153,7 +153,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   href={song.youtubeLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 border-2 border-[var(--bright-blue)] text-[var(--bright-blue)] rounded-lg hover:bg-[var(--bright-blue)] hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 border-2 border-(--bright-blue) text-(--bright-blue) rounded-lg hover:bg-(--bright-blue) hover:text-white transition-colors"
                 >
                   <Play size={18} /> Beluister op YouTube
                 </a>
@@ -228,7 +228,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                       <tr key={r.year}>
                         <td className="px-4 py-3">{r.year}</td>
                         <td className="px-4 py-3">
-                          <span className="inline-flex items-center justify-center w-12 h-8 bg-[var(--bright-blue)] text-white rounded">{r.position}</span>
+                          <span className="inline-flex items-center justify-center w-12 h-8 bg-(--bright-blue) text-white rounded">{r.position}</span>
                         </td>
                         <td className="px-4 py-3">
                           {change!==null && (
