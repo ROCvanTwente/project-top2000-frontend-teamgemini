@@ -25,8 +25,7 @@ const Top9Songs: React.FC<Top9SongsProps> = ({ onNavigate }) => {
     const fetchTop9Songs = async () => {
       try {
         setLoading(true);
-        // Fetch top 2000 for current year (2025) and take top 9
-        const data = await fetchFromAPI('top2000/2023');
+        const data = await fetchFromAPI('top2000/2024');
         setSongs(data.slice(0, 9));
       } catch (err) {
         console.error('Error fetching songs:', err);
