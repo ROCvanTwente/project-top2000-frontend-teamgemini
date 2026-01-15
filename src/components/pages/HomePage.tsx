@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import Top9Songs from '../Songs';
 import Top9Artists from '../Artists';
+// @ts-ignore
+import { fetchFromAPI } from '../api.js';
 
 const carouselImages = [
   {
@@ -37,16 +39,24 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [top5, setTop5] = useState<Top5Song[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('https://localhost:7003/top5songs/2024')
-      .then(res => res.ok ? res.json() : [])
-      .then(data => {
+    const loadSongs = async () => {
+      try {
+        setLoading(true);
+        const data: Top5Song[] = await fetchFromAPI('top5songs/2024');
         setTop5(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      }
+    };
+
+    loadSongs();
   }, []);
+    
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
