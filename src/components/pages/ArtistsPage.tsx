@@ -99,7 +99,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
       <div className="max-w-7xl mx-auto px-4">
 
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-12 bg-gradient-to-b from-[var(--color-gray-dark)] to-[var(--color-gray-medium)]"></div>
+          <div className="w-1 h-12 bg-linear-to-b from-(--color-gray-dark) to-(--color-gray-medium)"></div>
           <h1>Alle Artiesten in de TOP 2000</h1>
         </div>
 

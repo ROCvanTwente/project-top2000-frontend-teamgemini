@@ -13,7 +13,7 @@ export function ArtistSongsPage({ artistId, onNavigate }: ArtistSongsPageProps) 
       <div className="max-w-7xl mx-auto px-4">
         <button
           onClick={() => onNavigate('artist-detail', { artistId })}
-          className="flex items-center gap-2 text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors mb-8"
+          className="flex items-center gap-2 text-(--bright-blue) hover:text-(--vivid-purple) transition-colors mb-8"
         >
           <ArrowLeft size={20} />
           Terug naar artiest

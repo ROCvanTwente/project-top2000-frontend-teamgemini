@@ -66,7 +66,7 @@ export function FAQPage() {
 
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <div className="flex items-start gap-4 mb-6">
-            <HelpCircle className="text-black flex-shrink-0" size={32} />
+            <HelpCircle className="text-black shrink-0" size={32} />
             <p className="text-gray-700">
               Hieronder vind je antwoorden op de meest gestelde vragen over de Top 2000. 
               Staat je vraag er niet bij? Neem dan contact met ons op via de contactpagina.
@@ -86,9 +86,9 @@ export function FAQPage() {
               >
                 <h3 className="pr-4">{faq.question}</h3>
                 {openIndex === index ? (
-                  <ChevronUp className="flex-shrink-0 text-black" size={24} />
+                  <ChevronUp className="shrink-0 text-black" size={24} />
                 ) : (
-                  <ChevronDown className="flex-shrink-0 text-gray-400" size={24} />
+                  <ChevronDown className="shrink-0 text-gray-400" size={24} />
                 )}
               </button>
               {openIndex === index && (
