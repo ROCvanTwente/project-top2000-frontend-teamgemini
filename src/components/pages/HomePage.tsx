@@ -3,7 +3,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import Top9Songs from '../Songs';
 import Top9Artists from '../Artists';
 // @ts-ignore
-import { fetchFromAPI } from '../api.js';
+import { fetchFromAPI } from '../../api.js';
 
 const carouselImages = [
   {
