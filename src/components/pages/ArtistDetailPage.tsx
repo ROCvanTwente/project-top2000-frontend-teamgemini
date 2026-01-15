@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, User, Music, TrendingUp, Calendar } from 'lucide-react';
 // @ts-ignore
-import { fetchArtistById, fetchArtistSongs } from '../../api.js';
+import { fetchFromAPI } from '../../api.js';
 
 interface Song {
   songId: number;
@@ -39,8 +39,8 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
         
         // Fetch artist info and songs
         const [artistData, songsData] = await Promise.all([
-          fetchArtistById(artistId),
-          fetchArtistSongs(artistId)
+          fetchFromAPI(`api/artist/${artistId}`),
+          fetchFromAPI(`api/artist/${artistId}/songs`)
         ]);
         
         setArtist(artistData);
