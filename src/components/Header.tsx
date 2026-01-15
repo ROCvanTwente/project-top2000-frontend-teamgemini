@@ -97,27 +97,46 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               </>
             )}
 
-            {user ? (
-              <div className="header-user-section">
-                <span>👤</span>
-                <span className="header-user-email">{user.email}</span>
-                <button
-                  onClick={logout}
-                  className="header-logout-button"
-                  title="Uitloggen"
-                >
-                  ⇥
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => onNavigate('login')}
-                className="header-login-button"
-              >
-                Inloggen
-              </button>
-            )}
+<div className="header-user-section">
+  {/* {user?.role === 'admin' && (
+    <button
+      onClick={() => onNavigate('admin')}
+      className={`header-nav-button admin-button ${currentPage === 'admin' ? 'active' : ''}`}
+    >
+      Beheer
+    </button>
+  )} */}
+
+  {user ? (
+    <>
+      <span>👤</span>
+      <span className="header-user-email">{user.email}</span>
+      <button
+        onClick={logout}
+        className="header-logout-button"
+        title="Uitloggen"
+      >
+        ⇥
+      </button>
+    </>
+  ) : (
+    <button
+      onClick={() => onNavigate('login')}
+      className="header-login-button"
+    >
+      Inloggen
+    </button>
+  )}
+</div>
+
+  <button
+    onClick={() => onNavigate('admin')}
+    className={`header-nav-button ${currentPage === 'admin' ? 'active' : ''}`}
+  >
+    Beheren
+  </button>
           </nav>
+
 
           {/* Mobile Menu Button */}
           <button
