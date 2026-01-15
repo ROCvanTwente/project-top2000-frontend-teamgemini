@@ -3,7 +3,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import Top9Songs from '../Songs';
 import Top9Artists from '../Artists';
 // @ts-ignore
-import { fetchFromAPI } from '../../api.js';
+import { fetchFromAPI } from '../api.js';
 
 const carouselImages = [
   {
@@ -130,46 +130,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 1rem' }}>
         <div className="responsive-grid-2">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-              <div style={{ width: '4px', height: '2rem', backgroundColor: 'black' }}></div>
-              <h2 style={{ margin: 0 }}>Top 5 van 2024</h2>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {loading ? (
-                <div>Bezig met laden...</div>
-              ) : error ? (
-                <div style={{ color: 'red' }}>Fout bij laden: {error}</div>
-              ) : top5.length === 0 ? (
-                <div>Geen data gevonden.</div>
-              ) : (
-                top5.map(song => (
-                  <div key={song.songId} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    background: '#f3f4f6',
-                    borderRadius: '8px',
-                    padding: '1rem'
-                  }}>
-                    <div style={{
-                      fontWeight: 'bold',
-                      fontSize: '1.5rem',
-                      width: '2.5rem',
-                      textAlign: 'center'
-                    }}>{song.position}</div>
-                    <div>
-                      <div style={{ fontWeight: 'bold' }}>{song.title}</div>
-                      <div style={{ color: '#374151' }}>{song.artist}</div>
-                      {song.releaseYear && (
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                          {song.releaseYear}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
             <h2>Top 5 van 2024</h2>
 
             {loading && <p>Bezig met laden...</p>}
