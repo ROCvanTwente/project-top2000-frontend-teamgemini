@@ -52,7 +52,26 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     loadSong();
   }, [songId]);
 
-  if (loading) return <div className="text-center py-20">Laden…</div>;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative mx-auto mb-4 w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+          <p className="text-white/80">Even geduld</p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.40s" }}></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-center py-20 text-red-500">{error}</div>;
   if (!song) return (
     <div className="min-h-screen bg-gray-50 py-12 text-center">

@@ -40,6 +40,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [top5, setTop5] = useState<Top5Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Nieuwe state voor succesbericht
 
   useEffect(() => {
     const loadTop5 = async () => {
@@ -62,6 +63,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
     loadTop5();
   }, []);
 
+  // Nieuwe useEffect om succesbericht te detecteren via URL-parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      setSuccessMessage('Liedje succesvol opgeslagen!');
+      // Verwijder de parameter uit de URL
+      window.history.replaceState(null, '', '/');
+      // Verberg het bericht na 5 seconden
+      setTimeout(() => setSuccessMessage(null), 5000);
+    }
+  }, []);
+
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
   };
@@ -71,7 +84,51 @@ export function HomePage({ onNavigate }: HomePageProps) {
   };
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh', position: 'relative' }}> {/* Position relative toegevoegd voor absoluut positionering */}
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+          <div className="text-center">
+            <div className="relative mx-auto mb-4 w-16 h-16">
+              <div className="absolute inset-0 rounded-full border-4 border-gray-500/30"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-gray-600 border-t-transparent animate-spin"></div>
+            </div>
+
+            <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+            <p className="text-white/80">Even geduld</p>
+
+            <div className="mt-4 flex items-center justify-center gap-1">
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Succesbericht rechtsboven */}
+      {successMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#10b981', // Groen voor succes
+            color: 'white',
+            padding: '12px 20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            zIndex: 1000,
+            fontSize: '16px',
+            fontWeight: 'bold',
+            animation: 'fadeIn 0.5s ease-in-out',
+            maxWidth: '300px',
+            textAlign: 'center'
+          }}
+        >
+          {successMessage}
+        </div>
+      )}
+
       {/* Carousel */}
       <div style={{ position: 'relative', height: '500px', overflow: 'hidden' }}>
         {carouselImages.map((image, index) => (
@@ -132,7 +189,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div>
             <h2>Top 5 van 2024</h2>
 
-            {loading && <p>Bezig met laden...</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
             {!loading && !error && top5.map(song => (

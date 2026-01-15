@@ -31,7 +31,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     for (let y = end; y >= start; y--) years.push(y);
     return years;
   }, []);
-// hier was de oude fetch code voor het ophalen van de songs
 
   useEffect(() => {
     const loadRankings = async () => {
@@ -71,7 +70,26 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     });
   }, [rankings, searchTerm, sortBy]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative mx-auto mb-4 w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+          <p className="text-white/80">Even geduld</p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.40s" }}></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
@@ -82,7 +100,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
           <h1>TOP 2000 Jaaroverzichten</h1>
         </div>
 
-       
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="grid md:grid-cols-3 gap-4">
             <div>
@@ -132,7 +149,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
           </div>
         </div>
 
-        
         <div className="mb-4 text-gray-600">
           {filteredRankings.length} {filteredRankings.length === 1 ? "nummer" : "nummers"} gevonden
         </div>

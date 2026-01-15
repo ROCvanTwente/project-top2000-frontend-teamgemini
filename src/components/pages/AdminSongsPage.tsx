@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "../AdminSongsPage.css";
 
 type Song = {
   songId: number;
@@ -12,125 +13,273 @@ type Song = {
   youtube?: string;
 };
 
-export default function AdminSongByIdPage() {
+export default function AdminSongsPage() {
+  const [loading, setLoading] = useState(false);
   const [songIdInput, setSongIdInput] = useState("");
-  const [song, setSong] = useState<Song | null>(null);
+  const [songTitleInput, setSongTitleInput] = useState("");
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [editData, setEditData] = useState<Partial<Song>>({});
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  // Haal liedje op via ID
-  const fetchSong = async () => {
-    if (!songIdInput) return alert("Vul een Song ID in");
+  const fetchSongs = async () => {
+    if (!songIdInput && !songTitleInput) {
+      setMessage({ text: "Vul minimaal één veld in om te zoeken!", type: "error" });
+      return;
+    }
 
     try {
-      const res = await axios.get(`/admin/songs/${songIdInput}`); // backend GET endpoint nodig
-      setSong(res.data);
-      setEditData(res.data);
+      setLoading(true);
+      const params: any = {};
+      if (songIdInput) params.id = Number(songIdInput);
+      if (songTitleInput) params.titel = songTitleInput;
+
+      const res = await axios.get(`https://localhost:7003/admin/songs/search`, { params });
+      const data: Song[] = res.data;
+
+      setSongs(data);
+
+      if (data.length === 1) {
+        selectSong(data[0]);
+      } else {
+        setSelectedSong(null);
+        setEditData({});
+      }
+
+      setLoading(false);
+      setMessage(null);
     } catch (err: any) {
-      alert("Liedje niet gevonden of fout: " + err.message);
-      setSong(null);
+      setLoading(false);
+      setMessage({ text: "Liedje(s) niet gevonden of fout: " + err.message, type: "error" });
+      setSongs([]);
+      setSelectedSong(null);
+      setEditData({});
     }
   };
 
-  // Opslaan
-  const saveSong = async () => {
-    if (!song) return;
-    try {
-      await axios.put(`/admin/songs/${song.songId}`, editData, {
-        // headers: { Authorization: `Bearer ${token}` } // later
-      });
-      alert("Liedje bijgewerkt!");
-    } catch (err: any) {
-      alert("Fout bij opslaan: " + err.message);
-    }
+  const selectSong = (song: Song) => {
+    setSelectedSong(song);
+    setEditData({
+      titel: song.titel || undefined,
+      releaseYear: song.releaseYear ?? undefined,
+      artistId: song.artistId ?? undefined,
+      artistName: song.artistName || undefined,
+      imgUrl: song.imgUrl || undefined,
+      lyrics: song.lyrics || undefined,
+      youtube: song.youtube || undefined,
+    });
   };
+const hasChanges = () => {
+  if (!selectedSong) return false;
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Beheer Liedje via ID</h2>
+    (editData.titel ?? "") !== (selectedSong.titel ?? "") ||
+    (editData.releaseYear ?? null) !== (selectedSong.releaseYear ?? null) ||
+    (editData.imgUrl ?? "") !== (selectedSong.imgUrl ?? "") ||
+    (editData.lyrics ?? "") !== (selectedSong.lyrics ?? "") ||
+    (editData.youtube ?? "") !== (selectedSong.youtube ?? "")
+  );
+};
 
-      <div>
+
+const saveSong = async () => {
+  if (!selectedSong) return;
+
+  if (!hasChanges()) {
+    alert("Je hebt niks aangepast. Verander eerst iets voordat je opslaat.");
+    return;
+  }
+
+  const dto = {
+    titel: editData.titel,
+    releaseYear: editData.releaseYear,
+    artistId: editData.artistId,
+    imgUrl: editData.imgUrl,
+    lyrics: editData.lyrics,
+    youtube: editData.youtube,
+  };
+
+  try {
+    setLoading(true);
+    await axios.put(`https://localhost:7003/admin/songs/${selectedSong.songId}`, dto);
+
+    setTimeout(() => {
+      window.location.href = "/?success=true";
+    }, 1500);
+  } catch (err: any) {
+    setLoading(false);
+    setMessage({ text: "Fout bij opslaan: " + err.message, type: "error" });
+  }
+};
+
+  return (
+    <div className="admin-container relative">
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+          <div className="text-center">
+            <div className="relative mx-auto mb-4 w-16 h-16">
+              <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+            </div>
+
+            <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+            <p className="text-white/80">Even geduld</p>
+
+            <div className="mt-4 flex items-center justify-center gap-1">
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <div
+          className={`notification ${message.type === "error" ? "bg-red-100 border-red-400 text-red-700" : "bg-green-100 border-green-400 text-green-700"} p-3 rounded mb-4`}
+        >
+          {message.text}
+        </div>
+      )}
+
+      <h2>Beheer Liedjes via ID of Titel</h2>
+
+      <div className="song-search-input flex gap-2 mb-4">
         <input
           type="number"
-          placeholder="Voer Song ID in"
+          placeholder="ID"
           value={songIdInput}
           onChange={(e) => setSongIdInput(e.target.value)}
+          className="border p-2 rounded w-32"
         />
-        <button onClick={fetchSong}>Zoek Liedje</button>
+        <input
+          type="text"
+          placeholder="Titel (optioneel)"
+          value={songTitleInput}
+          onChange={(e) => setSongTitleInput(e.target.value)}
+          className="border p-2 rounded w-64"
+        />
+        <button
+          onClick={fetchSongs}
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Zoek Liedje(s)
+        </button>
       </div>
 
-      {song && (
-        <div style={{ marginTop: "2rem" }}>
-          <h3>Liedje Bewerken</h3>
-          <table border={1} cellPadding={5}>
-            <tbody>
+      {songs.length > 1 && !selectedSong && (
+        <div className="mb-4">
+          <h3>Kies een liedje om te bewerken:</h3>
+          <ul className="list-disc pl-6">
+            {songs.map((s) => (
+              <li key={s.songId} className="cursor-pointer hover:text-red-600" onClick={() => selectSong(s)}>
+                {s.songId} - {s.titel} {s.artistName ? `(${s.artistName})` : ""}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {}
+      {selectedSong ? (
+        <div className="edit-panel bg-gray-50 p-6 rounded shadow-md">
+          <h3 className="font-semibold mb-4">Liedje Bewerken</h3>
+          <table className="w-full mb-4">
+            <tbody className="divide-y divide-gray-200">
               <tr>
-                <td>Titel</td>
+                <td className="py-2">Titel</td>
                 <td>
                   <input
-                    value={editData.titel || ""}
-                    onChange={(e) => setEditData({ ...editData, titel: e.target.value })}
+                    value={editData.titel || "Null"}
+                    onChange={(e) => setEditData({ ...editData, titel: e.target.value || undefined })}
+                    className="border p-2 w-full rounded"
                   />
                 </td>
               </tr>
               <tr>
-                <td>Release Jaar</td>
+                <td className="py-2">Release Jaar</td>
                 <td>
                   <input
                     type="number"
-                    value={editData.releaseYear || ""}
+                    value={editData.releaseYear ?? "Null"}
                     onChange={(e) =>
-                      setEditData({ ...editData, releaseYear: Number(e.target.value) })
+                      setEditData({ ...editData, releaseYear: e.target.value ? Number(e.target.value) : undefined })
                     }
+                    className="border p-2 w-full rounded"
                   />
                 </td>
               </tr>
               <tr>
-                <td>Artiest ID</td>
+                <td className="py-2">Artiest ID</td>
                 <td>
                   <input
                     type="number"
-                    value={editData.artistId || ""}
-                    onChange={(e) =>
-                      setEditData({ ...editData, artistId: Number(e.target.value) })
-                    }
+                    value={editData.artistId ?? "Null"}
+                    disabled
+                    className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
                   />
                 </td>
               </tr>
               <tr>
-                <td>Lyrics</td>
+                <td className="py-2">Artiest Naam</td>
+                <td>
+                  <input
+                    value={editData.artistName ?? "Null"}
+                    readOnly
+                    className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2">Lyrics</td>
                 <td>
                   <textarea
-                    value={editData.lyrics || ""}
-                    onChange={(e) => setEditData({ ...editData, lyrics: e.target.value })}
+                    value={editData.lyrics || "Null"}
+                    onChange={(e) => setEditData({ ...editData, lyrics: e.target.value || undefined })}
+                    className="border p-2 w-full rounded"
                   />
                 </td>
               </tr>
               <tr>
-                <td>Youtube</td>
+                <td className="py-2">YouTube URL</td>
                 <td>
                   <input
-                    value={editData.youtube || ""}
-                    onChange={(e) => setEditData({ ...editData, youtube: e.target.value })}
+                    value={editData.youtube || "Null"}
+                    onChange={(e) => setEditData({ ...editData, youtube: e.target.value || undefined })}
+                    className="border p-2 w-full rounded"
                   />
                 </td>
               </tr>
               <tr>
-                <td>Afbeelding URL</td>
+                <td className="py-2">Afbeelding URL</td>
                 <td>
                   <input
-                    value={editData.imgUrl || ""}
-                    onChange={(e) => setEditData({ ...editData, imgUrl: e.target.value })}
+                    value={editData.imgUrl || "Null"}
+                    onChange={(e) => setEditData({ ...editData, imgUrl: e.target.value || undefined })}
+                    className="border p-2 w-full rounded"
                   />
                 </td>
               </tr>
             </tbody>
           </table>
 
-          <button style={{ marginTop: "1rem" }} onClick={saveSong}>
-            Opslaan
-          </button>
+<button
+  onClick={saveSong}
+  disabled={!hasChanges()}
+  className={`px-4 py-2 rounded text-white ${
+    hasChanges()
+      ? "bg-red-600 hover:bg-red-700"
+      : "bg-gray-400 cursor-not-allowed"
+  }`}
+>
+  Opslaan
+</button>
+
+
         </div>
-      )}
+      ) : songs.length === 0 ? (
+        <div>Geen liedje geladen</div>
+      ) : null}
     </div>
   );
 }

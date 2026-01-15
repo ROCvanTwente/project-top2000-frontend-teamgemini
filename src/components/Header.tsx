@@ -129,12 +129,13 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   )}
 </div>
 
-  <button
-    onClick={() => onNavigate('admin')}
-    className={`header-nav-button ${currentPage === 'admin' ? 'active' : ''}`}
-  >
-    Beheren
-  </button>
+<button
+  onClick={() => onNavigate('adminSongs')}
+  className={`header-nav-button ${currentPage === 'adminSongs' ? 'active' : ''}`}
+>
+  Beheren
+</button>
+
           </nav>
 
 

@@ -31,7 +31,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'artist' | 'count'>('title');
-// hier was de oude fetch code voor het ophalen van de songs
+
   useEffect(() => {
     const loadSongs = async () => {
       try {
@@ -74,7 +74,27 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
     });
   }, [songsForUI, searchTerm, sortBy]);
 
-  if(loading) return <div className="text-center py-20">Laden…</div>;
+  // Mooie loading overlay toegevoegd (gekopieerd van AdminSongsPage)
+  if(loading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative mx-auto mb-4 w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+          <p className="text-white/80">Even geduld</p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if(error) return <div className="text-center py-20 text-red-500">{error}</div>;
 
   return (

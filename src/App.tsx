@@ -19,6 +19,8 @@ import { AdminPage } from './components/pages/AdminPage';
 import { EditArtistPage } from './components/pages/EditArtistPage';
 import { EditSongPage } from './components/pages/EditSongPage';
 import { StatisticsPage } from './components/pages/StatisticsPage';
+import  AdminSongsPage  from './components/pages/AdminSongsPage';
+
 
 type PageType = 
   | 'home' 
@@ -33,6 +35,7 @@ type PageType =
   | 'contact' 
   | 'login'
   | 'playlists'
+  |'adminSongs'
   | 'admin'
   | 'edit-artist'
   | 'edit-song'
@@ -67,6 +70,8 @@ export default function App() {
       case 'statistics': return <StatisticsPage onNavigate={handleNavigate} />;
       case 'history': return <HistoryPage />;
       case 'faq': return <FAQPage />;
+      case 'adminSongs':return <AdminSongsPage />;
+
       case 'contact': return <ContactPage />;
       case 'login': return <LoginPage onNavigate={handleNavigate} />;
       case 'playlists': return <PlaylistsPage onNavigate={handleNavigate} />;
@@ -105,6 +110,7 @@ export default function App() {
                     <li><button onClick={() => handleNavigate('rankings')} className='footerButton'>Jaaroverzichten</button></li>
                     <li><button onClick={() => handleNavigate('artists')} className='footerButton'>Artiesten</button></li>
                     <li><button onClick={() => handleNavigate('songs')} className='footerButton'>Nummers</button></li>
+                    
                   </ul>
                 </div>
 
