@@ -10,20 +10,21 @@ interface Ranking {
   position: number;
 }
 
-interface SongStats {
-  timesListed: number;
-  highestPosition: number | null;
-  firstYear?: number;
-  lastYear?: number;
-}
-
+// This matches exactly what the C# API returns
 interface SongApi {
   songId: number;
   title: string;
   artist: string;
   releaseYear: number | null;
-  stats: SongStats;
+  imgUrl?: string;
   youtube?: string;
+  lyrics?: string;
+  stats: {
+    timesListed: number;
+    highestPosition: number | null;
+    firstYear?: number;
+    lastYear?: number;
+  };
   top2000Positions?: Ranking[];
 }
 
@@ -46,8 +47,9 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
       try {
         setLoading(true);
         setError(null);
-        const data: SongApi = await fetchFromAPI(`songs/${songId}`);
+        const data: any = await fetchFromAPI(`songs/${songId}`);
         console.log('Song data received:', data); // Debug log to see what we get
+        console.log('Top2000Positions:', data.top2000Positions || data.Top2000Positions); // Check both cases
         setSong(data);
       } catch (err: any) {
         setError(err.message);
@@ -76,7 +78,10 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const songRankings = song.top2000Positions?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  // Handle both camelCase and PascalCase from API
+  const rawRankings = song.top2000Positions || (song as any).Top2000Positions || [];
+  const songRankings = rawRankings.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  console.log('songRankings:', songRankings); // Debug log
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
   // Make chart width responsive to number of years - minimum 800px, add 80px per year beyond 8 years
   const chartWidth = Math.max(800, songRankings.length * 80);
@@ -152,13 +157,13 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <TrendingUp size={18} /> <span className="text-sm">Noteringen</span>
                   </div>
-                  <div className="text-2xl text-[var(--vivid-purple)]">{song.stats.timesListed}x</div>
+                  <div className="text-2xl text-[var(--vivid-purple)]">{song.stats?.timesListed || (song as any).Stats?.TimesListed || 0}x</div>
                 </div>
               </div>
 
-              {song.youtube && (
+              {(song.youtube || (song as any).Youtube) && (
                 <a
-                  href={song.youtube}
+                  href={song.youtube || (song as any).Youtube}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
