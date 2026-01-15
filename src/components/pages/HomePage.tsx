@@ -63,17 +63,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
     loadTop5();
   }, []);
 
-  // Nieuwe useEffect om succesbericht te detecteren via URL-parameter
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('success') === 'true') {
       setSuccessMessage('Liedje succesvol opgeslagen!');
-      // Verwijder de parameter uit de URL
       window.history.replaceState(null, '', '/');
-      // Verberg het bericht na 5 seconden
       setTimeout(() => setSuccessMessage(null), 5000);
     }
   }, []);
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentSlide(prev => (prev + 1) % carouselImages.length);
+  }, 5000); // iedere 5 seconden
+
+  return () => clearInterval(interval); // cleanup
+}, []);
+
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
@@ -84,35 +89,34 @@ export function HomePage({ onNavigate }: HomePageProps) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative' }}> {/* Position relative toegevoegd voor absoluut positionering */}
+    <div style={{ minHeight: '100vh', position: 'relative' }}> 
       {loading && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
           <div className="text-center">
             <div className="relative mx-auto mb-4 w-16 h-16">
-              <div className="absolute inset-0 rounded-full border-4 border-gray-500/30"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-gray-600 border-t-transparent animate-spin"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
             </div>
 
             <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
             <p className="text-white/80">Even geduld</p>
 
             <div className="mt-4 flex items-center justify-center gap-1">
-              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
-              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
-              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Succesbericht rechtsboven */}
       {successMessage && (
         <div
           style={{
             position: 'fixed',
             top: '20px',
             right: '20px',
-            backgroundColor: '#10b981', // Groen voor succes
+            backgroundColor: '#08f500ff',
             color: 'white',
             padding: '12px 20px',
             borderRadius: '8px',
@@ -129,7 +133,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       )}
 
-      {/* Carousel */}
       <div style={{ position: 'relative', height: '500px', overflow: 'hidden' }}>
         {carouselImages.map((image, index) => (
           <div
@@ -168,6 +171,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
           </div>
         ))}
+        <div style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px' }}>
+  {carouselImages.map((_, index) => (
+    <span
+      key={index}
+      onClick={() => setCurrentSlide(index)}
+      style={{
+        width: '12px',
+        height: '12px',
+        borderRadius: '50%',
+        backgroundColor: index === currentSlide ? 'white' : 'rgba(255,255,255,0.5)',
+        cursor: 'pointer',
+      }}
+    ></span>
+  ))}
+</div>
+
 
         <button onClick={prevSlide} className="carousel-btn left">‹</button>
         <button onClick={nextSlide} className="carousel-btn right">›</button>
