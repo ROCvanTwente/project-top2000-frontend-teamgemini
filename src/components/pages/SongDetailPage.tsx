@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Play, Plus, Calendar, TrendingUp, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 // @ts-ignore
@@ -153,9 +153,9 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   href={song.youtubeLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 border-2 border-[var(--bright-blue)] text-[var(--bright-blue)] rounded-lg hover:bg-[var(--bright-blue)] hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
                 >
-                  <Play size={18} /> Beluister op YouTube
+                  <ExternalLink size={20} /> Beluister op YouTube
                 </a>
               )}
             </div>
