@@ -17,7 +17,7 @@ export const fetchArtistById = async (artistId) => {
   try {
     const apiUrl = import.meta.env.VITE_API_URL;
     const baseUrl = apiUrl ? apiUrl : '';
-    const response = await fetch(`${baseUrl}/api/artist/${artistId}`);
+    const response = await fetch(`${baseUrl}/Artist/${artistId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch artist');
@@ -35,7 +35,7 @@ export const fetchArtistSongs = async (artistId) => {
   try {
     const apiUrl = import.meta.env.VITE_API_URL;
     const baseUrl = apiUrl ? apiUrl : '';
-    const response = await fetch(`${baseUrl}/api/artist/${artistId}/songs`);
+    const response = await fetch(`${baseUrl}/Artist/${artistId}/songs`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch artist songs');
