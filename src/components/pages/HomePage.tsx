@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 
 const carouselImages = [
@@ -19,12 +19,32 @@ const carouselImages = [
   }
 ];
 
+interface Top5Song {
+  songId: number;
+  position: number;
+  title: string;
+  artist: string;
+  releaseYear: number | null;
+}
+
 interface HomePageProps {
   onNavigate: (page: string, params?: any) => void;
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [top5, setTop5] = useState<Top5Song[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://localhost:7003/top5songs/2024')
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        setTop5(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
@@ -74,7 +94,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
           </div>
         ))}
-        
+
         <button
           onClick={prevSlide}
           style={{
@@ -148,7 +168,38 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <h2 style={{ margin: 0 }}>Top 5 van 2024</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {/* Top 5 songs will be provided by backend/Razor */}
+              {loading ? (
+                <div>Bezig met laden...</div>
+              ) : top5.length === 0 ? (
+                <div>Geen data gevonden.</div>
+              ) : (
+                top5.map(song => (
+                  <div key={song.songId} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    background: '#f3f4f6',
+                    borderRadius: '8px',
+                    padding: '1rem'
+                  }}>
+                    <div style={{
+                      fontWeight: 'bold',
+                      fontSize: '1.5rem',
+                      width: '2.5rem',
+                      textAlign: 'center'
+                    }}>{song.position}</div>
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>{song.title}</div>
+                      <div style={{ color: '#374151' }}>{song.artist}</div>
+                      {song.releaseYear && (
+                        <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                          {song.releaseYear}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
             <button
               onClick={() => onNavigate('rankings')}
