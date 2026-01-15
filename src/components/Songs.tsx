@@ -25,8 +25,7 @@ const Top9Songs: React.FC<Top9SongsProps> = ({ onNavigate }) => {
     const fetchTop9Songs = async () => {
       try {
         setLoading(true);
-        // Fetch top 2000 for current year (2025) and take top 9
-        const data = await fetchFromAPI('top2000/2025');
+        const data = await fetchFromAPI('top2000/2024');
         setSongs(data.slice(0, 9));
       } catch (err) {
         console.error('Error fetching songs:', err);
@@ -55,7 +54,7 @@ const Top9Songs: React.FC<Top9SongsProps> = ({ onNavigate }) => {
 
   return (
     <div className="top9-container">
-      <h1 className="top9-title">Top 9 Songs 2025</h1>
+      <h1 className="top9-title">Top 9 Songs 2024</h1>
       <div className="songs-grid">
         {songs.map((song) => (
           <div

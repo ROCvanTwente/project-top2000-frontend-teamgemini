@@ -11,7 +11,6 @@ interface HeaderProps {
 
 export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [djMenuOpen, setDjMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
   return (
@@ -58,40 +57,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               Statistieken
             </button>
             
-            {/* DJ's Menu */}
-            <div 
-              className="dj-menu"
-              onMouseEnter={() => setDjMenuOpen(true)}
-              onMouseLeave={() => setDjMenuOpen(false)}
-            >
-              <button className="header-nav-button">
-                DJ's
-              </button>
-              {djMenuOpen && (
-                <div className="dj-menu-dropdown">
-                  <a
-                    href="https://nl.wikipedia.org/wiki/Bart_Arens"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="dj-menu-link"
-                  >
-                    Bart Arens (Opening)
-                  </a>
-                  <div className="dj-menu-divider"></div>
-                  {djs.map(dj => (
-                    <a
-                      key={dj.name}
-                      href={dj.wikipediaLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="dj-menu-link"
-                    >
-                      {dj.name}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+            
 
             <button
               onClick={() => onNavigate('history')}
