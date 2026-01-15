@@ -192,6 +192,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {loading ? (
                 <div>Bezig met laden...</div>
+              ) : error ? (
+                <div style={{ color: 'red' }}>Fout bij laden: {error}</div>
               ) : top5.length === 0 ? (
                 <div>Geen data gevonden.</div>
               ) : (
