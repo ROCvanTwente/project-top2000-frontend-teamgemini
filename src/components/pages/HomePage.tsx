@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import Top9Songs from '../Songs';
-import Top9Artists from '../Artists';
+// import Top9Songs from '../Songs';
+// import Top9Artists from '../Artists';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
@@ -116,22 +116,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <button onClick={nextSlide} className="carousel-btn right">›</button>
       </div>
 
-<<<<<<< Updated upstream
-      {/* Top 9 Songs */}
-=======
       {/* Top 9 Songs Section
->>>>>>> Stashed changes
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1rem' }}>
         <Top9Songs onNavigate={onNavigate} />
       </div>
 
-<<<<<<< Updated upstream
-      {/* Top 9 Artists */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1rem' }}>
-=======
       {/* Top 9 Artists Section */}
       {/* <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1rem' }}>
->>>>>>> Stashed changes
         <Top9Artists onNavigate={onNavigate} />
       </div> */}
 
