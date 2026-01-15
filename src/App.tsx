@@ -13,7 +13,7 @@ import { SongDetailPage } from './components/pages/SongDetailPage';
 import { HistoryPage } from './components/pages/HistoryPage';
 import { FAQPage } from './components/pages/FAQPage';
 import { ContactPage } from './components/pages/ContactPage';
-import { LoginPage } from './components/pages/LoginPage';
+import LoginPage from './components/pages/LoginPage';
 import { PlaylistsPage } from './components/pages/PlaylistsPage';
 import { AdminPage } from './components/pages/AdminPage';
 import { EditArtistPage } from './components/pages/EditArtistPage';
@@ -68,7 +68,7 @@ export default function App() {
       case 'history': return <HistoryPage />;
       case 'faq': return <FAQPage />;
       case 'contact': return <ContactPage />;
-      case 'login': return <LoginPage onNavigate={handleNavigate} />;
+      case 'login': return <LoginPage/>;
       case 'playlists': return <PlaylistsPage onNavigate={handleNavigate} />;
       case 'admin': return <AdminPage onNavigate={handleNavigate} />;
       case 'edit-artist': return <EditArtistPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
@@ -139,3 +139,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

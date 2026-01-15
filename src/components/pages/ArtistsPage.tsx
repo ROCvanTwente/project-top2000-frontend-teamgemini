@@ -108,11 +108,11 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
             <div>
               <label className="block mb-2"><Search size={16} className="inline mr-2"/>Zoeken op artiestnaam</label>
               <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Typ om te zoeken..." className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-[var(--color-gray-medium)]" />
+                placeholder="Typ om te zoeken..." className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-(--color-gray-medium)" />
             </div>
             <div>
               <label className="block mb-2">Sorteren op</label>
-              <select value={sortBy} onChange={e=>setSortBy(e.target.value as any)} className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-[var(--color-gray-medium)]">
+              <select value={sortBy} onChange={e=>setSortBy(e.target.value as any)} className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-(--color-gray-medium)">
                 <option value="name">Naam (A-Z)</option>
                 <option value="songs">Aantal nummers</option>
               </select>
@@ -145,7 +145,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
               <div key={artist.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
                 onClick={() => onNavigate?.('artist-detail', { artistId: artist.id.toString() })}>
                 <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white overflow-hidden">
+                  <div className="shrink-0 w-12 h-12 bg-linear-to-br from-(--color-gray-dark) to-(--color-gray-medium) rounded-lg flex items-center justify-center text-white overflow-hidden">
                     {artist.photo ? (
                       <img 
                         src={artist.photo} 
@@ -156,12 +156,12 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
                       <User size={24} />
                     )}
                   </div>
-                  <div className="flex-grow">
-                    <h3 className="mb-1 hover:text-[var(--color-gray-medium)]">{artist.name}</h3>
+                  <div className="grow">
+                    <h3 className="mb-1 hover:text-(--color-gray-medium)">{artist.name}</h3>
                     <p className="text-gray-600 text-sm">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm px-3 py-1 bg-[var(--color-gray-dark)] text-white rounded-full">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</div>
+                    <div className="text-sm px-3 py-1 bg-(--color-gray-dark) text-white rounded-full">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</div>
                   </div>
                 </div>
               </div>
