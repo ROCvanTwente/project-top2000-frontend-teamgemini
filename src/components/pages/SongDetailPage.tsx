@@ -203,15 +203,6 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                     return (
                       <g key={r.year}>
                         <circle cx={x} cy={y} r={6} fill="#2B6BE4"/>
-                        {/* Position label on the data point */}
-                        <text 
-                          x={x} 
-                          y={y - 10} 
-                          textAnchor="middle" 
-                          className="text-xs fill-gray-800 font-semibold"
-                        >
-                          {r.position}
-                        </text>
                         {/* Year label at the bottom */}
                         <text 
                           x={x} 
