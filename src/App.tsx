@@ -7,7 +7,6 @@ import { HomePage } from './components/pages/HomePage';
 import { RankingsPage } from './components/pages/RankingsPage';
 import { ArtistsPage } from './components/pages/ArtistsPage';
 import { ArtistDetailPage } from './components/pages/ArtistDetailPage';
-import { ArtistSongsPage } from './components/pages/ArtistSongsPage';
 import { SongsPage } from './components/pages/SongsPage';
 import { SongDetailPage } from './components/pages/SongDetailPage';
 import { HistoryPage } from './components/pages/HistoryPage';
@@ -61,9 +60,9 @@ export default function App() {
       case 'artists': return <ArtistsPage onNavigate={handleNavigate} />;
       case 'artist-detail':
         return <ArtistDetailPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
-      case 'artist-songs':
-        return <ArtistSongsPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
       case 'songs':
+        return <SongsPage onNavigate={handleNavigate} />;
+      case 'artist-songs':
         return <SongsPage onNavigate={handleNavigate} />;
       case 'song-detail':
         return <SongDetailPage songId={navigation.params?.songId} onNavigate={handleNavigate} />;
