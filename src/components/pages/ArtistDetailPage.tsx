@@ -86,7 +86,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
         
         <button
           onClick={() => onNavigate('artists')}
-          className="flex items-center gap-2 text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors mb-8"
+          className="flex items-center gap-2 text-(--bright-blue) hover:text-(--vivid-purple) transition-colors mb-8"
         >
           <ArrowLeft size={20} /> Terug naar alle artiesten
         </button>

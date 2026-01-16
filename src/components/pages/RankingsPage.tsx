@@ -107,7 +107,7 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
                 <Filter size={16} className="inline mr-2" />
                 Jaar
               </label>
-              <select
+              <select title="selectedYear"
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
                 className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-black"
@@ -136,7 +136,7 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
 
             <div>
               <label className="block mb-2">Sorteren op</label>
-              <select
+              <select title="sortBy"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-black"
