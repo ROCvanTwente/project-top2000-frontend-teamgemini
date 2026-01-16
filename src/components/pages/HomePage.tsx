@@ -40,7 +40,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [top5, setTop5] = useState<Top5Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Nieuwe state voor succesbericht
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadTop5 = async () => {
@@ -74,9 +74,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
   useEffect(() => {
   const interval = setInterval(() => {
     setCurrentSlide(prev => (prev + 1) % carouselImages.length);
-  }, 5000); // iedere 5 seconden
+  }, 5000);
 
-  return () => clearInterval(interval); // cleanup
+  return () => clearInterval(interval);
 }, []);
 
 
@@ -116,7 +116,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             position: 'fixed',
             top: '20px',
             right: '20px',
-            backgroundColor: '#08f500ff',
+            backgroundColor: '#00f541ff',
             color: 'white',
             padding: '12px 20px',
             borderRadius: '8px',
