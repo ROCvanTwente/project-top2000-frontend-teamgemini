@@ -1,29 +1,36 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Play, Plus, Calendar, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Play, Plus, Calendar, TrendingUp, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlaylist } from '../../contexts/PlaylistContext';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
-
-interface SongDetailPageProps {
-  songId: string | number;
-  onNavigate: (page: string, params?: any) => void;
-}
 
 interface Ranking {
   year: number;
   position: number;
 }
 
+// This matches exactly what the C# API returns
 interface SongApi {
   songId: number;
   title: string;
   artist: string;
   releaseYear: number | null;
-  timesListed: number;
-  highestPosition: number | null;
-  youtubeLink?: string;
-  rankings?: Ranking[];
+  imgUrl?: string;
+  youtube?: string;
+  lyrics?: string;
+  stats: {
+    timesListed: number;
+    highestPosition: number | null;
+    firstYear?: number;
+    lastYear?: number;
+  };
+  top2000Positions?: Ranking[];
+}
+
+interface SongDetailPageProps {
+  songId: string;
+  onNavigate: (page: string, params?: any) => void;
 }
 
 export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
@@ -34,14 +41,15 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
   const { user } = useAuth();
   const { playlists, addSongToPlaylist } = usePlaylist();
-// hier was de oude fetch code voor het ophalen van de songs
 
   useEffect(() => {
     const loadSong = async () => {
       try {
         setLoading(true);
         setError(null);
-        const data: SongApi = await fetchFromAPI(`songs/${songId}`);
+        const data: any = await fetchFromAPI(`songs/${songId}`);
+        console.log('Song data received:', data); // Debug log to see what we get
+        console.log('Top2000Positions:', data.top2000Positions || data.Top2000Positions); // Check both cases
         setSong(data);
       } catch (err: any) {
         setError(err.message);
@@ -53,12 +61,31 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     loadSong();
   }, [songId]);
 
-  if (loading) return <div className="text-center py-20">Laden…</div>;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative mx-auto mb-4 w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+          <p className="text-white/80">Even geduld</p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.40s" }}></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-center py-20 text-red-500">{error}</div>;
   if (!song) return (
     <div className="min-h-screen bg-gray-50 py-12 text-center">
       <h2>Nummer niet gevonden</h2>
-      <button onClick={() => onNavigate('songs')} className="mt-4 text-[var(--bright-blue)] hover:underline">
+      <button onClick={() => onNavigate('songs')} className="mt-4 text-(--bright-blue) hover:underline">
         Terug naar overzicht
       </button>
     </div>
@@ -70,9 +97,13 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const songRankings = song.rankings?.sort((a, b) => b.year - a.year) || [];
-  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map(r => r.position)) : 2000;
-  const chartWidth = 600;
+  // Handle both camelCase and PascalCase from API
+  const rawRankings = song.top2000Positions || (song as any).Top2000Positions || [];
+  const songRankings = rawRankings.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  console.log('songRankings:', songRankings); // Debug log
+  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
+  // Make chart width responsive to number of years - minimum 800px, add 80px per year beyond 8 years
+  const chartWidth = Math.max(800, songRankings.length * 80);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -80,7 +111,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
         <button
           onClick={() => onNavigate('songs')}
-          className="flex items-center gap-2 text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors mb-8"
+          className="flex items-center gap-2 text-(--bright-blue) hover:text-(--vivid-purple) transition-colors mb-8"
         >
           <ArrowLeft size={20} /> Terug naar alle nummers
         </button>
@@ -89,7 +120,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="md:flex">
             {/* Album Cover */}
-            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
+            <div className="md:w-1/3 bg-linear-to-br from-(--bright-blue) to-(--vivid-purple) aspect-square flex items-center justify-center">
               <div className="text-white text-center p-8">
                 <Play size={80} className="mx-auto mb-4" />
                 <h2 className="text-white mb-2">{song.title}</h2>
@@ -102,14 +133,14 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h1 className="mb-2">{song.title}</h1>
-                  <p className="text-xl text-[var(--bright-blue)]">{song.artist}</p>
+                  <p className="text-xl text-(--bright-blue)">{song.artist}</p>
                 </div>
 
                 {user && (
                   <div className="relative">
                     <button
                       onClick={() => setShowPlaylistMenu(!showPlaylistMenu)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[var(--bright-blue)] text-white rounded-lg hover:bg-[var(--vivid-purple)] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-(--bright-blue) text-white rounded-lg hover:bg-(--vivid-purple) transition-colors"
                     >
                       <Plus size={18} /> Toevoegen aan lijst
                     </button>
@@ -139,24 +170,24 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <Calendar size={18} /> <span className="text-sm">Uitgegeven</span>
                   </div>
-                  <div className="text-2xl text-[var(--bright-blue)]">{song.releaseYear ?? '-'}</div>
+                  <div className="text-2xl text-(--bright-blue)">{song.releaseYear ?? '-'}</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <TrendingUp size={18} /> <span className="text-sm">Noteringen</span>
                   </div>
-                  <div className="text-2xl text-[var(--vivid-purple)]">{song.timesListed}x</div>
+                  <div className="text-2xl text-[var(--vivid-purple)]">{song.stats?.timesListed || (song as any).Stats?.TimesListed || 0}x</div>
                 </div>
               </div>
 
-              {song.youtubeLink && (
+              {(song.youtube || (song as any).Youtube) && (
                 <a
-                  href={song.youtubeLink}
+                  href={song.youtube || (song as any).Youtube}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 border-2 border-[var(--bright-blue)] text-[var(--bright-blue)] rounded-lg hover:bg-[var(--bright-blue)] hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
                 >
-                  <Play size={18} /> Beluister op YouTube
+                  <ExternalLink size={20} /> Beluister op YouTube
                 </a>
               )}
             </div>
@@ -170,8 +201,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
             {/* Chart */}
             <div className="mb-8 overflow-x-auto">
-              <div className="min-w-[600px]">
-                <svg width="100%" height="300">
+              <div style={{ minWidth: `${chartWidth}px` }}>
+                <svg width="100%" height="300" viewBox={`0 0 ${chartWidth} 300`}>
                   {[0, 500, 1000, 1500, 2000].map(pos => (
                     <g key={pos}>
                       <line x1="60" y1={40 + (pos / maxPosition) * 220} x2={chartWidth} y2={40 + (pos / maxPosition) * 220} stroke="#e5e7eb" strokeWidth="1"/>
@@ -180,7 +211,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   ))}
 
                   <polyline
-                    points={songRankings.map((r,i) => {
+                    points={songRankings.map((r: Ranking, i: number) => {
                       const x = 60 + (i/(songRankings.length-1||1))*(chartWidth-80);
                       const y = 40 + (r.position/maxPosition)*220;
                       return `${x},${y}`;
@@ -190,13 +221,22 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                     strokeWidth="3"
                   />
 
-                  {songRankings.map((r,i) => {
+                  {songRankings.map((r: Ranking, i: number) => {
                     const x = 60 + (i/(songRankings.length-1||1))*(chartWidth-80);
                     const y = 40 + (r.position/maxPosition)*220;
                     return (
                       <g key={r.year}>
-                        <circle cx={x} cy={y} r={5} fill="#2B6BE4"/>
-                        <text x={x} y={280} textAnchor="middle" className="text-xs fill-gray-700">{r.year}</text>
+                        <circle cx={x} cy={y} r={6} fill="#2B6BE4"/>
+                        {/* Year label at the bottom */}
+                        <text 
+                          x={x} 
+                          y={280} 
+                          textAnchor="middle" 
+                          className="text-xs fill-gray-700"
+                          transform={songRankings.length > 10 ? `rotate(-45 ${x} 280)` : undefined}
+                        >
+                          {r.year}
+                        </text>
                       </g>
                     );
                   })}
@@ -222,14 +262,14 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {songRankings.map((r,i)=>{
+                  {songRankings.map((r: Ranking, i: number)=>{
                     const prev = songRankings[i+1];
                     const change = prev ? prev.position - r.position : null;
                     return (
                       <tr key={r.year}>
                         <td className="px-4 py-3">{r.year}</td>
                         <td className="px-4 py-3">
-                          <span className="inline-flex items-center justify-center w-12 h-8 bg-[var(--bright-blue)] text-white rounded">{r.position}</span>
+                          <span className="inline-flex items-center justify-center w-12 h-8 bg-(--bright-blue) text-white rounded">{r.position}</span>
                         </td>
                         <td className="px-4 py-3">
                           {change!==null && (

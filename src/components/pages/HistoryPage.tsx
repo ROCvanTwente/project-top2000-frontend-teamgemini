@@ -5,7 +5,7 @@ export function HistoryPage() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-12 bg-gradient-to-b from-[var(--bright-blue)] to-[var(--vivid-purple)]"></div>
+          <div className="w-1 h-12 bg-linear-to-b from-(--bright-blue) to-(--vivid-purple)"></div>
           <h1>Geschiedenis van de TOP 2000</h1>
         </div>
 
@@ -94,7 +94,7 @@ export function HistoryPage() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <Users className="mx-auto mb-4 text-[var(--vivid-purple)]" size={48} />
+            <Users className="mx-auto mb-4 text-(--vivid-purple)" size={48} />
             <h3 className="mb-2">Miljoenen Stemmers</h3>
             <p className="text-gray-600 text-sm">
               Jaarlijks stemmen miljoenen luisteraars
@@ -102,7 +102,7 @@ export function HistoryPage() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <Calendar className="mx-auto mb-4 text-[var(--midnight-blue)]" size={48} />
+            <Calendar className="mx-auto mb-4 text-(--midnight-blue)" size={48} />
             <h3 className="mb-2">Traditioneel</h3>
             <p className="text-gray-600 text-sm">
               Elke jaar tussen 25 december en 31 december

@@ -7,18 +7,19 @@ import { HomePage } from './components/pages/HomePage';
 import { RankingsPage } from './components/pages/RankingsPage';
 import { ArtistsPage } from './components/pages/ArtistsPage';
 import { ArtistDetailPage } from './components/pages/ArtistDetailPage';
-import { ArtistSongsPage } from './components/pages/ArtistSongsPage';
 import { SongsPage } from './components/pages/SongsPage';
 import { SongDetailPage } from './components/pages/SongDetailPage';
 import { HistoryPage } from './components/pages/HistoryPage';
 import { FAQPage } from './components/pages/FAQPage';
 import { ContactPage } from './components/pages/ContactPage';
-import { LoginPage } from './components/pages/LoginPage';
+import LoginPage from './components/pages/LoginPage';
 import { PlaylistsPage } from './components/pages/PlaylistsPage';
 import { AdminPage } from './components/pages/AdminPage';
 import { EditArtistPage } from './components/pages/EditArtistPage';
 import { EditSongPage } from './components/pages/EditSongPage';
 import { StatisticsPage } from './components/pages/StatisticsPage';
+import  AdminSongsPage  from './components/pages/AdminSongsPage';
+
 
 type PageType = 
   | 'home' 
@@ -33,6 +34,7 @@ type PageType =
   | 'contact' 
   | 'login'
   | 'playlists'
+  |'adminSongs'
   | 'admin'
   | 'edit-artist'
   | 'edit-song'
@@ -55,20 +57,22 @@ export default function App() {
     switch (navigation.page) {
       case 'home': return <HomePage onNavigate={handleNavigate} />;
       case 'rankings': return <RankingsPage onNavigate={handleNavigate} />;
-      case 'artists': return <ArtistsPage />;
+      case 'artists': return <ArtistsPage onNavigate={handleNavigate} />;
       case 'artist-detail':
         return <ArtistDetailPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
-      case 'artist-songs':
-        return <ArtistSongsPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
       case 'songs':
+        return <SongsPage onNavigate={handleNavigate} />;
+      case 'artist-songs':
         return <SongsPage onNavigate={handleNavigate} />;
       case 'song-detail':
         return <SongDetailPage songId={navigation.params?.songId} onNavigate={handleNavigate} />;
       case 'statistics': return <StatisticsPage onNavigate={handleNavigate} />;
       case 'history': return <HistoryPage />;
       case 'faq': return <FAQPage />;
+      case 'adminSongs':return <AdminSongsPage />;
+
       case 'contact': return <ContactPage />;
-      case 'login': return <LoginPage onNavigate={handleNavigate} />;
+      case 'login': return <LoginPage/>;
       case 'playlists': return <PlaylistsPage onNavigate={handleNavigate} />;
       case 'admin': return <AdminPage onNavigate={handleNavigate} />;
       case 'edit-artist': return <EditArtistPage artistId={navigation.params?.artistId} onNavigate={handleNavigate} />;
@@ -105,6 +109,7 @@ export default function App() {
                     <li><button onClick={() => handleNavigate('rankings')} className='footerButton'>Jaaroverzichten</button></li>
                     <li><button onClick={() => handleNavigate('artists')} className='footerButton'>Artiesten</button></li>
                     <li><button onClick={() => handleNavigate('songs')} className='footerButton'>Nummers</button></li>
+                    
                   </ul>
                 </div>
 
@@ -139,3 +144,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

@@ -11,7 +11,6 @@ interface HeaderProps {
 
 export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [djMenuOpen, setDjMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
   return (
@@ -58,40 +57,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               Statistieken
             </button>
             
-            {/* DJ's Menu */}
-            <div 
-              className="dj-menu"
-              onMouseEnter={() => setDjMenuOpen(true)}
-              onMouseLeave={() => setDjMenuOpen(false)}
-            >
-              <button className="header-nav-button">
-                DJ's
-              </button>
-              {djMenuOpen && (
-                <div className="dj-menu-dropdown">
-                  <a
-                    href="https://nl.wikipedia.org/wiki/Bart_Arens"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="dj-menu-link"
-                  >
-                    Bart Arens (Opening)
-                  </a>
-                  <div className="dj-menu-divider"></div>
-                  {djs.map(dj => (
-                    <a
-                      key={dj.name}
-                      href={dj.wikipediaLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="dj-menu-link"
-                    >
-                      {dj.name}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+            
 
             <button
               onClick={() => onNavigate('history')}
@@ -131,27 +97,47 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               </>
             )}
 
-            {user ? (
-              <div className="header-user-section">
-                <span>👤</span>
-                <span className="header-user-email">{user.email}</span>
-                <button
-                  onClick={logout}
-                  className="header-logout-button"
-                  title="Uitloggen"
-                >
-                  ⇥
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => onNavigate('login')}
-                className="header-login-button"
-              >
-                Inloggen
-              </button>
-            )}
+<div className="header-user-section">
+  {/* {user?.role === 'admin' && (
+    <button
+      onClick={() => onNavigate('admin')}
+      className={`header-nav-button admin-button ${currentPage === 'admin' ? 'active' : ''}`}
+    >
+      Beheer
+    </button>
+  )} */}
+
+  {user ? (
+    <>
+      <span>👤</span>
+      <span className="header-user-email">{user.email}</span>
+      <button
+        onClick={logout}
+        className="header-logout-button"
+        title="Uitloggen"
+      >
+        ⇥
+      </button>
+    </>
+  ) : (
+    <button
+      onClick={() => onNavigate('login')}
+      className="header-login-button"
+    >
+      Inloggen
+    </button>
+  )}
+</div>
+
+<button
+  onClick={() => onNavigate('adminSongs')}
+  className={`header-nav-button ${currentPage === 'adminSongs' ? 'active' : ''}`}
+>
+  Beheren
+</button>
+
           </nav>
+
 
           {/* Mobile Menu Button */}
           <button
