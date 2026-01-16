@@ -34,7 +34,7 @@ export default function AdminSongsPage() {
       if (songIdInput) params.id = Number(songIdInput);
       if (songTitleInput) params.titel = songTitleInput;
 
-      const res = await axios.get(`https://localhost:7003/admin/songs/search`, { params });
+      const res = await axios.get(`https://demotop2000.runasp.net/admin/songs/search`, { params });
       const data: Song[] = res.data;
 
       setSongs(data);
@@ -101,7 +101,7 @@ const saveSong = async () => {
 
   try {
     setLoading(true);
-    await axios.put(`https://localhost:7003/admin/songs/${selectedSong.songId}`, dto);
+    await axios.put(`https://demotop2000.runasp.net/admin/songs/${selectedSong.songId}`, dto);
 
     setTimeout(() => {
       window.location.href = "/?success=true";
