@@ -10,15 +10,22 @@ interface Ranking {
   position: number;
 }
 
+// This matches exactly what the C# API returns
 interface SongApi {
   songId: number;
   title: string;
   artist: string;
   releaseYear: number | null;
-  timesListed: number;
-  highestPosition: number | null;
-  youtubeLink?: string;
-  rankings?: Ranking[];
+  imgUrl?: string;
+  youtube?: string;
+  lyrics?: string;
+  stats: {
+    timesListed: number;
+    highestPosition: number | null;
+    firstYear?: number;
+    lastYear?: number;
+  };
+  top2000Positions?: Ranking[];
 }
 
 interface SongDetailPageProps {
@@ -40,7 +47,9 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
       try {
         setLoading(true);
         setError(null);
-        const data: SongApi = await fetchFromAPI(`songs/${songId}`);
+        const data: any = await fetchFromAPI(`songs/${songId}`);
+        console.log('Song data received:', data); // Debug log to see what we get
+        console.log('Top2000Positions:', data.top2000Positions || data.Top2000Positions); // Check both cases
         setSong(data);
       } catch (err: any) {
         setError(err.message);
@@ -88,9 +97,13 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const songRankings = song.rankings?.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  // Handle both camelCase and PascalCase from API
+  const rawRankings = song.top2000Positions || (song as any).Top2000Positions || [];
+  const songRankings = rawRankings.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
+  console.log('songRankings:', songRankings); // Debug log
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
-  const chartWidth = 600;
+  // Make chart width responsive to number of years - minimum 800px, add 80px per year beyond 8 years
+  const chartWidth = Math.max(800, songRankings.length * 80);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -163,13 +176,13 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <TrendingUp size={18} /> <span className="text-sm">Noteringen</span>
                   </div>
-                  <div className="text-2xl text-(--vivid-purple)">{song.timesListed}x</div>
+                  <div className="text-2xl text-[var(--vivid-purple)]">{song.stats?.timesListed || (song as any).Stats?.TimesListed || 0}x</div>
                 </div>
               </div>
 
-              {song.youtubeLink && (
+              {(song.youtube || (song as any).Youtube) && (
                 <a
-                  href={song.youtubeLink}
+                  href={song.youtube || (song as any).Youtube}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
@@ -188,8 +201,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
 
             {/* Chart */}
             <div className="mb-8 overflow-x-auto">
-              <div className="min-w-[600px]">
-                <svg width="100%" height="300">
+              <div style={{ minWidth: `${chartWidth}px` }}>
+                <svg width="100%" height="300" viewBox={`0 0 ${chartWidth} 300`}>
                   {[0, 500, 1000, 1500, 2000].map(pos => (
                     <g key={pos}>
                       <line x1="60" y1={40 + (pos / maxPosition) * 220} x2={chartWidth} y2={40 + (pos / maxPosition) * 220} stroke="#e5e7eb" strokeWidth="1"/>
@@ -213,8 +226,17 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                     const y = 40 + (r.position/maxPosition)*220;
                     return (
                       <g key={r.year}>
-                        <circle cx={x} cy={y} r={5} fill="#2B6BE4"/>
-                        <text x={x} y={280} textAnchor="middle" className="text-xs fill-gray-700">{r.year}</text>
+                        <circle cx={x} cy={y} r={6} fill="#2B6BE4"/>
+                        {/* Year label at the bottom */}
+                        <text 
+                          x={x} 
+                          y={280} 
+                          textAnchor="middle" 
+                          className="text-xs fill-gray-700"
+                          transform={songRankings.length > 10 ? `rotate(-45 ${x} 280)` : undefined}
+                        >
+                          {r.year}
+                        </text>
                       </g>
                     );
                   })}

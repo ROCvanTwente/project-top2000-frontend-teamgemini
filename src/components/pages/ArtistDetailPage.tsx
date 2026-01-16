@@ -143,80 +143,19 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
           </div>
         </div>
 
-        {/* Songs List */}
         {/* Top 2000 Songs Section */}
-        {songs.filter(song => song.timesListed > 0).length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-8 bg-gradient-to-b from-[var(--bright-blue)] to-[var(--vivid-purple)]"></div>
-              <h2>Top 2000 nummers van {artist.name}</h2>
-              <span className="px-3 py-1 bg-[var(--bright-blue)] text-white rounded-full text-sm">
-                {songs.filter(song => song.timesListed > 0).length}
-              </span>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left">Titel</th>
-                    <th className="px-4 py-3 text-left">Jaar</th>
-                    <th className="px-4 py-3 text-left">Beste positie</th>
-                    <th className="px-4 py-3 text-left">Noteringen</th>
-                    <th className="px-4 py-3 text-left">Acties</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {songs
-                    .filter(song => song.timesListed > 0)
-                    .sort((a, b) => (a.highestPosition || 2000) - (b.highestPosition || 2000))
-                    .map((song) => (
-                    <tr key={`top2000-${song.songId}`} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3">
-                        <div>
-                          <div className="font-medium text-gray-900">{song.title}</div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600">
-                        {song.releaseYear || '-'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center justify-center w-12 h-8 bg-[var(--bright-blue)] text-white rounded">
-                          {song.highestPosition}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-[var(--vivid-purple)] font-medium">{song.timesListed}x</span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleSongClick(song.songId)}
-                          className="text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors text-sm font-medium"
-                        >
-                          Details →
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* All Songs List */}
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-gray-400 to-gray-600"></div>
-            <h2>Alle nummers van {artist.name}</h2>
-            <span className="px-3 py-1 bg-gray-500 text-white rounded-full text-sm">
-              {songs.length}
+            <div className="w-1 h-8 bg-gradient-to-b from-[var(--bright-blue)] to-[var(--vivid-purple)]"></div>
+            <h2>Top 2000 nummers van {artist.name}</h2>
+            <span className="px-3 py-1 bg-[var(--bright-blue)] text-white rounded-full text-sm">
+              {songs.filter(song => song.timesListed > 0).length}
             </span>
           </div>
           
-          {songs.length === 0 ? (
+          {songs.filter(song => song.timesListed > 0).length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              Geen nummers gevonden voor deze artiest.
+              Deze artiest heeft geen nummers in de Top 2000.
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -225,13 +164,13 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                   <tr>
                     <th className="px-4 py-3 text-left">Titel</th>
                     <th className="px-4 py-3 text-left">Jaar</th>
-                    <th className="px-4 py-3 text-left">Beste positie</th>
                     <th className="px-4 py-3 text-left">Noteringen</th>
                     <th className="px-4 py-3 text-left">Acties</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {songs
+                    .filter(song => song.timesListed > 0)
                     .sort((a, b) => (a.highestPosition || 2000) - (b.highestPosition || 2000))
                     .map((song) => (
                     <tr key={song.songId} className="hover:bg-gray-50 transition-colors">
@@ -244,25 +183,12 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                         {song.releaseYear || '-'}
                       </td>
                       <td className="px-4 py-3">
-                        {song.highestPosition ? (
-                          <span className="inline-flex items-center justify-center w-12 h-8 bg-[var(--bright-blue)] text-white rounded">
-                            {song.highestPosition}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400 text-sm">Niet in Top 2000</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        {song.timesListed > 0 ? (
-                          <span className="text-[var(--vivid-purple)]">{song.timesListed}x</span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
+                        <span className="text-[var(--vivid-purple)] font-medium">{song.timesListed}x</span>
                       </td>
                       <td className="px-4 py-3">
                         <button
                           onClick={() => handleSongClick(song.songId)}
-                          className="text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors text-sm"
+                          className="text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors text-sm font-medium"
                         >
                           Details →
                         </button>
