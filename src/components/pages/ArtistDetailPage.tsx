@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, User, Music, TrendingUp, Calendar } from 'lucide-react';
+import { ArrowLeft, User, Music, TrendingUp, Calendar, ExternalLink, Globe } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
@@ -80,6 +80,13 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
     onNavigate('song-detail', { songId: songId.toString() });
   };
 
+  // Generate official website URL (example logic - you can modify this)
+  const getOfficialWebsite = (artistName: string) => {
+    // Simple example: generate a search URL for the artist
+    const searchName = artistName.toLowerCase().replace(/\s+/g, '+');
+    return `https://www.google.com/search?q=${searchName}+official+website`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -137,6 +144,49 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                     <Calendar size={18} /> <span className="text-sm">Periode</span>
                   </div>
                   <div className="text-sm text-[var(--vivid-purple)]">{stats.activeYears}</div>
+                </div>
+              </div>
+
+              {/* Biography Section */}
+              {artist.biography && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold mb-4 text-[var(--bright-blue)]">Biografie</h3>
+                  <div className="mb-6">
+                    <div className="prose prose-lg max-w-none">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {artist.biography}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* External Links */}
+              <div className="mt-6">
+                <div className="flex flex-wrap gap-3">
+                  {artist.wiki && (
+                    <a 
+                      href={artist.wiki} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-[var(--bright-blue)] text-white rounded-lg hover:bg-[var(--vivid-purple)] transition-colors"
+                    >
+                      <Globe size={16} />
+                      Wikipedia
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
+                  
+                  <a 
+                    href={getOfficialWebsite(artist.name)} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                  >
+                    <Globe size={16} />
+                    Zoek Officiële Website
+                    <ExternalLink size={14} />
+                  </a>
                 </div>
               </div>
             </div>
