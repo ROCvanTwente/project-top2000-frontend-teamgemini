@@ -161,37 +161,63 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
               )}
             </div>
 
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="divide-y divide-gray-100">
-                {filteredAndSortedArtists.map(artist => (
-                  <div key={artist.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                    onClick={() => onNavigate?.('artist-detail', { artistId: artist.id.toString() })}>
-                    <div className="flex items-center gap-4">
-                      <div className="shrink-0 w-12 h-12 bg-linear-to-br from-(--color-gray-dark) to-(--color-gray-medium) rounded-lg flex items-center justify-center text-white overflow-hidden">
-                        {artist.photo ? (
-                          <img 
-                            src={artist.photo} 
-                            alt={artist.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <User size={24} />
-                        )}
-                      </div>
-                      <div className="grow">
-                        <h3 className="mb-1 hover:text-(--color-gray-medium)">{artist.name}</h3>
-                        <p className="text-gray-600 text-sm">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm px-3 py-1 bg-(--color-gray-dark) text-white rounded-full">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredAndSortedArtists.map(artist => (
+                <div 
+                  key={artist.id} 
+                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                  onClick={() => onNavigate?.('artist-detail', { artistId: artist.id.toString() })}
+                >
+                  {/* Artist photo section */}
+                  <div className="h-48 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center relative overflow-hidden">
+                    {artist.photo ? (
+                      <img 
+                        src={artist.photo} 
+                        alt={artist.name}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <User size={64} className="text-white/60" />
+                    )}
+                    {/* Songs count badge */}
+                    <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
+                      {artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}
+                    </div>
+                  </div>
+                  
+                  {/* Artist info section */}
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 hover:text-gray-700 transition-colors">
+                      {artist.name}
+                    </h3>
+                    
+                    {/* Biography */}
+                    <div className="text-gray-600 text-sm leading-relaxed">
+                      {artist.biography ? (
+                        <p className="line-clamp-4">
+                          {artist.biography}
+                        </p>
+                      ) : (
+                        <p className="italic text-gray-400">
+                          Geen biografie beschikbaar voor deze artiest.
+                        </p>
+                      )}
+                    </div>
+                    
+                    {/* View details button */}
+                    <div className="mt-4 pt-3 border-t border-gray-100">
+                      <div className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        Bekijk details →
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
 
-              {filteredAndSortedArtists.length===0 && (
-                <div className="text-center py-12 text-gray-500">Geen artiesten gevonden voor deze zoekopdracht</div>
+              {filteredAndSortedArtists.length === 0 && (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  Geen artiesten gevonden voor deze zoekopdracht
+                </div>
               )}
             </div>
           </div>
