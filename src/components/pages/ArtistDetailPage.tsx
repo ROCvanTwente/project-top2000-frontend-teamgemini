@@ -184,7 +184,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                     className="flex items-center gap-2 px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <Globe size={16} />
-                    Zoek Officiële Website
+                    Bezoek Officiële Website
                     <ExternalLink size={14} />
                   </a>
                 </div>
