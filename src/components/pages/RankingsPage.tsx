@@ -1,7 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
+import type { ChangeEvent } from "react";
 import { Search, Filter } from "lucide-react";
 // @ts-ignore
-import { fetchFromAPI } from '../../api.js';
+import { fetchFromAPI } from "../../api.js";
+
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 interface RankingsPageProps {
   onNavigate: (page: string, params?: any) => void;
@@ -22,13 +28,15 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
 
   const [selectedYear, setSelectedYear] = useState<number>(2023);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"position" | "artist" | "title">("position");
+  const [sortBy, setSortBy] =
+    useState<"position" | "artist" | "title">("position");
+
+  const [page, setPage] = useState<number>(1);
+  const itemsPerPage = 25;
 
   const availableYears = useMemo(() => {
-    const start = 1999;
-    const end = 2024;
-    const years = [];
-    for (let y = end; y >= start; y--) years.push(y);
+    const years: number[] = [];
+    for (let y = 2024; y >= 1999; y--) years.push(y);
     return years;
   }, []);
 
@@ -37,11 +45,13 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
       try {
         setLoading(true);
         setError(null);
-        const data: Ranking[] = await fetchFromAPI(`top2000/${selectedYear}`);
+        const data: Ranking[] = await fetchFromAPI(
+          `top2000/${selectedYear}`
+        );
         setRankings(data);
       } catch (err: any) {
         console.error(err);
-        setError(err.message);
+        setError(err.message ?? "Fout bij laden");
         setRankings([]);
       } finally {
         setLoading(false);
@@ -51,15 +61,19 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     loadRankings();
   }, [selectedYear]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [selectedYear, searchTerm, sortBy]);
+
   const filteredRankings = useMemo(() => {
     let data = [...rankings];
 
     if (searchTerm) {
-      const lowerSearch = searchTerm.toLowerCase();
+      const q = searchTerm.toLowerCase();
       data = data.filter(
         (r) =>
-          r.title.toLowerCase().includes(lowerSearch) ||
-          r.artist.toLowerCase().includes(lowerSearch)
+          r.title.toLowerCase().includes(q) ||
+          r.artist.toLowerCase().includes(q)
       );
     }
 
@@ -70,36 +84,37 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     });
   }, [rankings, searchTerm, sortBy]);
 
+  const totalPages = Math.ceil(filteredRankings.length / itemsPerPage);
+
+  const paginatedRankings = useMemo(() => {
+    const start = (page - 1) * itemsPerPage;
+    return filteredRankings.slice(start, start + itemsPerPage);
+  }, [filteredRankings, page]);
+
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative mx-auto mb-4 w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
-            <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
-          </div>
-          <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
-          <p className="text-white/80">Even geduld</p>
-          <div className="mt-4 flex items-center justify-center gap-1">
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.40s" }}></span>
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
-          </div>
+        <div className="text-white text-center">
+          <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4" />
+          Laden...
         </div>
       </div>
     );
   }
 
-  if (error) return <p className="text-red-600">{error}</p>;
+  if (error) {
+    return <p className="text-red-600">{error}</p>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-12 bg-black"></div>
+          <div className="w-1 h-12 bg-black" />
           <h1>TOP 2000 Jaaroverzichten</h1>
         </div>
 
+   
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="grid md:grid-cols-3 gap-4">
             <div>
@@ -107,10 +122,12 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
                 <Filter size={16} className="inline mr-2" />
                 Jaar
               </label>
-              <select title="selectedYear"
+              <select
                 value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-black"
+                onChange={(e) =>
+                  setSelectedYear(Number(e.target.value))
+                }
+                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-black"
               >
                 {availableYears.map((year) => (
                   <option key={year} value={year}>
@@ -123,23 +140,25 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
             <div>
               <label className="block mb-2">
                 <Search size={16} className="inline mr-2" />
-                Zoeken op artiest of titel
+                Zoeken
               </label>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Typ om te zoeken..."
-                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-black"
+                placeholder="Zoek op titel of artiest"
+                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-black"
               />
             </div>
 
             <div>
               <label className="block mb-2">Sorteren op</label>
-              <select title="sortBy"
+              <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-black"
+                onChange={(e) =>
+                  setSortBy(e.target.value as "position" | "artist" | "title")
+                }
+                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-black"
               >
                 <option value="position">Positie</option>
                 <option value="artist">Artiest</option>
@@ -149,33 +168,32 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
           </div>
         </div>
 
-        <div className="mb-4 text-gray-600">
-          {filteredRankings.length} {filteredRankings.length === 1 ? "nummer" : "nummers"} gevonden
-        </div>
 
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-black text-white">
                 <tr>
-                  <th className="px-6 py-4 text-left w-20">Positie</th>
+                  <th className="px-6 py-4 w-20 text-left">#</th>
                   <th className="px-6 py-4 text-left">Titel</th>
                   <th className="px-6 py-4 text-left">Artiest</th>
-                  <th className="px-6 py-4 text-left w-32">Jaar</th>
+                  <th className="px-6 py-4 w-32 text-left">Jaar</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredRankings.map((r) => (
+                {paginatedRankings.map((r) => (
                   <tr
                     key={r.songId}
-                    onClick={() => onNavigate("song-detail", { songId: r.songId })}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() =>
+                      onNavigate("song-detail", {
+                        songId: r.songId,
+                      })
+                    }
+                    className="border-b hover:bg-gray-50 cursor-pointer"
                   >
                     <td className="px-6 py-4">{r.position}</td>
-                    <td className="px-6 py-4">
-                      <span className="text-blue-600 hover:underline">
-                        {r.title}
-                      </span>
+                    <td className="px-6 py-4 text-blue-600 hover:underline">
+                      {r.title}
                     </td>
                     <td className="px-6 py-4">{r.artist}</td>
                     <td className="px-6 py-4">{r.releaseYear}</td>
@@ -184,9 +202,27 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
               </tbody>
             </table>
 
-            {filteredRankings.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                Geen resultaten gevonden voor deze zoekopdracht
+            {totalPages > 1 && (
+              <div className="flex justify-center py-6">
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={(
+                    _event: ChangeEvent<unknown>,
+                    value: number
+                  ) => setPage(value)}
+                  shape="rounded"
+                  size="large"
+                  renderItem={(item) => (
+                    <PaginationItem
+                      slots={{
+                        previous: ArrowBackIcon,
+                        next: ArrowForwardIcon,
+                      }}
+                      {...item}
+                    />
+                  )}
+                />
               </div>
             )}
           </div>

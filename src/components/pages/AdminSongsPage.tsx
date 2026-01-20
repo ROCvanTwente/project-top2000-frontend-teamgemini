@@ -219,13 +219,13 @@ const saveSong = async () => {
                     className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
                   />
                 </td>
-              </tr>
+              </tr> 
               <tr>
                 <td className="py-2">Artiest Naam</td>
                 <td>
                   <input
                     value={editData.artistName ?? "Null"}
-                    readOnly
+                    disabled
                     className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
                   />
                 </td>
