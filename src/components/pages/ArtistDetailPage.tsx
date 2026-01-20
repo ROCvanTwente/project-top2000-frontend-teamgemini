@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, User, Music, TrendingUp, Calendar, ExternalLink, Globe } from 'lucide-react';
+ import { ArrowLeft, User, Music, TrendingUp, Calendar, ExternalLink, Globe } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
