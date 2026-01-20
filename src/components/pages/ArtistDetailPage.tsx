@@ -148,18 +148,26 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
               </div>
 
               {/* Biography Section */}
-              {artist.biography && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-semibold mb-4 text-[var(--bright-blue)]">Biografie</h3>
-                  <div className="mb-6">
-                    <div className="prose prose-lg max-w-none">
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-4 text-[var(--bright-blue)]">Biografie</h3>
+                <div className="mb-6">
+                  <div className="prose prose-lg max-w-none">
+                    {artist.biography ? (
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                         {artist.biography}
                       </p>
-                    </div>
+                    ) : (
+                      <div className="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-200">
+                        <p className="text-gray-500 italic text-center">
+                          Er is momenteel geen biografie beschikbaar voor {artist.name}. 
+                          <br />
+                          Kijk later nog eens terug voor meer informatie over deze artiest.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* External Links */}
               <div className="mt-6">
