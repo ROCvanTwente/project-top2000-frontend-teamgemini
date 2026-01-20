@@ -169,7 +169,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                       href={artist.wiki} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-[var(--bright-blue)] text-white rounded-lg hover:bg-[var(--vivid-purple)] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
                     >
                       <Globe size={16} />
                       Wikipedia
@@ -181,7 +181,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                     href={getOfficialWebsite(artist.name)} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <Globe size={16} />
                     Zoek Officiële Website
