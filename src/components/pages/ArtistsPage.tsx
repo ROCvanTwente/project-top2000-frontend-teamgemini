@@ -47,10 +47,11 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "songs">("name");
 
-  // 🔹 Pagination
+  // Pagination
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Load artists
   useEffect(() => {
     const loadArtists = async () => {
       try {
@@ -63,11 +64,10 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
         setLoading(false);
       }
     };
-
     loadArtists();
   }, []);
 
-  // reset pagina bij search / sort
+  // Reset page bij search / sort
   useEffect(() => {
     setPage(1);
   }, [searchTerm, sortBy]);
@@ -94,12 +94,10 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
       );
     }
 
-    const sorted = [...filtered].sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       if (sortBy === "name") return a.name.localeCompare(b.name);
       return b.songsCount - a.songsCount;
     });
-
-    return sorted;
   }, [artistsForUI, searchTerm, sortBy]);
 
   const totalPages = Math.ceil(
@@ -113,6 +111,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      {/* Loading overlay */}
       {loading && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
           <div className="text-center">
@@ -120,9 +119,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
               <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
               <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
             </div>
-            <h2 className="text-2xl font-black text-white mb-2">
-              Laden...
-            </h2>
+            <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
             <p className="text-white/80">Even geduld</p>
             <div className="mt-4 flex items-center justify-center gap-1">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
@@ -139,101 +136,100 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
         </div>
       )}
 
-      {error && (
-        <div className="text-center py-20 text-red-500">{error}</div>
-      )}
+      {/* Error */}
+      {error && <div className="text-center py-20 text-red-500">{error}</div>}
 
+      {/* Main content */}
       {!loading && !error && (
-        <>
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-1 h-12 bg-gradient-to-b from-[var(--color-gray-dark)] to-[var(--color-gray-medium)]"></div>
-              <h1>Alle Artiesten in de TOP 2000</h1>
-            </div>
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-1 h-12 bg-gradient-to-b from-gray-800 to-gray-400"></div>
+            <h1>Alle Artiesten in de TOP 2000</h1>
+          </div>
 
-            {/* Filters */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-2">
-                    <Search size={16} className="inline mr-2" />
-                    Zoeken op artiestnaam
-                  </label>
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Typ om te zoeken..."
-                    className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-[var(--color-gray-medium)]"
-                  />
-                </div>
+          {/* Filters */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-2">
+                  <Search size={16} className="inline mr-2" />
+                  Zoeken op artiestnaam
+                </label>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Typ om te zoeken..."
+                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                />
+              </div>
 
-                <div>
-                  <label className="block mb-2">Sorteren op</label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) =>
-                      setSortBy(e.target.value as "name" | "songs")
-                    }
-                    className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-[var(--color-gray-medium)]"
-                  >
-                    <option value="name">Naam (A-Z)</option>
-                    <option value="songs">Aantal nummers</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block mb-2">Sorteren op</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "name" || value === "songs") setSortBy(value);
+                  }}
+                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                >
+                  <option value="name">Naam (A-Z)</option>
+                  <option value="songs">Aantal nummers</option>
+                </select>
               </div>
             </div>
+          </div>
 
-            <div className="mb-4 text-gray-600">
-              {filteredAndSortedArtists.length}{" "}
-              {filteredAndSortedArtists.length === 1 ? "artiest" : "artiesten"}{" "}
-              gevonden
-            </div>
+          {/* Result count */}
+          <div className="mb-4 text-gray-600">
+            {filteredAndSortedArtists.length}{" "}
+            {filteredAndSortedArtists.length === 1 ? "artiest" : "artiesten"}{" "}
+            gevonden
+          </div>
 
+          {/* Artist grid */}
+          {paginatedArtists.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAndSortedArtists.map(artist => (
-                <div 
-                  key={artist.id} 
+              {paginatedArtists.map((artist) => (
+                <div
+                  key={artist.id}
                   className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
-                  onClick={() => onNavigate?.('artist-detail', { artistId: artist.id.toString() })}
+                  onClick={() =>
+                    onNavigate?.("artist-detail", { artistId: artist.id.toString() })
+                  }
                 >
-                  {/* Artist photo section */}
+                  {/* Photo */}
                   <div className="h-48 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center relative overflow-hidden">
                     {artist.photo ? (
-                      <img 
-                        src={artist.photo} 
+                      <img
+                        src={artist.photo}
                         alt={artist.name}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
                       <User size={64} className="text-white/60" />
                     )}
-                    {/* Songs count badge */}
+
                     <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
-                      {artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}
+                      {artist.songsCount} {artist.songsCount === 1 ? "nummer" : "nummers"}
                     </div>
                   </div>
-                  
-                  {/* Artist info section */}
+
+                  {/* Info */}
                   <div className="p-4">
                     <h3 className="text-lg font-bold text-gray-900 mb-3 hover:text-gray-700 transition-colors">
                       {artist.name}
                     </h3>
-                    
-                    {/* Biography */}
                     <div className="text-gray-600 text-sm leading-relaxed">
                       {artist.biography ? (
-                        <p className="line-clamp-4">
-                          {artist.biography}
-                        </p>
+                        <p className="line-clamp-4">{artist.biography}</p>
                       ) : (
-                        <p className="italic text-gray-400">
-                          Geen biografie beschikbaar voor deze artiest.
-                        </p>
+                        <p className="italic text-gray-400">Geen biografie beschikbaar voor deze artiest.</p>
                       )}
                     </div>
-                    
-                    {/* View details button */}
+
                     <div className="mt-4 pt-3 border-t border-gray-100">
                       <div className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                         Bekijk details →
@@ -242,82 +238,32 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
                   </div>
                 </div>
               ))}
-
-              {filteredAndSortedArtists.length === 0 && (
-                <div className="col-span-full text-center py-12 text-gray-500">
-                  Geen artiesten gevonden voor deze zoekopdracht
-                </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="divide-y divide-gray-100">
-                {paginatedArtists.map((artist) => (
-                  <div
-                    key={artist.id}
-                    className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                    onClick={() =>
-                      onNavigate?.("artist-detail", {
-                        artistId: artist.id.toString(),
-                      })
-                    }
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white overflow-hidden">
-                        {artist.photo ? (
-                          <img
-                            src={artist.photo}
-                            alt={artist.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <User size={24} />
-                        )}
-                      </div>
-                      <div className="grow">
-                        <h3>{artist.name}</h3>
-                        <p className="text-gray-600 text-sm">
-                          {artist.songsCount}{" "}
-                          {artist.songsCount === 1 ? "nummer" : "nummers"}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm px-3 py-1 bg-[var(--color-gray-dark)] text-white rounded-full">
-                          {artist.songsCount}{" "}
-                          {artist.songsCount === 1 ? "nummer" : "nummers"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {paginatedArtists.length === 0 && (
-                <div className="text-center py-12 text-gray-500">
-                  Geen artiesten gevonden voor deze zoekopdracht
-                </div>
-              )}
             </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500">
+              Geen artiesten gevonden voor deze zoekopdracht
+            </div>
+          )}
 
-            {totalPages > 1 && (
-              <div className="flex justify-center py-6">
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onChange={(_, value: number) => setPage(value)}
-                  shape="rounded"
-                  size="large"
-                  renderItem={(item) => (
-                    <PaginationItem
-                      slots={{
-                        previous: ArrowBackIcon,
-                        next: ArrowForwardIcon,
-                      }}
-                      {...item}
-                    />
-                  )}
-                />
-              </div>
-            )}
-          </div>
-        </>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center py-6">
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={(_, value: number) => setPage(value)}
+                shape="rounded"
+                size="large"
+                renderItem={(item) => (
+                  <PaginationItem
+                    slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                    {...item}
+                  />
+                )}
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
