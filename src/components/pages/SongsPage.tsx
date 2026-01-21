@@ -277,6 +277,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
               />
             </div>
           )}
+        </div>
       )}
     </div>
   );
