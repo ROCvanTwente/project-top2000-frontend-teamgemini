@@ -105,14 +105,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
               <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
             </div>
-
             <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
             <p className="text-white/80">Even geduld</p>
-
             <div className="mt-4 flex items-center justify-center gap-1">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
+              <span
+                className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0.15s" }}
+              ></span>
+              <span
+                className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0.3s" }}
+              ></span>
             </div>
           </div>
         </div>
