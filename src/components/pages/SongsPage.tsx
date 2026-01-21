@@ -198,72 +198,85 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
           </div>
 
           <div className="mb-4 text-gray-600">
-            {filteredAndSortedSongs.length} nummers
-            gevonden
+            {filteredAndSortedSongs.length} nummers gevonden
           </div>
 
-          {/* List */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="divide-y divide-gray-100">
-              {paginatedSongs.map((song) => (
-                <div
-                  key={song.id}
-                  className="p-4 hover:bg-gray-50 cursor-pointer"
-                  onClick={() =>
-                    onNavigate("song-detail", {
-                      songId: song.id.toString(),
-                    })
-                  }
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white">
-                      <Music2 size={24} />
-                    </div>
-                    <div className="flex-grow">
-                      <h3>{song.title}</h3>
-                      <p className="text-sm text-gray-600">
-                        {song.artistName} •{" "}
-                        {song.releaseYear ?? "-"}
-                      </p>
-                    </div>
-                    <div className="text-sm px-3 py-1 bg-[var(--color-gray-dark)] text-white rounded-full">
-                      {song.noteringen}x genoteerd
+          {/* Grid Layout with Pagination */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {paginatedSongs.map(song => (
+              <div 
+                key={song.id} 
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}
+              >
+                {/* Song cover section */}
+                <div className="h-48 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
+                  <Music2 size={64} className="text-white/60" />
+                  {/* Times listed badge */}
+                  <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
+                    {song.noteringen}x genoteerd
+                  </div>
+                </div>
+                
+                {/* Song info section */}
+                <div className="p-4">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 hover:text-gray-700 transition-colors">
+                    {song.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 text-sm mb-2">
+                    door {song.artistName}
+                  </p>
+                  
+                  <div className="text-gray-500 text-sm mb-3">
+                    {song.releaseYear ? `Uitgebracht in ${song.releaseYear}` : 'Jaar onbekend'}
+                    {song.highestPosition && (
+                      <span className="ml-2 text-[var(--vivid-purple)] font-medium">
+                        • Beste positie: #{song.highestPosition}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* View details button */}
+                  <div className="mt-4 pt-3 border-t border-gray-100">
+                    <div className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                      Bekijk details →
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* ✅ Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center py-6">
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onChange={(_, value: number) =>
-                    setPage(value)
-                  }
-                  shape="rounded"
-                  size="large"
-                  renderItem={(item) => (
-                    <PaginationItem
-                      slots={{
-                        previous: ArrowBackIcon,
-                        next: ArrowForwardIcon,
-                      }}
-                      {...item}
-                    />
-                  )}
-                />
               </div>
-            )}
+            ))}
 
             {paginatedSongs.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                Geen nummers gevonden
+              <div className="col-span-full text-center py-12 text-gray-500">
+                Geen nummers gevonden voor deze zoekopdracht
               </div>
             )}
           </div>
+
+          {/* ✅ Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center py-6">
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={(_, value: number) =>
+                  setPage(value)
+                }
+                shape="rounded"
+                size="large"
+                renderItem={(item) => (
+                  <PaginationItem
+                    slots={{
+                      previous: ArrowBackIcon,
+                      next: ArrowForwardIcon,
+                    }}
+                    {...item}
+                  />
+                )}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
