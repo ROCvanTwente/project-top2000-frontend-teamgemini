@@ -41,22 +41,24 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadTop5 = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        setTop5([]);
+const loadTop5 = async () => {
+  try {
+    setLoading(true);
+    setError(null);
+    setTop5([]);
 
-        const data: Top5Song[] = await fetchFromAPI("top5songs/2024");
-        setTop5(data);
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message ?? "Fout bij ophalen van Top 5");
-        setTop5([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const data: any = await fetchFromAPI("top5songs/2024");
+    // Extract $values
+    setTop5(Array.isArray(data.$values) ? data.$values : []);
+  } catch (err: any) {
+    console.error(err);
+    setError(err.message ?? "Fout bij ophalen van Top 5");
+    setTop5([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     loadTop5();
   }, []);
