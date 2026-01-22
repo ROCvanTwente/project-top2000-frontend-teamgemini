@@ -4,6 +4,9 @@ import { StatisticsInfoBlock } from './StatisticsComponents/StatisticsInfoBlock'
 import { StatisticsTable } from './StatisticsComponents/StatisticsTable';
 import { StatisticsFilter } from './StatisticsComponents/StatisticsFilter';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+
 interface StatisticsPageProps {
   onNavigate: (page: string, params?: any) => void;
 }
@@ -30,7 +33,7 @@ export function StatisticsPage({ onNavigate: _onNavigate }: StatisticsPageProps)
 
     try {
       // URL bouwen
-      let url = `http://localhost:5237/api/StatistiekenOverzicht/${currentOption.endpoint}`;
+let url = `${API_URL}/api/StatistiekenOverzicht/${currentOption.endpoint}`;
       
       if (currentOption.needsYear) {
         url += `/${year}`;

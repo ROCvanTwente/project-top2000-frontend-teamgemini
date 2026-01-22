@@ -2,6 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import "../AdminSongsPage.css";
 
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 type Song = {
   songId: number;
   titel: string;
@@ -34,7 +37,7 @@ export default function AdminSongsPage() {
       if (songIdInput) params.id = Number(songIdInput);
       if (songTitleInput) params.titel = songTitleInput;
 
-      const res = await axios.get(`http://localhost:5237/admin/songs/search`, { params });
+const res = await axios.get(`${API_URL}/admin/songs/search`, { params });
 const data: Song[] = res.data.$values ?? res.data;
 setSongs(data);
 
@@ -102,7 +105,8 @@ const saveSong = async () => {
 
   try {
     setLoading(true);
-    await axios.put(`http://localhost:5237/admin/songs/${selectedSong.songId}`, dto);
+    await axios.put(`${API_URL}/admin/songs/${selectedSong.songId}`, dto);
+
 
     setTimeout(() => {
       window.location.href = "/?success=true";
