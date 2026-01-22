@@ -87,6 +87,15 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
     return `https://www.google.com/search?q=${searchName}+official+website`;
   };
 
+  const getProxiedImageUrl = (imageUrl: string | undefined | null) => {
+    if (!imageUrl) return null;
+    // If it's an external URL, proxy it through the backend
+    if (imageUrl.startsWith('http')) {
+      return `api/imageproxy/proxy?url=${encodeURIComponent(imageUrl)}`;
+    }
+    return imageUrl;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -105,7 +114,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
             <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center overflow-hidden">
               {artist.photo ? (
                 <img 
-                  src={artist.photo} 
+                  src={getProxiedImageUrl(artist.photo) || artist.photo}
                   alt={artist.name}
                   className="w-full h-full object-cover"
                 />
