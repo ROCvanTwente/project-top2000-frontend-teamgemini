@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 export interface Song {
   id: string; // string id
   title: string;
@@ -31,17 +34,15 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
 useEffect(() => {
   async function fetchPlaylists() {
     try {
-      const res = await axios.get('http://localhost:5237/api/Playlist');
+      const res = await axios.get(`${API_URL}/api/Playlist`);
       console.log('API raw playlists:', res.data);
 
-      // Pak de echte array uit $values
       const playlistsArray = res.data.$values || [];
 
-      // Converteer naar het formaat dat je app verwacht
       const formattedPlaylists = playlistsArray.map((p: any) => ({
         id: p.id,
         name: p.name,
-        createdAt: new Date().toISOString(), // placeholder date
+        createdAt: new Date().toISOString(),
         songs: p.playListSongs?.$values?.map((s: any) => ({
           id: s.songId,
           title: s.title,
@@ -62,7 +63,7 @@ useEffect(() => {
 
   const createPlaylist = async (name: string) => {
     try {
-      const res = await axios.post<ApiPlaylist>('http://localhost:5237/api/Playlist', { name });
+      const res = await axios.post(`${API_URL}/api/Playlist`, { name });
       const newPlaylist = { ...res.data, id: res.data.id.toString() };
       setPlaylists([...playlists, newPlaylist]);
     } catch (err) {
@@ -72,7 +73,7 @@ useEffect(() => {
 
   const deletePlaylist = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5237/api/Playlist/${id}`);
+      await axios.delete(`${API_URL}/api/Playlist/${id}`);
       setPlaylists(playlists.filter(p => p.id !== id));
     } catch (err) {
       console.error('Fout bij verwijderen playlist:', err);
@@ -81,7 +82,9 @@ useEffect(() => {
 
   const removeSongFromPlaylist = async (playlistId: string, songId: string) => {
     try {
-      await axios.delete(`http://localhost:5237/api/Playlist/${playlistId}/songs/${songId}`);
+await axios.delete(
+  `${API_URL}/api/Playlist/${playlistId}/songs/${songId}`
+);
       setPlaylists(playlists.map(p =>
         p.id === playlistId
           ? { ...p, songs: p.songs.filter(s => s.id !== songId) }

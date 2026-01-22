@@ -10,7 +10,6 @@ interface Ranking {
   position: number;
 }
 
-// This matches exactly what the C# API returns
 interface SongApi {
   songId: number;
   title: string;
@@ -25,7 +24,8 @@ interface SongApi {
     firstYear?: number;
     lastYear?: number;
   };
-  top2000Positions?: Ranking[];
+  top2000Positions?: Ranking[] | { $values?: Ranking[] };
+  Top2000Positions?: Ranking[] | { $values?: Ranking[] };
 }
 
 interface SongDetailPageProps {
@@ -48,8 +48,6 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
         setLoading(true);
         setError(null);
         const data: any = await fetchFromAPI(`songs/${songId}`);
-        console.log('Song data received:', data); // Debug log to see what we get
-        console.log('Top2000Positions:', data.top2000Positions || data.Top2000Positions); // Check both cases
         setSong(data);
       } catch (err: any) {
         setError(err.message);
@@ -73,8 +71,8 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
           <p className="text-white/80">Even geduld</p>
           <div className="mt-4 flex items-center justify-center gap-1">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.40s" }}></span>
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.15s" }}></span>
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: "0.3s" }}></span>
           </div>
         </div>
       </div>
@@ -97,10 +95,19 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  const rawRankings = song.top2000Positions || (song as any).Top2000Positions || [];
-  const songRankings = rawRankings.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
-  console.log('songRankings:', songRankings); // Debug log
-  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
+  // ✅ Zorg dat rawRankings altijd een echte array is
+  const rawRankings: Ranking[] = Array.isArray(song.top2000Positions)
+    ? song.top2000Positions
+    : Array.isArray(song.Top2000Positions)
+      ? song.Top2000Positions
+      : song.top2000Positions?.$values
+        ?? song.Top2000Positions?.$values
+        ?? [];
+
+  // Sorteer descending op jaar
+  const songRankings = rawRankings.sort((a: Ranking, b: Ranking) => b.year - a.year);
+
+  const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map(r => r.position)) : 2000;
   const chartWidth = Math.max(800, songRankings.length * 80);
 
   return (

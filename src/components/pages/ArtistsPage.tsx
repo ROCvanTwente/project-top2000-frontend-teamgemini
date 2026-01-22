@@ -52,20 +52,27 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const itemsPerPage = 10;
 
   // Load artists
-  useEffect(() => {
-    const loadArtists = async () => {
-      try {
-        setLoading(true);
-        const data: ArtistApi[] = await fetchFromAPI("artist");
-        setArtists(data);
-      } catch (err: any) {
-        setError(err.message ?? "Fout bij laden");
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadArtists();
-  }, []);
+useEffect(() => {
+  const loadArtists = async () => {
+    try {
+      setLoading(true);
+      const data: any = await fetchFromAPI("artist");
+
+      // Zet altijd een echte array
+      const arrayData: ArtistApi[] = Array.isArray(data)
+        ? data
+        : data?.$values ?? [];
+
+      setArtists(arrayData);
+    } catch (err: any) {
+      setError(err.message ?? "Fout bij laden");
+      setArtists([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadArtists();
+}, []);
 
   // Reset page bij search / sort
   useEffect(() => {
