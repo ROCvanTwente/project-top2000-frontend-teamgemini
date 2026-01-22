@@ -113,7 +113,8 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
     if (!imageUrl) return null;
     // If it's an external URL, proxy it through the backend
     if (imageUrl.startsWith('http')) {
-      return `api/imageproxy/proxy?url=${encodeURIComponent(imageUrl)}`;
+      const apiBase = window.location.origin;
+      return `${apiBase}/api/imageproxy/proxy?url=${encodeURIComponent(imageUrl)}`;
     }
     return imageUrl;
   };
