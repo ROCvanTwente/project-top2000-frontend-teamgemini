@@ -113,7 +113,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
     if (!imageUrl) return null;
     // If it's an external URL, proxy it through the backend
     if (imageUrl.startsWith('http')) {
-      const apiBase = window.location.origin;
+      const apiBase = import.meta.env.VITE_API_URL;
       return `${apiBase}/api/imageproxy/proxy?url=${encodeURIComponent(imageUrl)}`;
     }
     return imageUrl;
