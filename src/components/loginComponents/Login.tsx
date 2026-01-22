@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface LoginProps {
   onForgotPassword: () => void;
@@ -7,10 +8,41 @@ interface LoginProps {
 export default function Login({ onForgotPassword }: LoginProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const { setUserFromBackend } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login submit ignored", email, password);
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:5237/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const message = await response.json();
+        setError(message.message || "Login failed");
+        return;
+      }
+
+      const data = await response.json();
+      localStorage.setItem("jwt", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
+
+      setUserFromBackend({
+        email: data.email,
+        role: data.roles[0] || "user",
+      });
+
+      console.log("Login successful", data);
+
+    } catch (err) {
+      setError("Login failed");
+      console.error(err);
+    }
   };
 
   return (
@@ -41,6 +73,8 @@ export default function Login({ onForgotPassword }: LoginProps) {
           Wachtwoord vergeten?
         </button>
       </div>
+
+      {error && <p className="text-red-600 text-sm">{error}</p>}
 
       <button
         type="submit"
