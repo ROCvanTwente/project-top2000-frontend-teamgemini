@@ -12,7 +12,7 @@ export default function LoginPage() {
       case "login":
         return <Login onForgotPassword={() => setMode("forgot")} />;
       case "register":
-        return <Register />;
+        return <Register onRegistered={() => setMode("login")} />;
       case "forgot":
         return <ForgotPassword onBack={() => setMode("login")} />;
       default:
@@ -23,7 +23,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-neutral-900 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        {/* Header + icon */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-600 shadow-lg mb-4">
             {mode === "login" || mode === "forgot" ? (
@@ -40,11 +39,7 @@ export default function LoginPage() {
               : "Wachtwoord vergeten"}
           </h1>
         </div>
-
-        {/* Form */}
         {renderForm()}
-
-        {/* Switch login/register */}
         {mode !== "forgot" && (
           <div className="mt-6 text-center">
             <button

@@ -1,17 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { users, type User } from '../data/mockData';
+
+interface BackendUser {
+  email: string;
+  role: string;
+}
 
 interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => boolean;
+  user: BackendUser | null;
   logout: () => void;
   isAdmin: boolean;
+  setUserFromBackend: (user: BackendUser) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<BackendUser | null>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('top2000_user');
@@ -20,28 +24,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (email: string, password: string): boolean => {
-    // WARNING: Direct password comparison is for DEMO purposes only!
-    // In production, use proper password hashing (bcrypt, argon2) and compare hashes
-    const foundUser = users.find(u => u.email === email && u.password === password);
-    if (foundUser) {
-      const userWithoutPassword = { ...foundUser, password: '' };
-      setUser(userWithoutPassword);
-      localStorage.setItem('top2000_user', JSON.stringify(userWithoutPassword));
-      return true;
-    }
-    return false;
-  };
-
   const logout = () => {
     setUser(null);
     localStorage.removeItem('top2000_user');
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('refreshToken');
+  };
+
+  const setUserFromBackend = (userFromBackend: BackendUser) => {
+    setUser(userFromBackend);
+    localStorage.setItem('top2000_user', JSON.stringify(userFromBackend));
   };
 
   const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, logout, isAdmin, setUserFromBackend }}>
       {children}
     </AuthContext.Provider>
   );
