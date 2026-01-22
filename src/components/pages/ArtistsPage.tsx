@@ -109,17 +109,6 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
     return filteredAndSortedArtists.slice(start, start + itemsPerPage);
   }, [filteredAndSortedArtists, page]);
 
-  const getProxiedImageUrl = (imageUrl: string | undefined | null) => {
-    if (!imageUrl) return null;
-    // If it's an external URL, proxy it through the backend
-    if (imageUrl.startsWith('http')) {
-      const apiBase = import.meta.env.VITE_API_URL || '';
-      const baseUrl = apiBase ? `${apiBase}/api/imageproxy/proxy` : `/api/imageproxy/proxy`;
-      return `${baseUrl}?url=${encodeURIComponent(imageUrl)}`;
-    }
-    return imageUrl;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       {/* Loading overlay */}
@@ -215,7 +204,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
                   <div className="h-48 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center relative overflow-hidden">
                     {artist.photo ? (
                       <img
-                        src={getProxiedImageUrl(artist.photo) || artist.photo}
+                        src={artist.photo}
                         alt={artist.name}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
