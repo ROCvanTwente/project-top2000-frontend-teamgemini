@@ -17,7 +17,7 @@ export function StatisticsPage({ onNavigate: _onNavigate }: StatisticsPageProps)
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const currentOption = STATISTIEK_OPTIES.find(o => o.id === selectedStatId);
+  const currentOption = STATISTIEK_OPTIES.find(statistiek => statistiek.id === selectedStatId);
 
   // data ophalen
   const handleZoeken = async () => {

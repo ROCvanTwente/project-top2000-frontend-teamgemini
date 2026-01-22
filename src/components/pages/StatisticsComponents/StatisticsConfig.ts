@@ -23,10 +23,10 @@ export const STATISTIEK_OPTIES: StatistiekOptie[] = [
   },
   { 
     id: 3, 
-    label: "Alle Edities", 
-    endpoint: "alle-edities", 
+    label: "De Evergreens", 
+    endpoint: "evergreens", 
     needsYear: false,
-    description: "Een complete lijst van alle nummers die in de database staan, ongeacht het jaar of de positie."
+    description: "De onverwoestbare klassiekers die sinds de start nog nooit een editie van de Top 2000 hebben overgeslagen."
   },
   { 
     id: 4, 
