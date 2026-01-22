@@ -102,12 +102,20 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="md:flex">
             {/* Artist Avatar */}
-            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
-              <div className="text-white text-center p-8">
-                <User size={80} className="mx-auto mb-4" />
-                <h2 className="text-white mb-2">{artist.name}</h2>
-                <p className="text-white/80">{stats.totalSongs} nummer{stats.totalSongs !== 1 ? 's' : ''}</p>
-              </div>
+            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center overflow-hidden">
+              {artist.photo ? (
+                <img 
+                  src={artist.photo} 
+                  alt={artist.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-white text-center p-8">
+                  <User size={80} className="mx-auto mb-4" />
+                  <h2 className="text-white mb-2">{artist.name}</h2>
+                  <p className="text-white/80">{stats.totalSongs} nummer{stats.totalSongs !== 1 ? 's' : ''}</p>
+                </div>
+              )}
             </div>
 
             {/* Artist Details */}
