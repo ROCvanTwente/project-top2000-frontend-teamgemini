@@ -50,7 +50,7 @@ export default function AdminSongsPage() {
       setMessage(null);
     } catch (err: any) {
       setLoading(false);
-      setMessage({ text: "Liedje(s) niet gevonden of fout: " + err.message, type: "error" });
+      setMessage({ text: "Liedje is niet gevonden: " + err.message, type: "error" });
       setSongs([]);
       setSelectedSong(null);
       setEditData({});
@@ -163,7 +163,7 @@ const saveSong = async () => {
           onClick={fetchSongs}
           className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
         >
-          Zoek Liedje(s)
+          Zoek Liedje
         </button>
       </div>
 
@@ -186,16 +186,18 @@ const saveSong = async () => {
           <h3 className="font-semibold mb-4">Liedje Bewerken</h3>
           <table className="w-full mb-4">
             <tbody className="divide-y divide-gray-200">
+
               <tr>
                 <td className="py-2">Titel</td>
                 <td>
                   <input
                     value={editData.titel || "Null"}
-                    onChange={(e) => setEditData({ ...editData, titel: e.target.value || undefined })}
-                    className="border p-2 w-full rounded"
+                    disabled
+                    className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
                   />
                 </td>
               </tr>
+
               <tr>
                 <td className="py-2">Release Jaar</td>
                 <td>
@@ -209,6 +211,7 @@ const saveSong = async () => {
                   />
                 </td>
               </tr>
+
               <tr>
                 <td className="py-2">Artiest ID</td>
                 <td>
@@ -219,13 +222,13 @@ const saveSong = async () => {
                     className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
                   />
                 </td>
-              </tr>
+              </tr> 
               <tr>
                 <td className="py-2">Artiest Naam</td>
                 <td>
                   <input
                     value={editData.artistName ?? "Null"}
-                    readOnly
+                    disabled
                     className="border p-2 w-full rounded bg-gray-200 cursor-not-allowed"
                   />
                 </td>
