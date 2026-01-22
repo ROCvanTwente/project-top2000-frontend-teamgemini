@@ -42,7 +42,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
 
   // 🔹 Pagination
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 9;
 
   useEffect(() => {
     const loadSongs = async () => {
