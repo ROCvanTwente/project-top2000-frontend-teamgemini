@@ -31,14 +31,14 @@
   background-color: black;
   text-align: center;
   width: 200px;
-  margin-left: -0rem;
+  margin-left: 0; /* Verwijderd negatieve margin voor betere uitlijning */
   padding: 0.5rem 1rem;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-button {
-  margin-right: 12px;
+  margin-right: 1rem; /* Meer consistente ruimte (van 12px naar 1rem) */
   border: 1px solid #e30613;
   color: #e30613;
   background: transparent;
@@ -57,8 +57,9 @@
 
 /* Navigation */
 .header-nav {
+  display: flex; /* Toegevoegd voor juiste flexbox-weergave */
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem; /* Verminderd van 1.5rem naar 1rem voor compactere, maar nog steeds ruime afstanden tussen knoppen */
 }
 
 .header-nav-button {
@@ -67,6 +68,11 @@
   color: white;
   cursor: pointer;
   padding: 0.5rem;
+  transition: color 0.2s ease; /* Vloeiende hover-effecten */
+}
+
+.header-nav-button:hover {
+  color: #f3f4f6; /* Lichte hover-kleur voor betere UX */
 }
 
 .header-nav-button.active {
@@ -99,6 +105,10 @@
   text-decoration: none;
 }
 
+.dj-menu-link:hover {
+  background-color: #f9fafb; /* Subtiele hover voor links */
+}
+
 .dj-menu-divider {
   border-top: 1px solid #e5e7eb;
   margin: 0.5rem 0;
@@ -108,8 +118,8 @@
 .header-user-section {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-left: 1rem;
+  gap: 0.75rem; /* Consistente gap binnen de sectie */
+  margin-left: 2rem; /* Verhoogd van 1rem naar 2rem voor meer ruimte tussen nav en user-sectie */
   border-left: 1px solid rgba(255, 255, 255, 0.3);
   padding-left: 1rem;
 }
@@ -124,6 +134,11 @@
   color: white;
   cursor: pointer;
   padding: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.header-logout-button:hover {
+  color: #f3f4f6;
 }
 
 .header-login-button {
@@ -133,7 +148,12 @@
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
-  margin-left: 1rem;
+  margin-left: 0; /* Verwijderd extra margin voor consistentie */
+  transition: background-color 0.2s ease;
+}
+
+.header-login-button:hover {
+  background-color: #f9fafb;
 }
 
 /* Mobile Menu Button */
@@ -148,8 +168,9 @@
 
 /* Mobile Navigation */
 .mobile-nav {
+  display: flex; /* Toegevoegd voor juiste weergave */
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem; /* Verhoogd van 0.75rem naar 1rem voor betere afstanden tussen mobiele knoppen */
   margin-top: 1rem;
   padding-bottom: 1rem;
 }
@@ -161,10 +182,15 @@
   text-align: left;
   cursor: pointer;
   padding: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-button:hover {
+  color: #f3f4f6;
 }
 
 .mobile-dj-section {
-  padding-top: 0.5rem;
+  padding-top: 1rem; /* Verhoogd van 0.5rem voor meer ruimte boven DJ-sectie */
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -180,4 +206,9 @@
   color: white;
   text-decoration: none;
   font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.mobile-dj-link:hover {
+  color: #f3f4f6;
 }

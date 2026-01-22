@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, User, Music, TrendingUp, Calendar } from 'lucide-react';
+ import { ArrowLeft, User, Music, TrendingUp, Calendar, ExternalLink, Globe, Video } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
@@ -80,6 +80,13 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
     onNavigate('song-detail', { songId: songId.toString() });
   };
 
+  // Generate official website URL (example logic - you can modify this)
+  const getOfficialWebsite = (artistName: string) => {
+    // Simple example: generate a search URL for the artist
+    const searchName = artistName.toLowerCase().replace(/\s+/g, '+');
+    return `https://www.google.com/search?q=${searchName}+official+website`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -95,12 +102,20 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="md:flex">
             {/* Artist Avatar */}
-            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
-              <div className="text-white text-center p-8">
-                <User size={80} className="mx-auto mb-4" />
-                <h2 className="text-white mb-2">{artist.name}</h2>
-                <p className="text-white/80">{stats.totalSongs} nummer{stats.totalSongs !== 1 ? 's' : ''}</p>
-              </div>
+            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center overflow-hidden">
+              {artist.photo ? (
+                <img 
+                  src={artist.photo}
+                  alt={artist.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-white text-center p-8">
+                  <User size={80} className="mx-auto mb-4" />
+                  <h2 className="text-white mb-2">{artist.name}</h2>
+                  <p className="text-white/80">{stats.totalSongs} nummer{stats.totalSongs !== 1 ? 's' : ''}</p>
+                </div>
+              )}
             </div>
 
             {/* Artist Details */}
@@ -137,6 +152,83 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                     <Calendar size={18} /> <span className="text-sm">Periode</span>
                   </div>
                   <div className="text-sm text-[var(--vivid-purple)]">{stats.activeYears}</div>
+                </div>
+              </div>
+
+              {/* Biography Section */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-4 text-[var(--bright-blue)]">Biografie</h3>
+                <div className="mb-6">
+                  <div className="prose prose-lg max-w-none">
+                    {artist.biography ? (
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {artist.biography}
+                      </p>
+                    ) : (
+                      <div className="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-200">
+                        <p className="text-gray-500 italic text-center">
+                          Er is momenteel geen biografie beschikbaar voor {artist.name}. 
+                          <br />
+                          Kijk later nog eens terug voor meer informatie over deze artiest.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* External Links */}
+              <div className="mt-6">
+                <div className="flex flex-wrap gap-3">
+                  {artist.wiki && (
+                    <a 
+                      href={artist.wiki} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <Globe size={16} />
+                      Wikipedia
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
+                  
+                  <a 
+                    href={getOfficialWebsite(artist.name)} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <Globe size={16} />
+                    Bezoek Officiële Website
+                    <ExternalLink size={14} />
+                  </a>
+
+                  {artist.spotifyLink && (
+                    <a 
+                      href={artist.spotifyLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-[#1DB954] text-white border-2 border-[#1DB954] rounded-lg hover:bg-[#1ed760] transition-colors"
+                    >
+                      <Music size={16} />
+                      Spotify
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
+
+                  {artist.youtubeLink && (
+                    <a 
+                      href={artist.youtubeLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-[#FF0000] text-white border-2 border-[#FF0000] rounded-lg hover:bg-[#cc0000] transition-colors"
+                    >
+                      <Video size={16} />
+                      YouTube
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

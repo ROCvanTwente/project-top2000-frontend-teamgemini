@@ -1,4 +1,4 @@
-// import '../App.css';
+import '../App.css';
 import { useState } from 'react';
 import { djs } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
@@ -78,23 +78,22 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
               Contact
             </button>
 
-            {user && (
-              <>
-                <button
-                  onClick={() => onNavigate('playlists')}
-                  className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}
-                >
-                  Mijn Lijsten
-                </button>
-                {user.role === 'admin' && (
-                  <button
-                    onClick={() => onNavigate('admin')}
-                    className={`header-nav-button ${currentPage === 'admin' ? 'active' : ''}`}
-                  >
-                    Beheer
-                  </button>
-                )}
-              </>
+            {/* Verwijderd: {user && ( */}
+            <button
+              onClick={() => onNavigate('playlists')}
+              className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}
+            >
+              Playlists
+            </button>
+            {/* )} */}
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => onNavigate('admin')}
+                className={`header-nav-button ${currentPage === 'admin' ? 'active' : ''}`}
+              >
+                Beheer
+              </button>
             )}
 
 <div className="header-user-section">
@@ -199,14 +198,14 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             >
               Contact
             </button>
-            {user && (
-              <button
-                onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
-                className="mobile-nav-button"
-              >
-                Mijn Lijsten
-              </button>
-            )}
+            {/* Verwijderd: {user && ( */}
+            <button
+              onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
+              className="mobile-nav-button"
+            >
+              Mijn Lijsten
+            </button>
+            {/* )} */}
             {user?.role === 'admin' && (
               <button
                 onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}

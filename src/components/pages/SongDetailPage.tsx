@@ -97,12 +97,10 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     setShowPlaylistMenu(false);
   };
 
-  // Handle both camelCase and PascalCase from API
   const rawRankings = song.top2000Positions || (song as any).Top2000Positions || [];
   const songRankings = rawRankings.sort((a: Ranking, b: Ranking) => b.year - a.year) || [];
   console.log('songRankings:', songRankings); // Debug log
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map((r: Ranking) => r.position)) : 2000;
-  // Make chart width responsive to number of years - minimum 800px, add 80px per year beyond 8 years
   const chartWidth = Math.max(800, songRankings.length * 80);
 
   return (
