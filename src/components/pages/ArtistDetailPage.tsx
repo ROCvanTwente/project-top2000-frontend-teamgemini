@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
- import { ArrowLeft, User, Music, TrendingUp, Calendar, ExternalLink, Globe, Spotify, Youtube } from 'lucide-react';
+ import { ArrowLeft, User, Music, TrendingUp, Calendar, ExternalLink, Globe, Video } from 'lucide-react';
 // @ts-ignore
 import { fetchFromAPI } from '../../api.js';
 
@@ -203,7 +203,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-[#1DB954] text-white border-2 border-[#1DB954] rounded-lg hover:bg-[#1ed760] transition-colors"
                     >
-                      <Spotify size={16} />
+                      <Music size={16} />
                       Spotify
                       <ExternalLink size={14} />
                     </a>
@@ -216,7 +216,7 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-[#FF0000] text-white border-2 border-[#FF0000] rounded-lg hover:bg-[#cc0000] transition-colors"
                     >
-                      <Youtube size={16} />
+                      <Video size={16} />
                       YouTube
                       <ExternalLink size={14} />
                     </a>
