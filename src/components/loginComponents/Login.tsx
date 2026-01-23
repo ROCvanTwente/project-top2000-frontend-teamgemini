@@ -82,6 +82,10 @@ export default function Login({ onForgotPassword }: LoginProps) {
       >
         Inloggen
       </button>
+      <p className="text-sm text-neutral-600">
+        Username: User@home.nl<br></br> 
+        Password: User123
+      </p>
     </form>
   );
 }
