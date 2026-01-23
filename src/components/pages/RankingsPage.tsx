@@ -40,26 +40,29 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     return years;
   }, []);
 
-  useEffect(() => {
-    const loadRankings = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data: Ranking[] = await fetchFromAPI(
-          `top2000/${selectedYear}`
-        );
-        setRankings(data);
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message ?? "Fout bij laden");
-        setRankings([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const loadRankings = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data: any = await fetchFromAPI(`top2000/${selectedYear}`);
 
-    loadRankings();
-  }, [selectedYear]);
+      // Haal $values eruit als het object bevat
+      const arrayData: Ranking[] = Array.isArray(data) ? data : data?.$values ?? [];
+
+      setRankings(arrayData);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message ?? "Fout bij laden");
+      setRankings([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadRankings();
+}, [selectedYear]);
+
 
   useEffect(() => {
     setPage(1);

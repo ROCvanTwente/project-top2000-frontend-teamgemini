@@ -44,21 +44,29 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
 
-  useEffect(() => {
-    const loadSongs = async () => {
-      try {
-        setLoading(true);
-        const data: SongApi[] = await fetchFromAPI("songs");
-        setSongs(data);
-      } catch (err: any) {
-        setError(err.message ?? "Fout bij laden");
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const loadSongs = async () => {
+    try {
+      setLoading(true);
+      const data: any = await fetchFromAPI("songs");
 
-    loadSongs();
-  }, []);
+      // ✅ Zorg dat we een echte array hebben
+      const arrayData: SongApi[] = Array.isArray(data)
+        ? data
+        : data?.$values ?? [];
+
+      setSongs(arrayData);
+    } catch (err: any) {
+      setError(err.message ?? "Fout bij laden");
+      setSongs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadSongs();
+}, []);
+
 
   // reset page bij search / sort
   useEffect(() => {

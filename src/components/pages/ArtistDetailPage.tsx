@@ -31,29 +31,36 @@ export function ArtistDetailPage({ artistId, onNavigate }: ArtistDetailPageProps
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadArtistData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Fetch artist info and songs
-        const [artistData, songsData] = await Promise.all([
-          fetchFromAPI(`api/artist/${artistId}`),
-          fetchFromAPI(`api/artist/${artistId}/songs`)
-        ]);
-        
-        setArtist(artistData);
-        setSongs(songsData);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadArtistData();
-  }, [artistId]);
+useEffect(() => {
+  const loadArtistData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const [artistData, songsData] = await Promise.all([
+        fetchFromAPI(`api/artist/${artistId}`),
+        fetchFromAPI(`api/artist/${artistId}/songs`)
+      ]);
+
+      setArtist(artistData);
+
+      // ✅ Zorg dat songs altijd een array is
+      const songsArray: Song[] = Array.isArray(songsData)
+        ? songsData
+        : songsData?.$values ?? [];
+
+      setSongs(songsArray);
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  loadArtistData();
+}, [artistId]);
+
 
   if (loading) return <div className="text-center py-20">Laden…</div>;
   if (error) return <div className="text-center py-20 text-red-500">{error}</div>;
