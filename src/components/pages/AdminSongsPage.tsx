@@ -20,102 +20,106 @@ export default function AdminSongsPage() {
   const [loading, setLoading] = useState(false);
   const [songIdInput, setSongIdInput] = useState("");
   const [songTitleInput, setSongTitleInput] = useState("");
+  const [songArtistNameInput, setArtistNameInput] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [editData, setEditData] = useState<Partial<Song>>({});
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+const MAX_SONG_ID = 5970;
 
   const fetchSongs = async () => {
-    if (!songIdInput && !songTitleInput) {
-      setMessage({ text: "Vul minimaal één veld in om te zoeken!", type: "error" });
-      return;
-    }
+  if (!songIdInput && !songTitleInput && !songArtistNameInput) {
+    setMessage({ text: "Vul minimaal één veld in om te zoeken!", type: "error" });
+    return;
+  }
 
-    try {
-      setLoading(true);
-      const params: any = {};
-      if (songIdInput) params.id = Number(songIdInput);
-      if (songTitleInput) params.titel = songTitleInput;
+  if (songIdInput && Number(songIdInput) > MAX_SONG_ID) {
+    setMessage({
+      text: `Hoogste beschikbare Song ID is ${MAX_SONG_ID}`,
+      type: "error",
+    });
+    return;
+  }
 
-const res = await axios.get(`${API_URL}/admin/songs/search`, { params });
-const data: Song[] = res.data.$values ?? res.data;
-setSongs(data);
+  try {
+    setLoading(true);
 
-      setSongs(data);
+    const params: any = {};
+    if (songIdInput) params.id = Number(songIdInput);
+    if (songTitleInput) params.titel = songTitleInput;
+    if (songArtistNameInput) params.artistName = songArtistNameInput;
 
-      if (data.length === 1) {
-        selectSong(data[0]);
-      } else {
-        setSelectedSong(null);
-        setEditData({});
-      }
+    const res = await axios.get(`${API_URL}/admin/songs/search`, { params });
+    const data = res.data.$values ?? res.data;
 
-      setLoading(false);
-      setMessage(null);
-    } catch (err: any) {
-      setLoading(false);
-      setMessage({ text: "Liedje is niet gevonden: " + err.message, type: "error" });
-      setSongs([]);
+    setSongs(data);
+
+    if (data.length === 1) {
+      selectSong(data[0]);
+    } else {
       setSelectedSong(null);
       setEditData({});
     }
-  };
+
+    setMessage(null);
+  } catch (err: any) {
+    setMessage({ text: "Liedje is niet gevonden", type: "error" });
+    setSongs([]);
+    setSelectedSong(null);
+    setEditData({});
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const selectSong = (song: Song) => {
     setSelectedSong(song);
     setEditData({
-      titel: song.titel || undefined,
-      releaseYear: song.releaseYear ?? undefined,
-      artistId: song.artistId ?? undefined,
-      artistName: song.artistName || undefined,
-      imgUrl: song.imgUrl || undefined,
-      lyrics: song.lyrics || undefined,
-      youtube: song.youtube || undefined,
+      titel: song.titel,
+      releaseYear: song.releaseYear,
+      artistId: song.artistId,
+      artistName: song.artistName,
+      imgUrl: song.imgUrl,
+      lyrics: song.lyrics,
+      youtube: song.youtube,
     });
   };
-const hasChanges = () => {
-  if (!selectedSong) return false;
 
-  return (
-    (editData.titel ?? "") !== (selectedSong.titel ?? "") ||
-    (editData.releaseYear ?? null) !== (selectedSong.releaseYear ?? null) ||
-    (editData.imgUrl ?? "") !== (selectedSong.imgUrl ?? "") ||
-    (editData.lyrics ?? "") !== (selectedSong.lyrics ?? "") ||
-    (editData.youtube ?? "") !== (selectedSong.youtube ?? "")
-  );
-};
+  const hasChanges = () => {
+    if (!selectedSong) return false;
 
-
-const saveSong = async () => {
-  if (!selectedSong) return;
-
-  if (!hasChanges()) {
-    alert("Je hebt niks aangepast. Verander eerst iets voordat je opslaat.");
-    return;
-  }
-
-  const dto = {
-    titel: editData.titel,
-    releaseYear: editData.releaseYear,
-    artistId: editData.artistId,
-    imgUrl: editData.imgUrl,
-    lyrics: editData.lyrics,
-    youtube: editData.youtube,
+    return (
+      (editData.releaseYear ?? null) !== (selectedSong.releaseYear ?? null) ||
+      (editData.imgUrl ?? "") !== (selectedSong.imgUrl ?? "") ||
+      (editData.lyrics ?? "") !== (selectedSong.lyrics ?? "") ||
+      (editData.youtube ?? "") !== (selectedSong.youtube ?? "")
+    );
   };
 
-  try {
-    setLoading(true);
-    await axios.put(`${API_URL}/admin/songs/${selectedSong.songId}`, dto);
+  const saveSong = async () => {
+    if (!selectedSong || !hasChanges()) return;
 
+    const dto = {
+      releaseYear: editData.releaseYear,
+      artistId: editData.artistId,
+      imgUrl: editData.imgUrl,
+      lyrics: editData.lyrics,
+      youtube: editData.youtube,
+    };
 
-    setTimeout(() => {
-      window.location.href = "/?success=true";
-    }, 1500);
-  } catch (err: any) {
-    setLoading(false);
-    setMessage({ text: "Fout bij opslaan: " + err.message, type: "error" });
-  }
-};
+    try {
+      setLoading(true);
+      await axios.put(`${API_URL}/admin/songs/${selectedSong.songId}`, dto);
+
+      setSelectedSong({ ...selectedSong, ...editData });
+      setMessage({ text: "Liedje succesvol opgeslagen!", type: "success" });
+    } catch (err: any) {
+      setMessage({ text: "Fout bij opslaan: " + err.message, type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="admin-container relative">
@@ -162,6 +166,12 @@ const saveSong = async () => {
           placeholder="Titel (optioneel)"
           value={songTitleInput}
           onChange={(e) => setSongTitleInput(e.target.value)}
+          className="border p-2 rounded w-64"
+        />
+        <input type="text" 
+          placeholder="Artiest Naam (optioneel)"
+          value={songArtistNameInput}
+          onChange={(e) => setArtistNameInput(e.target.value)}
           className="border p-2 rounded w-64"
         />
         <button
