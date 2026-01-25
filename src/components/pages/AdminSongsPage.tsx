@@ -151,7 +151,7 @@ const MAX_SONG_ID = 5970;
         </div>
       )}
 
-      <h2>Beheer Liedjes via ID of Titel</h2>
+      <h2>Beheer Liedjes</h2>
 
       <div className="song-search-input flex gap-2 mb-4">
         <input
@@ -166,13 +166,13 @@ const MAX_SONG_ID = 5970;
           placeholder="Titel (optioneel)"
           value={songTitleInput}
           onChange={(e) => setSongTitleInput(e.target.value)}
-          className="border p-2 rounded w-64"
+          className="border p-2 rounded w-50"
         />
         <input type="text" 
           placeholder="Artiest Naam (optioneel)"
           value={songArtistNameInput}
           onChange={(e) => setArtistNameInput(e.target.value)}
-          className="border p-2 rounded w-64"
+          className="border p-2 rounded w-50"
         />
         <button
           onClick={fetchSongs}

@@ -127,7 +127,7 @@ export default function AdminArtistsPage() {
         </div>
       )}
 
-      <h2>Beheer Artiesten via ID of Naam</h2>
+      <h2>Beheer Artiesten</h2>
 
       <div className="song-search-input flex gap-2 mb-4">
         <input

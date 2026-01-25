@@ -48,17 +48,12 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
           {/* Desktop Navigation */}
           <nav className="hide-on-mobile header-nav">
             <button onClick={() => onNavigate('home')} className={`header-nav-button ${currentPage === 'home' ? 'active' : ''}`}>Home</button>
-            <button onClick={() => onNavigate('rankings')} className={`header-nav-button ${currentPage === 'rankings' ? 'active' : ''}`}>Jaaroverzichten</button>
+            <button onClick={() => onNavigate('rankings')} className={`header-nav-button ${currentPage === 'rankings' ? 'active' : ''}`}>Top2000</button>
             <button onClick={() => onNavigate('artists')} className={`header-nav-button ${currentPage === 'artists' ? 'active' : ''}`}>Artiesten</button>
             <button onClick={() => onNavigate('songs')} className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}>Nummers</button>
             <button onClick={() => onNavigate('statistics')} className={`header-nav-button ${currentPage === 'statistics' ? 'active' : ''}`}>Statistieken</button>
-            <button onClick={() => onNavigate('history')} className={`header-nav-button ${currentPage === 'history' ? 'active' : ''}`}>Geschiedenis</button>
-            <button onClick={() => onNavigate('faq')} className={`header-nav-button ${currentPage === 'faq' ? 'active' : ''}`}>FAQ</button>
-            <button onClick={() => onNavigate('contact')} className={`header-nav-button ${currentPage === 'contact' ? 'active' : ''}`}>Contact</button>
-
-            <button onClick={() => onNavigate('playlists')} className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}>Playlists</button>
-
-            {/* DJ Dropdown */}
+            {/* <button onClick={() => onNavigate('history')} className={`header-nav-button ${currentPage === 'history' ? 'active' : ''}`}>Geschiedenis</button> */}
+                        {/* DJ Dropdown */}
             <div className="relative" ref={djMenuRef}>
               <button
                 className="hover:text-gray-300 transition-colors header-nav-button"
@@ -76,6 +71,13 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 </div>
               )}
             </div>
+            <button onClick={() => onNavigate('faq')} className={`header-nav-button ${currentPage === 'faq' ? 'active' : ''}`}>FAQ</button>
+            <button onClick={() => onNavigate('contact')} className={`header-nav-button ${currentPage === 'contact' ? 'active' : ''}`}>Contact</button>
+            
+            {/* {user?.role === 'user' && ( */}
+            <button onClick={() => onNavigate('playlists')} className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}>Playlists</button>
+            {/* )} */}
+
 {/* {user?.role === 'admin' && ( */}
             <div className="relative" ref={adminMenuRef}>
               <button
