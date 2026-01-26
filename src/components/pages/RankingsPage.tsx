@@ -22,17 +22,19 @@ interface Ranking {
 }
 
 export function RankingsPage({ onNavigate }: RankingsPageProps) {
+
   const [rankings, setRankings] = useState<Ranking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedYear, setSelectedYear] = useState<number>(2023);
+  const [selectedYear, setSelectedYear] = useState<number>(2024);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] =
-    useState<"position" | "artist" | "title">("position");
 
   const [page, setPage] = useState<number>(1);
-  const itemsPerPage = 25;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(50);
+
+
+  const pageSizeOptions = [50, 100, 200, 500, 1000];
 
   const availableYears = useMemo(() => {
     const years: number[] = [];
@@ -40,33 +42,40 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
     return years;
   }, []);
 
-useEffect(() => {
-  const loadRankings = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data: any = await fetchFromAPI(`top2000/${selectedYear}`);
-
-      // Haal $values eruit als het object bevat
-      const arrayData: Ranking[] = Array.isArray(data) ? data : data?.$values ?? [];
-
-      setRankings(arrayData);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? "Fout bij laden");
-      setRankings([]);
-    } finally {
-      setLoading(false);
-    }
+  const resetFilters = () => {
+    setSelectedYear(2024);
+    setSearchTerm("");
+    setItemsPerPage(50);
+    setPage(1);
   };
-
-  loadRankings();
-}, [selectedYear]);
 
 
   useEffect(() => {
+    const loadRankings = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data: any = await fetchFromAPI(`top2000/${selectedYear}`);
+
+        const arrayData: Ranking[] = Array.isArray(data)
+          ? data
+          : data?.$values ?? [];
+
+        setRankings(arrayData);
+      } catch (err: any) {
+        setError(err.message ?? "Fout bij laden");
+        setRankings([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRankings();
+  }, [selectedYear]);
+
+  useEffect(() => {
     setPage(1);
-  }, [selectedYear, searchTerm, sortBy]);
+  }, [selectedYear, searchTerm, itemsPerPage]);
 
   const filteredRankings = useMemo(() => {
     let data = [...rankings];
@@ -80,19 +89,15 @@ useEffect(() => {
       );
     }
 
-    return data.sort((a, b) => {
-      if (sortBy === "position") return a.position - b.position;
-      if (sortBy === "artist") return a.artist.localeCompare(b.artist);
-      return a.title.localeCompare(b.title);
-    });
-  }, [rankings, searchTerm, sortBy]);
+    return data;
+  }, [rankings, searchTerm]);
 
   const totalPages = Math.ceil(filteredRankings.length / itemsPerPage);
 
   const paginatedRankings = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
     return filteredRankings.slice(start, start + itemsPerPage);
-  }, [filteredRankings, page]);
+  }, [filteredRankings, page, itemsPerPage]);
 
   if (loading) {
     return (
@@ -132,8 +137,17 @@ useEffect(() => {
           <h1>TOP 2000 Jaaroverzichten</h1>
         </div>
 
-   
+        {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={resetFilters}
+              className="text-sm px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            >
+              Filters resetten
+            </button>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="block mb-2">
@@ -142,10 +156,8 @@ useEffect(() => {
               </label>
               <select
                 value={selectedYear}
-                onChange={(e) =>
-                  setSelectedYear(Number(e.target.value))
-                }
-                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-black"
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="w-full border-2 border-gray-200 rounded-lg p-3"
               >
                 {availableYears.map((year) => (
                   <option key={year} value={year}>
@@ -165,85 +177,80 @@ useEffect(() => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Zoek op titel of artiest"
-                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-black"
+                className="w-full border-2 border-gray-200 rounded-lg p-3"
               />
             </div>
 
             <div>
-              <label className="block mb-2">Sorteren op</label>
+              <label className="block mb-2">Weergavelimiet</label>
               <select
-                value={sortBy}
-                onChange={(e) =>
-                  setSortBy(e.target.value as "position" | "artist" | "title")
-                }
-                className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-black"
+                value={itemsPerPage}
+                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                className="w-full border-2 border-gray-200 rounded-lg p-3"
               >
-                <option value="position">Positie</option>
-                <option value="artist">Artiest</option>
-                <option value="title">Titel</option>
+                {pageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size} liedjes
+                  </option>
+                ))}
               </select>
             </div>
           </div>
         </div>
 
-
+        {/* Tabel */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-black text-white">
-                <tr>
-                  <th className="px-6 py-4 w-20 text-left">#</th>
-                  <th className="px-6 py-4 text-left">Titel</th>
-                  <th className="px-6 py-4 text-left">Artiest</th>
-                  <th className="px-6 py-4 w-32 text-left">Jaar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedRankings.map((r) => (
-                  <tr
-                    key={r.songId}
-                    onClick={() =>
-                      onNavigate("song-detail", {
-                        songId: r.songId,
-                      })
-                    }
-                    className="border-b hover:bg-gray-50 cursor-pointer"
-                  >
-                    <td className="px-6 py-4">{r.position}</td>
-                    <td className="px-6 py-4 text-blue-600 hover:underline">
-                      {r.title}
-                    </td>
-                    <td className="px-6 py-4">{r.artist}</td>
-                    <td className="px-6 py-4">{r.releaseYear}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <table className="w-full">
+            <thead className="bg-black text-white">
+              <tr>
+                <th className="px-6 py-4 w-24">Positie</th>
+                <th className="px-6 py-4">Titel</th>
+                <th className="px-6 py-4">Artiest</th>
+                <th className="px-6 py-4 w-32">Jaar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedRankings.map((r) => (
+                <tr key={r.songId} className="hover:bg-gray-100 transition">
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-800 font-semibold">
+                      #{r.position}
+                    </span>
+                  </td>
 
-            {totalPages > 1 && (
-              <div className="flex justify-center py-6">
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onChange={(
-                    _event: ChangeEvent<unknown>,
-                    value: number
-                  ) => setPage(value)}
-                  shape="rounded"
-                  size="large"
-                  renderItem={(item) => (
-                    <PaginationItem
-                      slots={{
-                        previous: ArrowBackIcon,
-                        next: ArrowForwardIcon,
-                      }}
-                      {...item}
-                    />
-                  )}
-                />
-              </div>
-            )}
-          </div>
+                  <td
+                    className="px-6 py-4 font-medium text-black hover:text-red-600 cursor-pointer transition"
+                    onClick={() => onNavigate("song-detail", { songId: r.songId })}
+                  >
+                    {r.title}
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-700">{r.artist}</td>
+                  <td className="px-6 py-4 text-gray-600">{r.releaseYear}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {totalPages > 1 && (
+            <div className="flex justify-center py-6">
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={(
+                  _event: ChangeEvent<unknown>,
+                  value: number
+                ) => setPage(value)}
+                shape="rounded"
+                size="large"
+                renderItem={(item) => (
+                  <PaginationItem
+                    slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                    {...item}
+                  />
+                )}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

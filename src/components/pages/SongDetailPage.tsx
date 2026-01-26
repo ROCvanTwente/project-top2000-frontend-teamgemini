@@ -43,7 +43,6 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Sluit dropdown bij click buiten
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -54,23 +53,23 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleAddToPlaylist = async (playlistId: string) => {
-    if (!song) return;
+const handleAddToPlaylist = async (playlistId: string) => {
+  if (!song) return;
 
-    const playlist = playlists.find(p => p.id === playlistId);
-    const playlistName = playlist ? playlist.name : 'afspeellijst';
+  const playlist = playlists.find(p => p.id === playlistId);
+  const playlistName = playlist ? playlist.name : 'afspeellijst';
 
-    const success = await addSongToPlaylist(playlistId, song.songId.toString());
+  const success = await addSongToPlaylist(playlistId, song.songId.toString(), song.title, song.artist);
 
-    if (success) {
-      setToast({ type: 'success', message: `🎵 "${song.title}" toegevoegd aan playlist "${playlistName}"!` });
-    } else {
-      setToast({ type: 'error', message: `⚠️ Nummer staat al in playlist "${playlistName}"` });
-    }
+  if (success) {
+    setToast({ type: 'success', message: `🎵 "${song.title}" toegevoegd aan playlist "${playlistName}"!` });
+  } else {
+    setToast({ type: 'error', message: `⚠️ Nummer staat al in playlist "${playlistName}"` });
+  }
 
-    setShowPlaylistMenu(false);
-    setTimeout(() => setToast(null), 3000);
-  };
+  setShowPlaylistMenu(false);
+  setTimeout(() => setToast(null), 3000);
+};
 
   useEffect(() => {
     const loadSong = async () => {
@@ -88,15 +87,35 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
     loadSong();
   }, [songId]);
 
-  if (loading) return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-      {/* Spinner hier */}
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative mx-auto mb-4 w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+          <p className="text-white/80">Even geduld</p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+            <span
+              className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
+              style={{ animationDelay: "0.15s" }}
+            ></span>
+            <span
+              className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
+              style={{ animationDelay: "0.3s" }}
+            ></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  if (error) return (
-    <div className="text-center py-20 text-red-500">{error}</div>
-  );
+  if (error) {
+    return <p className="text-red-600">{error}</p>;
+  }
 
   if (!song) return (
     <div className="min-h-screen bg-gray-50 py-12 text-center">

@@ -70,165 +70,171 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-gray-lighter)] py-12">
-      <div className="max-w-7xl mx-auto px-4 relative">
+  <div className="min-h-screen bg-[var(--color-gray-lighter)] py-6 px-4 sm:py-12 sm:px-6">
+  <div className="max-w-7xl mx-auto relative">
 
-        {/* Toast */}
-        {toast && (
-          <div className={`fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg z-50 ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
-            {toast.message}
+    {/* Toast */}
+    {toast && (
+      <div className={`fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg z-50 ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+        {toast.message}
+      </div>
+    )}
+
+    {/* Header */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8">
+      <div className="mb-4 sm:mb-0">
+        <h1 className="text-[var(--color-gray-dark)] text-xl sm:text-2xl font-bold">Mijn Afspeellijsten</h1>
+        <p className="text-[var(--color-gray-medium)] mt-1 text-sm sm:text-base">
+          Beheer je playlists en nummers
+        </p>
+      </div>
+
+      <button
+        onClick={() => setShowCreateForm(true)}
+        className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-red-600 transition-colors text-sm sm:text-base"
+      >
+        <Plus size={18} />
+        Nieuwe playlist
+      </button>
+    </div>
+
+    {/* Create Playlist Form */}
+    {showCreateForm && (
+      <div className="bg-white rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow">
+        <form onSubmit={handleCreatePlaylist} className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <input
+            value={newPlaylistName}
+            onChange={e => setNewPlaylistName(e.target.value)}
+            placeholder="Playlist naam"
+            className="flex-1 border rounded-lg p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
+          />
+          <div className="flex gap-2 sm:gap-4 mt-2 sm:mt-0">
+            <button type="submit" className="bg-red-500 text-white px-4 py-2 sm:px-6 sm:py-2 rounded-lg hover:bg-red-600 transition-colors text-sm sm:text-base">
+              Opslaan
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCreateForm(false)}
+              className="border px-4 py-2 sm:px-6 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base"
+            >
+              Annuleren
+            </button>
           </div>
-        )}
+        </form>
+      </div>
+    )}
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-[var(--color-gray-dark)] text-2xl font-bold">Mijn Afspeellijsten</h1>
-            <p className="text-[var(--color-gray-medium)] mt-1">
-              Beheer je playlists en nummers
-            </p>
-          </div>
-
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-2 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors"
-          >
-            <Plus size={20} />
-            Nieuwe playlist
-          </button>
+    {/* Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+      
+      {/* Playlist List */}
+      <div className="col-span-1 bg-white rounded-xl shadow overflow-hidden">
+        <div className="p-4 font-semibold flex items-center gap-2 border-b">
+          <List size={18} />
+          Playlists ({playlists.length})
         </div>
 
-        {/* Create Playlist Form */}
-        {showCreateForm && (
-          <div className="bg-white rounded-xl p-6 mb-8 shadow">
-            <form onSubmit={handleCreatePlaylist} className="flex gap-4">
-              <input
-                value={newPlaylistName}
-                onChange={e => setNewPlaylistName(e.target.value)}
-                placeholder="Playlist naam"
-                className="flex-1 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-              <button type="submit" className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                Opslaan
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowCreateForm(false)}
-                className="border px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                Annuleren
-              </button>
-            </form>
+        {playlists.length === 0 && (
+          <div className="p-6 text-center text-gray-400">
+            <Music size={48} className="mx-auto mb-4" />
+            Je hebt nog geen playlists
           </div>
         )}
 
-        <div className="grid grid-cols-4 gap-6">
-
-          {/* Playlist List */}
-          <div className="col-span-1 bg-white rounded-xl shadow overflow-hidden">
-            <div className="p-4 font-semibold flex items-center gap-2 border-b">
-              <List size={18} />
-              Playlists ({playlists.length})
-            </div>
-
-            {playlists.length === 0 && (
-              <div className="p-6 text-center text-gray-400">
-                <Music size={48} className="mx-auto mb-4" />
-                Je hebt nog geen playlists
+        <div className="divide-y">
+          {playlists.map(p => (
+            <div
+              key={p.id}
+              onClick={() => setSelectedPlaylistId(p.id)}
+              className={`p-3 sm:p-4 cursor-pointer flex justify-between items-center rounded-lg transition-all mb-1 ${
+                p.id === selectedPlaylistId ? 'bg-blue-50 shadow-md' : 'hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Music size={16} className="text-gray-400" />
+                <div className="text-sm sm:text-base">
+                  <div className="font-medium">{p.name}</div>
+                  <div className="text-gray-500">{(p.songs ?? []).length} nummers</div>
+                </div>
               </div>
-            )}
 
-            {playlists.map(p => (
-              <div
-                key={p.id}
-                onClick={() => setSelectedPlaylistId(p.id)}
-                className={`p-4 cursor-pointer flex justify-between items-center rounded-lg transition-all mb-1 ${
-                  p.id === selectedPlaylistId ? 'bg-blue-50 shadow-md' : 'hover:bg-gray-50'
-                }`}
+              <button
+                onClick={e => {
+                  e.stopPropagation();
+                  handleDeletePlaylist(p.id);
+                }}
+                className="text-red-500 hover:text-red-600 transition-colors"
               >
-                <div className="flex items-center gap-2">
-                  <Music size={16} className="text-gray-400" />
-                  <div>
-                    <div className="font-medium">{p.name}</div>
-                    <div className="text-sm text-gray-500">{(p.songs ?? []).length} nummers</div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeletePlaylist(p.id);
-                  }}
-                  className="text-red-500 hover:text-red-600 transition-colors"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Playlist Detail */}
-          <div className="col-span-3 bg-white rounded-xl shadow overflow-hidden flex flex-col">
-            {selectedPlaylist ? (
-              <>
-                {/* Playlist Header */}
-                <div className="p-6 flex justify-between items-center bg-gray-800 text-white rounded-t-xl">
-                  <div>
-                    <h2 className="text-lg font-bold">{selectedPlaylist.name}</h2>
-                    <div className="flex gap-4 text-sm mt-2">
-                      <span className="flex items-center gap-1">
-                        <Music size={16} />
-                        {playlistSongs.length} nummers
-                      </span>
-                    </div>
-                  </div>
-                  {playlistSongs.length > 0 && (
-                    <button className="bg-red-500 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-red-600 transition-colors">
-                      <Play size={16} /> Speel Alles
-                    </button>
-                  )}
-                </div>
-
-                {/* Songs List */}
-                {playlistSongs.length === 0 ? (
-                  <div className="p-12 text-center text-gray-500">
-                    Geen nummers in deze playlist
-                  </div>
-                ) : (
-                  <div className="flex-1 overflow-y-auto">
-                    {playlistSongs.map((song, index) => (
-                      <div
-                        key={song.id}
-                        className="p-4 flex justify-between items-center border-b hover:bg-gray-50 transition-colors cursor-pointer"
-                      >
-                        <div
-                          onClick={() => onNavigate('song-detail', { songId: song.id })}
-                        >
-                          <div className="font-medium">
-                            {index + 1}. {song.title}
-                          </div>
-                          <div className="text-sm text-gray-500">{song.artistName}</div>
-                        </div>
-
-                        <button
-                          onClick={() => handleRemoveSong(selectedPlaylist.id, song.id)}
-                          className="text-red-500 hover:text-red-600 transition-colors"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="p-12 text-center text-gray-500">
-                Selecteer een playlist
-              </div>
-            )}
-          </div>
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* Playlist Detail */}
+      <div className="col-span-1 md:col-span-3 bg-white rounded-xl shadow overflow-hidden flex flex-col">
+        {selectedPlaylist ? (
+          <>
+            {/* Playlist Header */}
+            <div className="p-4 sm:p-6 flex justify-between items-center bg-gray-800 text-white rounded-t-xl">
+              <div>
+                <h2 className="text-base sm:text-lg font-bold">{selectedPlaylist.name}</h2>
+                <div className="flex gap-3 text-xs sm:text-sm mt-1 sm:mt-2">
+                  <span className="flex items-center gap-1">
+                    <Music size={16} />
+                    {playlistSongs.length} nummers
+                  </span>
+                </div>
+              </div>
+              {playlistSongs.length > 0 && (
+                <button className="bg-red-500 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-2 hover:bg-red-600 transition-colors text-xs sm:text-sm">
+                  <Play size={16} /> Speel Alles
+                </button>
+              )}
+            </div>
+
+            {/* Songs List */}
+            {playlistSongs.length === 0 ? (
+              <div className="p-8 sm:p-12 text-center text-gray-500 text-sm sm:text-base">
+                Geen nummers in deze playlist
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto">
+                {playlistSongs.map((song, index) => (
+                  <div
+                    key={song.id}
+                    className="p-3 sm:p-4 flex justify-between items-center border-b hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    <div
+                      onClick={() => onNavigate('song-detail', { songId: song.id })}
+                      className="text-sm sm:text-base"
+                    >
+                      <div className="font-medium">
+                        {index + 1}. {song.title}
+                      </div>
+                      <div className="text-gray-500">{song.artistName}</div>
+                    </div>
+
+                    <button
+                      onClick={() => handleRemoveSong(selectedPlaylist.id, song.id)}
+                      className="text-red-500 hover:text-red-600 transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="p-8 sm:p-12 text-center text-gray-500 text-sm sm:text-base">
+            Selecteer een playlist
+          </div>
+        )}
+      </div>
     </div>
+  </div>
+</div>
   );
 }

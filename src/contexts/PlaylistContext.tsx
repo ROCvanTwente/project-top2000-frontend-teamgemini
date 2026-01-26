@@ -21,7 +21,7 @@ interface PlaylistContextType {
   createPlaylist: (name: string) => Promise<void>;
   deletePlaylist: (id: string) => Promise<void>;
   removeSongFromPlaylist: (playlistId: string, songId: string) => Promise<void>;
-  addSongToPlaylist: (playlistId: string, songId: string) => Promise<boolean>;
+  addSongToPlaylist: (playlistId: string, songId: string, title: string, artistName: string) => Promise<boolean>;  // Nieuwe parameters toegevoegd
 }
 
 const PlaylistContext = createContext<PlaylistContextType | undefined>(undefined);
@@ -29,7 +29,6 @@ const PlaylistContext = createContext<PlaylistContextType | undefined>(undefined
 export function PlaylistProvider({ children }: { children: React.ReactNode }) {
   const [playlists, setPlaylists] = useState<ApiPlaylist[]>([]);
 
-  // Fetch playlists from backend
   useEffect(() => {
     async function fetchPlaylists() {
       try {
@@ -94,31 +93,31 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addSongToPlaylist = async (playlistId: string, songId: string): Promise<boolean> => {
-    try {
-      const playlist = playlists.find(p => p.id === playlistId);
-      if (!playlist) return false;
-      if (playlist.songs.some(s => s.id === songId)) return false;
+const addSongToPlaylist = async (playlistId: string, songId: string, title: string, artistName: string): Promise<boolean> => {
+  try {
+    const playlist = playlists.find(p => p.id === playlistId);
+    if (!playlist) return false;
+    if (playlist.songs.some(s => s.id === songId)) return false;
 
-      await axios.post(`${API_URL}/api/Playlist/${playlistId}/songs/${songId}`);
+    await axios.post(`${API_URL}/api/Playlist/${playlistId}/songs/${songId}`);
 
-      setPlaylists(prev =>
-        prev.map(p =>
-          p.id === playlistId
-            ? {
-                ...p,
-                songs: [...p.songs, { id: songId, title: 'Toegevoegd', artistName: '' }]
-              }
-            : p
-        )
-      );
+    setPlaylists(prev =>
+      prev.map(p =>
+        p.id === playlistId
+          ? {
+              ...p,
+              songs: [...p.songs, { id: songId, title, artistName }]
+            }
+          : p
+      )
+    );
 
-      return true;
-    } catch (err) {
-      console.error('Fout bij toevoegen nummer:', err);
-      return false;
-    }
-  };
+    return true;
+  } catch (err) {
+    console.error('Fout bij toevoegen nummer:', err);
+    return false;
+  }
+};
 
   return (
     <PlaylistContext.Provider
