@@ -139,6 +139,13 @@ const handleAddToPlaylist = async (playlistId: string) => {
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map(r => r.position)) : 2000;
   const chartWidth = Math.max(800, songRankings.length * 80);
 
+  // Added: normalize possible spotify field names
+  const spotifyUrl = (song as any).spotify
+    ?? (song as any).Spotify
+    ?? (song as any).spotoify
+    ?? (song as any).SpotifyUrl
+    ?? null;
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -160,12 +167,16 @@ const handleAddToPlaylist = async (playlistId: string) => {
 
             {/* Album Cover */}
             <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
-              <div className="text-white text-center p-8">
-                <Play size={80} className="mx-auto mb-4" />
-                <h2 className="text-white mb-2">{song.title}</h2>
-                <p className="text-white/80">{song.artist}</p>
+              {song.imgUrl ? (
+                <img src={song.imgUrl} alt={`${song.title} cover`} className="object-cover w-full h-full" />
+              ) : (
+                <div className="text-white text-center p-8">
+                  <Play size={80} className="mx-auto mb-4" />
+                  <h2 className="text-white mb-2">{song.title}</h2>
+                  <p className="text-white/80">{song.artist}</p>
+                </div>
+              )}
               </div>
-            </div>
 
             {/* Song Details */}
             <div className="md:w-2/3 p-8">
@@ -235,9 +246,9 @@ const handleAddToPlaylist = async (playlistId: string) => {
                   <ExternalLink size={20} /> Beluister op YouTube
                 </a>
               )}
-              {(song.spotify) && (
+              {spotifyUrl && (
                 <a
-                  href={song.spotify}
+                  href={spotifyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
