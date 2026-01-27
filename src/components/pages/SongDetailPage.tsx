@@ -17,6 +17,7 @@ interface SongApi {
   releaseYear: number | null;
   imgUrl?: string;
   youtube?: string;
+  spotify?: string;
   lyrics?: string;
   stats: {
     timesListed: number;
@@ -231,6 +232,16 @@ const handleAddToPlaylist = async (playlistId: string) => {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <ExternalLink size={20} /> Beluister op YouTube
+                </a>
+              )}
+              {(song.spotify) && (
+                <a
+                  href={song.spotify}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
+                >
+                  <ExternalLink size={20} /> Beluister op Spotify
                 </a>
               )}
             </div>
