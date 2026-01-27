@@ -185,16 +185,30 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
                 </div>
               </div>
 
-              {(song.youtube || (song as any).Youtube) && (
-                <a
-                  href={song.youtube || (song as any).Youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
-                >
-                  <ExternalLink size={20} /> Beluister op YouTube
-                </a>
-              )}
+              {/* Links Section */}
+              <div className="flex gap-4">
+                {(song.youtube || (song as any).Youtube) && (
+                  <a
+                    href={song.youtube || (song as any).Youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
+                  >
+                    <ExternalLink size={20} /> Beluister op YouTube
+                  </a>
+                )}
+                
+                {((song as any).spotify || (song as any).Spotify) && (
+                  <a
+                    href={(song as any).spotify || (song as any).Spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
+                  >
+                    <ExternalLink size={20} /> Beluister op Spotify
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
