@@ -27,7 +27,7 @@ export default function Register({ onRegistered }: RegisterProps) {
     }
 
     try {
-      const response = await fetch("http://localhost:5237/api/auth/register", {
+      const response = await fetch("https://demotop2000.runasp.net/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, confirmPassword }),
