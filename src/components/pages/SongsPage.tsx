@@ -84,7 +84,12 @@ useEffect(() => {
         releaseYear: song.releaseYear,
         noteringen: song.timesListed,
         highestPosition: song.highestPosition,
-        imgUrl: (song as any).imgUrl ?? undefined,
+        imgUrl:
+          (song as any).imgUrl ??
+          (song as any).ImgUrl ??
+          (song as any).imageUrl ??
+          (song as any).ImageUrl ??
+          undefined,
       })),
     [songs]
   );
