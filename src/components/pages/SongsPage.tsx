@@ -20,6 +20,7 @@ interface SongApi {
   releaseYear: number | null;
   timesListed: number;
   highestPosition: number | null;
+  imgUrl?: string;
 }
 
 interface SongUI {
@@ -29,6 +30,7 @@ interface SongUI {
   releaseYear: number | null;
   noteringen: number;
   highestPosition: number | null;
+  imgUrl?: string;
 }
 
 export function SongsPage({ onNavigate }: SongsPageProps) {
@@ -82,6 +84,7 @@ useEffect(() => {
         releaseYear: song.releaseYear,
         noteringen: song.timesListed,
         highestPosition: song.highestPosition,
+        imgUrl: (song as any).imgUrl ?? undefined,
       })),
     [songs]
   );
@@ -218,8 +221,14 @@ useEffect(() => {
                 onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}
               >
                 {/* Song cover section */}
-                <div className="h-48 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
-                  <Music2 size={64} className="text-white/60" />
+                <div className="h-48 flex items-center justify-center relative overflow-hidden bg-gray-100">
+                  {song.imgUrl ? (
+                    <img src={song.imgUrl} alt={`${song.title} cover`} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center">
+                      <Music2 size={64} className="text-white/60" />
+                    </div>
+                  )}
                   {/* Times listed badge */}
                   <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
                     {song.noteringen}x genoteerd
