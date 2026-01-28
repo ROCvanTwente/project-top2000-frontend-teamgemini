@@ -26,6 +26,7 @@ interface SongUI {
   id: number;
   title: string;
   artistName: string;
+  imgUrl: string | null;
   releaseYear: number | null;
   noteringen: number;
   highestPosition: number | null;
@@ -79,6 +80,7 @@ useEffect(() => {
         id: song.songId,
         title: song.title,
         artistName: song.artist,
+        imgUrl: (song as any).imgUrl ?? null, // Ensure imgUrl is mapped
         releaseYear: song.releaseYear,
         noteringen: song.timesListed,
         highestPosition: song.highestPosition,
@@ -217,25 +219,27 @@ useEffect(() => {
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
                 onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}
               >
-                {/* Song cover section */}
-                <div className="h-48 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
-                  <Music2 size={64} className="text-white/60" />
-                  {/* Times listed badge */}
+                <div className="aspect-square rounded-lg bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
+                  {song.imgUrl ? (
+                    <img
+                      src={song.imgUrl}
+                      alt={song.title}
+                      className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <Music2 size={64} className="text-white/60" />
+                  )}
                   <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
                     {song.noteringen}x genoteerd
                   </div>
                 </div>
-                
-                {/* Song info section */}
                 <div className="p-4">
                   <h3 className="text-lg font-bold text-gray-900 mb-2 hover:text-gray-700 transition-colors">
                     {song.title}
                   </h3>
-                  
                   <p className="text-gray-600 text-sm mb-2">
                     door {song.artistName}
                   </p>
-                  
                   <div className="text-gray-500 text-sm mb-3">
                     {song.releaseYear ? `Uitgebracht in ${song.releaseYear}` : 'Jaar onbekend'}
                     {song.highestPosition && (
@@ -244,8 +248,6 @@ useEffect(() => {
                       </span>
                     )}
                   </div>
-                  
-                  {/* View details button */}
                   <div className="mt-4 pt-3 border-t border-gray-100">
                     <div className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                       Bekijk details →
@@ -254,7 +256,6 @@ useEffect(() => {
                 </div>
               </div>
             ))}
-
             {paginatedSongs.length === 0 && (
               <div className="col-span-full text-center py-12 text-gray-500">
                 Geen nummers gevonden voor deze zoekopdracht
