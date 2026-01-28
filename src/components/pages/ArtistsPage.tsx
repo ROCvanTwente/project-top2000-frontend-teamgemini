@@ -182,8 +182,8 @@ useEffect(() => {
                   }}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
                 >
-                  <option value="name">Naam (A-Z)</option>
-                  <option value="songs">Aantal nummers</option>
+                  <option value="songs">Naam (A-Z)</option>
+                  <option value="name">Aantal nummers (meeste eerst)</option>
                 </select>
               </div>
             </div>
