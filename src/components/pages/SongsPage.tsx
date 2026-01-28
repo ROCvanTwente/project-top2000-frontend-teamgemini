@@ -20,7 +20,6 @@ interface SongApi {
   releaseYear: number | null;
   timesListed: number;
   highestPosition: number | null;
-  imgUrl?: string;
 }
 
 interface SongUI {
@@ -30,7 +29,6 @@ interface SongUI {
   releaseYear: number | null;
   noteringen: number;
   highestPosition: number | null;
-  imgUrl?: string;
 }
 
 export function SongsPage({ onNavigate }: SongsPageProps) {
@@ -52,9 +50,7 @@ useEffect(() => {
       setLoading(true);
       const data: any = await fetchFromAPI("songs");
 
-      console.log("API /songs response:", data);
-      console.log("First song sample:", data?.[0] || data?.$values?.[0]);
-
+      // ✅ Zorg dat we een echte array hebben
       const arrayData: SongApi[] = Array.isArray(data)
         ? data
         : data?.$values ?? [];
@@ -79,34 +75,14 @@ useEffect(() => {
 
   const songsForUI: SongUI[] = useMemo(
     () =>
-      songs.map((song) => {
-        const mappedSong = {
-          id: (song as any).songId ?? (song as any).SongId,
-          title: (song as any).title ?? (song as any).Title ?? "",
-          artistName: (song as any).artist ?? (song as any).Artist ?? "",
-          releaseYear: (song as any).releaseYear ?? (song as any).ReleaseYear ?? null,
-          noteringen: (song as any).timesListed ?? (song as any).TimesListed ?? 0,
-          highestPosition: (song as any).highestPosition ?? (song as any).HighestPosition ?? null,
-          imgUrl:
-            (song as any).imgUrl ??
-            (song as any).ImgUrl ??
-            (song as any).imageUrl ??
-            (song as any).ImageUrl ??
-            (song as any).cover ??
-            (song as any).Cover ??
-            undefined,
-        };
-        
-        // Debug: log first 3 songs to see imgUrl values
-        if (mappedSong.id <= 3) {
-          console.log(`Song ${mappedSong.id} - ${mappedSong.title}:`, {
-            imgUrl: mappedSong.imgUrl,
-            rawSong: song
-          });
-        }
-        
-        return mappedSong;
-      }),
+      songs.map((song) => ({
+        id: song.songId,
+        title: song.title,
+        artistName: song.artist,
+        releaseYear: song.releaseYear,
+        noteringen: song.timesListed,
+        highestPosition: song.highestPosition,
+      })),
     [songs]
   );
 
@@ -242,26 +218,8 @@ useEffect(() => {
                 onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}
               >
                 {/* Song cover section */}
-                <div className="h-48 flex items-center justify-center relative overflow-hidden bg-gray-100">
-                  {song.imgUrl ? (
-                    <img 
-                      src={song.imgUrl} 
-                      alt={`${song.title} cover`} 
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        console.log(`Failed to load image for ${song.title}:`, song.imgUrl);
-                        e.currentTarget.style.display = 'none';
-                        const fallback = e.currentTarget.nextElementSibling;
-                        if (fallback) (fallback as HTMLElement).style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <div 
-                    className="w-full h-full bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center"
-                    style={{ display: song.imgUrl ? 'none' : 'flex' }}
-                  >
-                    <Music2 size={64} className="text-white/60" />
-                  </div>
+                <div className="h-48 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
+                  <Music2 size={64} className="text-white/60" />
                   {/* Times listed badge */}
                   <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
                     {song.noteringen}x genoteerd
