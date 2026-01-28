@@ -246,6 +246,17 @@ const handleAddToPlaylist = async (playlistId: string) => {
                   <ExternalLink size={20} /> Beluister op YouTube
                 </a>
               )}
+              {song.lyrics && (
+                <button
+                  onClick={() => {
+                    // Handle lyrics display - you can navigate to a lyrics page or show a modal
+                    alert(song.lyrics);
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105 ml-4"
+                >
+                  <ExternalLink size={20} /> Tekst
+                </button>
+              )}
               {spotifyUrl && (
                 <a
                   href={spotifyUrl}
