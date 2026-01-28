@@ -10,7 +10,14 @@ export default function LoginPage() {
   const renderForm = () => {
     switch (mode) {
       case "login":
-        return <Login onForgotPassword={() => setMode("forgot")} />;
+        return (
+          <Login
+            onForgotPassword={() => setMode("forgot")}
+            onLoggedIn={(redirect) => {
+              window.location.href = redirect; // redirect to homepage after login
+            }}
+          />
+        );
       case "register":
         return <Register onRegistered={() => setMode("login")} />;
       case "forgot":
@@ -35,17 +42,15 @@ export default function LoginPage() {
             {mode === "login"
               ? "Inloggen"
               : mode === "register"
-              ? "Registreren"
-              : "Wachtwoord vergeten"}
+                ? "Registreren"
+                : "Wachtwoord vergeten"}
           </h1>
         </div>
         {renderForm()}
         {mode !== "forgot" && (
           <div className="mt-6 text-center">
             <button
-              onClick={() =>
-                setMode(mode === "login" ? "register" : "login")
-              }
+              onClick={() => setMode(mode === "login" ? "register" : "login")}
               className="text-sm font-medium text-red-600 hover:text-red-700"
             >
               {mode === "login"

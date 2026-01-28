@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 // @ts-ignore
 import { fetchFromAPI } from "../../api.js";
+import "../../styles/HomePage.css";
 
 const carouselImages = [
   {
@@ -21,6 +22,7 @@ const carouselImages = [
   },
 ];
 
+// Top 5 Song Interface
 interface Top5Song {
   songId: number;
   position: number;
@@ -41,113 +43,70 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
-const loadTop5 = async () => {
-  try {
-    setLoading(true);
-    setError(null);
-    setTop5([]);
-
-    const data: any = await fetchFromAPI("top5songs/2024");
-    // Extract $values
-    setTop5(Array.isArray(data.$values) ? data.$values : []);
-  } catch (err: any) {
-    console.error(err);
-    setError(err.message ?? "Fout bij ophalen van Top 5");
-    setTop5([]);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+    const loadTop5 = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        setTop5([]);
+        const data: any = await fetchFromAPI("top5songs/2024");
+        setTop5(Array.isArray(data.$values) ? data.$values : []);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message ?? "Fout bij ophalen van Top 5");
+        setTop5([]);
+      } finally {
+        setLoading(false);
+      }
+    };
     loadTop5();
   }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('success') === 'true') {
-      setSuccessMessage('Liedje succesvol opgeslagen!');
-      window.history.replaceState(null, '', '/');
+    if (urlParams.get("success") === "true") {
+      setSuccessMessage("Liedje succesvol opgeslagen!");
+      window.history.replaceState(null, "", "/");
       setTimeout(() => setSuccessMessage(null), 5000);
     }
   }, []);
+
   useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentSlide(prev => (prev + 1) % carouselImages.length);
-  }, 5000);
-
-  return () => clearInterval(interval);
-}, []);
-
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + carouselImages.length) % carouselImages.length
-    );
-  };
-
-  // Auto change every 4 seconds
-  useEffect(() => {
-    const id = setInterval(() => {
+    const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
     }, 4000);
-    return () => clearInterval(id);
+    return () => clearInterval(interval);
   }, []);
 
+  const nextSlide = () =>
+    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+  const prevSlide = () =>
+    setCurrentSlide(
+      (prev) => (prev - 1 + carouselImages.length) % carouselImages.length,
+    );
+
   return (
-    <div style={{ minHeight: '100vh', position: 'relative' }}> 
+    <div className="homePageContainer" style={{ minHeight: "100vh", position: "relative" }}>
       {loading && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-          <div className="text-center">
-            <div className="relative mx-auto mb-4 w-16 h-16">
-              <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
+        <div className="fixedLoadingOverlay">
+          <div className="loadingSpinnerContainer">
+            <div className="loadingSpinner">
+              <div className="loadingSpinnerBorder"></div>
+              <div className="loadingSpinnerAnimated"></div>
             </div>
             <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
             <p className="text-white/80">Even geduld</p>
-            <div className="mt-4 flex items-center justify-center gap-1">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
-              <span
-                className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
-                style={{ animationDelay: "0.15s" }}
-              ></span>
-              <span
-                className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
-                style={{ animationDelay: "0.3s" }}
-              ></span>
+            <div className="loadingDots">
+              <span className="loadingDot"></span>
+              <span className="loadingDot"></span>
+              <span className="loadingDot"></span>
             </div>
           </div>
         </div>
       )}
 
-      {successMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            backgroundColor: '#00f541ff',
-            color: 'white',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            zIndex: 1000,
-            fontSize: '16px',
-            fontWeight: 'bold',
-            animation: 'fadeIn 0.5s ease-in-out',
-            maxWidth: '300px',
-            textAlign: 'center'
-          }}
-        >
-          {successMessage}
-        </div>
-      )}
+      {successMessage && <div className="successMessage">{successMessage}</div>}
 
-      <div style={{ position: 'relative', height: '500px', overflow: 'hidden' }}>
+      <div className="carouselDiv">
         {carouselImages.map((image, index) => (
           <div
             key={index}
@@ -163,7 +122,6 @@ const loadTop5 = async () => {
               alt={image.title}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-
             <div
               style={{
                 position: "absolute",
@@ -190,136 +148,67 @@ const loadTop5 = async () => {
             </div>
           </div>
         ))}
-        <div style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px' }}>
-  {carouselImages.map((_, index) => (
-    <span
-      key={index}
-      onClick={() => setCurrentSlide(index)}
-      style={{
-        width: '12px',
-        height: '12px',
-        borderRadius: '50%',
-        backgroundColor: index === currentSlide ? 'white' : 'rgba(255,255,255,0.5)',
-        cursor: 'pointer',
-      }}
-    ></span>
-  ))}
-</div>
 
+        <div className="carouselDotContainer">
+          {carouselImages.map((_, index) => (
+            <span
+              key={index}
+              className={`carouselDot ${index === currentSlide ? "active" : ""}`}
+              onClick={() => setCurrentSlide(index)}
+            ></span>
+          ))}
+        </div>
 
-        {/* Arrows */}
-        <button
-          onClick={prevSlide}
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "1rem",
-            transform: "translateY(-50%)",
-            fontSize: "2rem",
-            background: "rgba(0,0,0,0.4)",
-            border: "none",
-            padding: "0.5rem 1rem",
-            color: "white",
-            cursor: "pointer",
-            zIndex: 10,
-            borderRadius: "6px",
-          }}
-        >
+        <button className="carouselArrow left" onClick={prevSlide}>
           ‹
         </button>
-
-        <button
-          onClick={nextSlide}
-          style={{
-            position: "absolute",
-            top: "50%",
-            right: "1rem",
-            transform: "translateY(-50%)",
-            fontSize: "2rem",
-            background: "rgba(0,0,0,0.4)",
-            border: "none",
-            padding: "0.5rem 1rem",
-            color: "white",
-            cursor: "pointer",
-            zIndex: 10,
-            borderRadius: "6px",
-          }}
-        >
+        <button className="carouselArrow right" onClick={nextSlide}>
           ›
         </button>
       </div>
 
-      {/* Top 5 2024 */}
       <div
         style={{ maxWidth: "1280px", margin: "0 auto", padding: "3rem 1rem" }}
       >
         <div className="responsive-grid-2">
           <div>
             <h2>Top 5 van 2024</h2>
-
             {loading && <p>Bezig met laden...</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
-
             {!loading &&
               !error &&
               top5.map((song) => (
                 <div
                   key={song.songId}
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    background: "#f3f4f6",
-                    borderRadius: "8px",
-                    padding: "1rem",
-                    marginBottom: "0.75rem",
-                  }}
+                  className="top5Card cursor-pointer"
+                  onClick={() =>
+                    onNavigate("song-detail", { songId: song.songId })
+                  }
                 >
                   <strong>{song.position}</strong>
                   <div>
-                    <div><strong>{song.title}</strong></div>
-                    <div style={{ color: "#374151" }}>{song.artist}</div>
+                    <div>
+                      <strong>{song.title}</strong>
+                    </div>
+                    <div className="top5CardArtist">{song.artist}</div>
                     {song.releaseYear && <small>{song.releaseYear}</small>}
                   </div>
                 </div>
               ))}
-
             {!loading && !error && top5.length === 0 && (
               <p>Geen data gevonden.</p>
             )}
-
             <button
+              className="top5Button"
               onClick={() => onNavigate("rankings")}
-              style={{
-                marginTop: "1rem",
-                width: "100%",
-                backgroundColor: "black",
-                color: "white",
-                padding: "0.75rem",
-                borderRadius: "8px",
-                border: "none",
-              }}
             >
               Bekijk volledige lijst 2024
             </button>
           </div>
 
-          {/* Welcome Section */}
           <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                marginBottom: "1.5rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "4px",
-                  height: "2rem",
-                  backgroundColor: "black",
-                }}
-              ></div>
+            <div className="welcomeHeader">
+              <div className="welcomeLine"></div>
               <h2 style={{ margin: 0 }}>Welkom bij de TOP 2000</h2>
             </div>
             <div>
@@ -379,51 +268,20 @@ const loadTop5 = async () => {
               </ul>
             </div>
 
-            <div
-              style={{
-                marginTop: "2rem",
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: "black",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  color: "white",
-                  textAlign: "center",
-                }}
-              >
+            <div className="welcomeGridStats">
+              <div className="welcomeStat black">
                 <div style={{ fontSize: "1.875rem", marginBottom: "0.5rem" }}>
                   2000+
                 </div>
                 <div style={{ fontSize: "0.875rem" }}>Nummers</div>
               </div>
-              <div
-                style={{
-                  backgroundColor: "#1f2937",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  color: "white",
-                  textAlign: "center",
-                }}
-              >
+              <div className="welcomeStat gray1">
                 <div style={{ fontSize: "1.875rem", marginBottom: "0.5rem" }}>
                   25+
                 </div>
                 <div style={{ fontSize: "0.875rem" }}>Edities</div>
               </div>
-              <div
-                style={{
-                  backgroundColor: "#4b5563",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  color: "white",
-                  textAlign: "center",
-                }}
-              >
+              <div className="welcomeStat gray2">
                 <div style={{ fontSize: "1.875rem", marginBottom: "0.5rem" }}>
                   24/7
                 </div>

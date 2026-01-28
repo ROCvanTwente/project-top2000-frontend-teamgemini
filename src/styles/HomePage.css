@@ -1,0 +1,221 @@
+/* HomePage.css - Red-themed style */
+
+body {
+    font-family: sans-serif;
+}
+
+/* Success message */
+.successMessage {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ff4d4d;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-size: 16px;
+    font-weight: bold;
+    animation: fadeIn 0.5s ease-in-out;
+    max-width: 300px;
+    text-align: center;
+}
+
+/* Carousel container */
+.carouselDiv {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Carousel dots */
+.carouselDotContainer {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.carouselDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.carouselDot.active {
+    background-color: #ff0000;
+}
+
+/* Carousel arrows */
+.carouselArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background: rgba(255, 0, 0, 0.6);
+    border: none;
+    padding: 0.5rem 1rem;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.carouselArrow:hover {
+    background: #ff0000;
+}
+
+.carouselArrow.left { left: 1rem; }
+.carouselArrow.right { right: 1rem; }
+
+/* Loading overlay */
+.fixedLoadingOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading spinner */
+.loadingSpinnerContainer {
+    text-align: center;
+}
+
+.loadingSpinner {
+    position: relative;
+    margin: 0 auto 1rem auto;
+    width: 4rem;
+    height: 4rem;
+}
+
+.loadingSpinnerBorder {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 77, 77, 0.3);
+}
+
+.loadingSpinnerAnimated {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 4px solid #ff1a1a;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+.loadingDots {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.loadingDot {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: #ff0000;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loadingDot:nth-child(2) { animation-delay: 0.15s; }
+.loadingDot:nth-child(3) { animation-delay: 0.3s; }
+
+/* Top 5 cards */
+.top5Card {
+    display: flex;
+    gap: 1rem;
+    background: #ffe5e5;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.top5CardArtist {
+    color: #b30000;
+}
+
+.top5Button {
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #ff0000;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.top5Button:hover {
+    background-color: #b30000;
+}
+
+/* Welcome section */
+.welcomeHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.welcomeLine {
+    width: 4px;
+    height: 2rem;
+    background-color: #ff0000;
+}
+
+/* Welcome stats grid */
+.welcomeGridStats {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.welcomeStat {
+    padding: 1.5rem;
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+}
+
+.welcomeStat.black { background-color: #ff0000; }
+.welcomeStat.gray1 { background-color: #b30000; }
+.welcomeStat.gray2 { background-color: #ff6666; }
+
+/* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-0.5rem); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.homePageContainer {
+  min-height: 100vh;
+  position: relative;
+  /* optional background example */
+  background-image: url('backgroundHome.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

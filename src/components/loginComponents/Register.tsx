@@ -8,7 +8,7 @@ export default function Register({ onRegistered }: RegisterProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
   function parseJwt(token: string) {
     const base64Url = token.split(".")[1];
@@ -19,44 +19,45 @@ export default function Register({ onRegistered }: RegisterProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setErrors([]);
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setErrors(["Passwords do not match"]);
       return;
     }
 
     try {
-      const response = await fetch("https://demotop2000.runasp.net/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, confirmPassword }),
-      });
+      const response = await fetch(
+        "https://demotop2000.runasp.net/api/auth/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, confirmPassword }),
+        }
+      );
 
       if (!response.ok) {
         try {
           const errorData = await response.json();
+          const errorList: string[] = [];
 
-          // Handle Email errors (including "already used")
-          if (errorData?.errors?.Email || errorData?.errors?.email) {
-            setError("Email is connected to another account");
-          }
-          // Handle Password errors
-          else if (errorData?.errors?.Password || errorData?.errors?.password) {
-            setError(errorData.errors.Password?.[0] || errorData.errors.password?.[0]);
-          }
-          // Handle ConfirmPassword errors
-          else if (errorData?.errors?.ConfirmPassword || errorData?.errors?.confirmPassword) {
-            setError(errorData.errors.ConfirmPassword?.[0] || errorData.errors.confirmPassword?.[0]);
-          }
-          // Fallback
-          else if (errorData?.message) {
-            setError(errorData.message);
+          // ModelState errors zijn meestal in data[""]
+          if (errorData?.[""]) {
+            errorList.push(...errorData[""]);
+          } else if (errorData?.errors) {
+            // Identity errors kunnen ook hier staan
+            Object.values(errorData.errors).forEach((arr: any) => {
+              if (Array.isArray(arr)) errorList.push(...arr);
+            });
+          } else if (errorData?.message) {
+            errorList.push(errorData.message);
           } else {
-            setError("E-mail is connected to another account");
+            errorList.push("Er is iets misgegaan tijdens registratie.");
           }
+
+          setErrors(errorList);
         } catch (jsonError) {
-          setError("Failed to parse server response.");
+          setErrors(["Kon server response niet lezen."]);
           console.error("JSON parsing error:", jsonError);
         }
         return;
@@ -76,7 +77,7 @@ export default function Register({ onRegistered }: RegisterProps) {
 
       onRegistered();
     } catch (err) {
-      setError("Registration failed");
+      setErrors(["Registratie mislukt"]);
       console.error(err);
     }
   };
@@ -108,7 +109,13 @@ export default function Register({ onRegistered }: RegisterProps) {
         required
       />
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {errors.length > 0 && (
+        <div className="text-red-600 text-sm space-y-1">
+          {errors.map((err, i) => (
+            <p key={i}>{err}</p>
+          ))}
+        </div>
+      )}
 
       <button
         type="submit"
