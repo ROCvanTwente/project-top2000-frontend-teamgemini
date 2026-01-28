@@ -1,29 +1,70 @@
 interface Props {
-  item: any; // Je kunt dit later vervangen door een echt Type, bijv. 'Song'
+  item: any; 
   selectedStatId: number;
+  rank: number; // <--- NIEUW: We verwachten nu een rank nummer
+  onNavigate: (page: string, params?: any) => void;
 }
 
-export function StatisticsTableRow({ item, selectedStatId }: Props) {
+export function StatisticsTableRow({ item, selectedStatId, rank, onNavigate }: Props) {
   const isArtistMode = selectedStatId === 10;
-  // Fallback voor als data soms null is
-  const positie = item.positie || item.hoogsteNotering || "-";
+  
+  const positie = item.positie || item.hoogsteNotering || item.positieVorigJaar || "-";
+  const linkStyle = "text-gray-700 hover:text-blue-600 hover:underline cursor-pointer font-medium transition-colors";
+
+  const getSongId = () => item.songId || item.SongId;
+  const getArtistId = () => item.artistId || item.ArtistId;
 
   return (
     <tr className="hover:bg-gray-50 transition-colors">
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+      
+      {/* NIEUW: De Rank Kolom (1, 2, 3...) */}
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-black-400">
+        {rank}
+      </td>
+
+      {/* OUDE POSITIE KOLOM (Nu Top 2000 Positie) */}
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-900">
         {positie}
       </td>
 
       {isArtistMode ? (
         <>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">{item.naam}</td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm">
+            <span 
+              className={linkStyle}
+              onClick={() => onNavigate('artist-detail', { artistId: getArtistId() })}
+            >
+              {item.naam}
+            </span>
+          </td>
           <td className="px-6 py-4 text-sm text-gray-700">{item.aantalLiedjes}</td>
+          <td className="px-6 py-4 text-sm text-gray-500">
+            {item.gemiddeldePositie ? Math.round(item.gemiddeldePositie) : "-"}
+          </td>
         </>
       ) : (
         <>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{item.titel || "-"}</td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.artiest || "-"}</td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm">
+            <span 
+              className={linkStyle}
+              onClick={() => onNavigate('song-detail', { songId: getSongId() })}
+            >
+              {item.titel || "-"}
+            </span>
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm">
+            <span 
+              className={linkStyle}
+              onClick={() => onNavigate('artist-detail', { artistId: getArtistId() })}
+            >
+              {item.artiest || "-"}
+            </span>
+          </td>
           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.uitgiftejaar || "-"}</td>
+          
+          {selectedStatId === 9 && (
+             <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-semibold">{item.top2000Jaar || "-"}</td>
+          )}
         </>
       )}
 

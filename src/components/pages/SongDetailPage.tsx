@@ -78,7 +78,7 @@ const handleAddToPlaylist = async (playlistId: string) => {
         setLoading(true);
         setError(null);
         const data: any = await fetchFromAPI(`songs/${songId}`);
-        console.log('API /songs/' + songId + ' response:', data); // <-- added
+        console.log('API /songs/' + songId + ' response:', data);
         setSong(data);
       } catch (err: any) {
         setError(err.message);
