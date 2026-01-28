@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { Pagination, PaginationItem } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
-// Importeer je losse componenten
 import { StatisticsTableHeader } from './StatisticsTableHeader';
 import { StatisticsTableRow } from './StatisticsTableRow';
 
@@ -14,29 +12,30 @@ interface Statistic {
   titel: string;
   artiest: string;
   uitgiftejaar: number;
+  songId?: number;
+  artistId?: number;
 }
 
 interface Props {
-  data: any; // Kan een object met $values zijn of een echte array
+  data: any; 
   selectedStatId: number;
+  onNavigate: (page: string, params?: any) => void;
 }
 
-export function StatisticsTable({ data, selectedStatId }: Props) {
+export function StatisticsTable({ data, selectedStatId, onNavigate }: Props) {
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
 
-  // Converteer data naar echte array
   const safeData: Statistic[] = Array.isArray(data) ? data : data?.$values ?? [];
 
   useEffect(() => {
-    setPage(1); // reset pagina bij nieuwe data
+    setPage(1); 
   }, [data]);
 
   if (!safeData || safeData.length === 0) {
     return <p className="text-gray-500 text-center italic mt-4">Geen resultaten gevonden.</p>;
   }
 
-  // Paginering
   const startIndex = (page - 1) * rowsPerPage;
   const currentData = safeData.slice(startIndex, startIndex + rowsPerPage);
   const pageCount = Math.ceil(safeData.length / rowsPerPage);
@@ -53,7 +52,13 @@ export function StatisticsTable({ data, selectedStatId }: Props) {
 
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData.map((item, index) => (
-              <StatisticsTableRow key={index} item={item} selectedStatId={selectedStatId} />
+              <StatisticsTableRow 
+                key={index} 
+                item={item} 
+                selectedStatId={selectedStatId} 
+                rank={startIndex + index + 1}
+                onNavigate={onNavigate} 
+              />
             ))}
           </tbody>
         </table>

@@ -79,24 +79,42 @@ useEffect(() => {
     setPage(1);
   }, [searchTerm]);
 
+  const [sortBy, setSortBy] = useState<"name" | "songsCount">("name");
+
   const artistsForUI: ArtistUI[] = useMemo(
-    () =>
-      artists.map((artist) => {
-        // Prefer songCount from API if present, otherwise fallback
-        let count = typeof artist.songCount === 'number'
-          ? artist.songCount
-          : Array.isArray(artist.songs)
-            ? artist.songs.length
-            : 0;
-        return {
-          id: artist.artistId,
-          name: artist.name,
-          biography: artist.biography,
-          photo: artist.photo,
-          songsCount: count,
-        };
-      }),
-    [artists]
+    () => {
+      // Deduplicate by artist name (case-insensitive)
+      const seen = new Set<string>();
+      let arr = artists
+        .map((artist) => {
+          let count = typeof artist.songCount === 'number'
+            ? artist.songCount
+            : Array.isArray(artist.songs)
+              ? artist.songs.length
+              : 0;
+          return {
+            id: artist.artistId,
+            name: artist.name,
+            biography: artist.biography,
+            photo: artist.photo,
+            songsCount: count,
+          };
+        })
+        .filter((artist) => {
+          const nameKey = artist.name.trim().toLowerCase();
+          if (seen.has(nameKey)) return false;
+          seen.add(nameKey);
+          return true;
+        });
+      // Sort based on dropdown
+      if (sortBy === "name") {
+        arr = arr.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === "songsCount") {
+        arr = arr.sort((a, b) => b.songsCount - a.songsCount);
+      }
+      return arr;
+    },
+    [artists, sortBy]
   );
 
   const filteredArtists = useMemo(() => {
@@ -175,6 +193,17 @@ useEffect(() => {
                   placeholder="Typ om te zoeken..."
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
                 />
+              </div>
+              <div>
+                <label className="block mb-2">Sorteren op</label>
+                <select
+                  value={sortBy}
+                  onChange={e => setSortBy(e.target.value as "name" | "songsCount")}
+                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                >
+                  <option value="name">Naam (A-Z)</option>
+                  <option value="songsCount">Aantal nummers (hoog-laag)</option>
+                </select>
               </div>
             </div>
           </div>
