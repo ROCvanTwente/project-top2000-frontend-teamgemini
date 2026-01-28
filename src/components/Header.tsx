@@ -50,7 +50,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => onNavigate('home')} className={`header-nav-button ${currentPage === 'home' ? 'active' : ''}`}>Home</button>
             <button onClick={() => onNavigate('rankings')} className={`header-nav-button ${currentPage === 'rankings' ? 'active' : ''}`}>Top2000</button>
             <button onClick={() => onNavigate('artists')} className={`header-nav-button ${currentPage === 'artists' ? 'active' : ''}`}>Artiesten</button>
-            <button onClick={() => onNavigate('songs')} className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}>Nummers</button>
+            <button onClick={() => onNavigate(' ')} className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}>Nummers</button>
             <button onClick={() => onNavigate('statistics')} className={`header-nav-button ${currentPage === 'statistics' ? 'active' : ''}`}>Statistieken</button>
             {/* <button onClick={() => onNavigate('history')} className={`header-nav-button ${currentPage === 'history' ? 'active' : ''}`}>Geschiedenis</button> */}
                         {/* DJ Dropdown */}
