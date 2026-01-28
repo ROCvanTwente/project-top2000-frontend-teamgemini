@@ -39,7 +39,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] =
-    useState<"title" | "artist" | "count">("title");
+    useState<"title" | "count">("title");
 
   // 🔹 Pagination
   const [page, setPage] = useState(1);
@@ -101,10 +101,8 @@ useEffect(() => {
     }
 
     return [...filtered].sort((a, b) => {
-      if (sortBy === "title") return a.title.localeCompare(b.title);
-      if (sortBy === "artist")
-        return a.artistName.localeCompare(b.artistName);
-      return b.noteringen - a.noteringen;
+      if (sortBy === "count") return b.noteringen - a.noteringen;
+      return a.title.localeCompare(b.title);
     });
   }, [songsForUI, searchTerm, sortBy]);
 
@@ -178,30 +176,19 @@ useEffect(() => {
               </div>
 
               <div>
-                <label className="block mb-2">
+                <label className="block mb-2 flex items-center gap-2">
                   Sorteren op
+                  <span className="text-xs text-gray-500">
+                    (eerst op nummers, daarna op letters)
+                  </span>
                 </label>
                 <select
                   value={sortBy}
-                  onChange={(e) =>
-                    setSortBy(
-                      e.target.value as
-                        | "title"
-                        | "artist"
-                        | "count"
-                    )
-                  }
+                  onChange={e => setSortBy(e.target.value as "title" | "count")}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-[var(--color-gray-medium)]"
                 >
-                  <option value="title">
-                    Titel (A-Z)
-                  </option>
-                  <option value="artist">
-                    Artiest (A-Z)
-                  </option>
-                  <option value="count">
-                    Aantal noteringen
-                  </option>
+                  <option value="title">Titel (A-Z)</option>
+                  <option value="count">Aantal noteringen</option>
                 </select>
               </div>
             </div>
