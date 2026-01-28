@@ -46,7 +46,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"name">("name");
+  const [sortBy, setSortBy] = useState<"name" | "count">("name");
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -110,8 +110,11 @@ useEffect(() => {
       );
     }
 
-    return [...filtered].sort((a, b) => a.name.localeCompare(b.name)); // Only sort by name A-Z
-  }, [artistsForUI, searchTerm]);
+    return [...filtered].sort((a, b) => {
+      if (sortBy === "count") return b.songsCount - a.songsCount;
+      return a.name.localeCompare(b.name);
+    });
+  }, [artistsForUI, searchTerm, sortBy]);
 
   const totalPages = Math.ceil(
     filteredAndSortedArtists.length / itemsPerPage
@@ -182,11 +185,11 @@ useEffect(() => {
                 <label className="block mb-2">Sorteren op</label>
                 <select
                   value={sortBy}
-                  onChange={() => {}}
+                  onChange={e => setSortBy(e.target.value as "name" | "count")}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
-                  disabled
                 >
                   <option value="name">Naam (A-Z)</option>
+                  <option value="count">Aantal nummers</option>
                 </select>
               </div>
             </div>
