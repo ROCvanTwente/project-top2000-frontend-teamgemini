@@ -220,7 +220,7 @@ useEffect(() => {
                     )}
 
                     <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
-                      {artist.songsCount} {artist.songsCount === 1 ? "nummer" : "nummers"}
+                      {artist.songsCount}
                     </div>
                   </div>
 
