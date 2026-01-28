@@ -30,6 +30,7 @@ interface ArtistApi {
   biography?: string | null;
   photo?: string | null;
   songs: Song[];
+  songCount?: number;
 }
 
 interface ArtistUI {
@@ -86,7 +87,7 @@ useEffect(() => {
         name: artist.name,
         biography: artist.biography,
         photo: artist.photo,
-        songsCount: artist.songs.length,
+        songsCount: artist.songCount ?? artist.songs?.length ?? 0,
       })),
     [artists]
   );
