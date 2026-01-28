@@ -79,21 +79,34 @@ useEffect(() => {
 
   const songsForUI: SongUI[] = useMemo(
     () =>
-      songs.map((song) => ({
-        id: (song as any).songId ?? (song as any).SongId,
-        title: (song as any).title ?? (song as any).Title ?? "",
-        artistName: (song as any).artist ?? (song as any).Artist ?? "",
-        releaseYear: (song as any).releaseYear ?? (song as any).ReleaseYear ?? null,
-        noteringen: (song as any).timesListed ?? (song as any).TimesListed ?? 0,
-        highestPosition: (song as any).highestPosition ?? (song as any).HighestPosition ?? null,
-        imgUrl:
-          (song as any).imgUrl ??
-          (song as any).ImgUrl ??
-          (song as any).imageUrl ??
-          (song as any).ImageUrl ??
-          (song as any).cover ??
-          undefined,
-      })),
+      songs.map((song) => {
+        const mappedSong = {
+          id: (song as any).songId ?? (song as any).SongId,
+          title: (song as any).title ?? (song as any).Title ?? "",
+          artistName: (song as any).artist ?? (song as any).Artist ?? "",
+          releaseYear: (song as any).releaseYear ?? (song as any).ReleaseYear ?? null,
+          noteringen: (song as any).timesListed ?? (song as any).TimesListed ?? 0,
+          highestPosition: (song as any).highestPosition ?? (song as any).HighestPosition ?? null,
+          imgUrl:
+            (song as any).imgUrl ??
+            (song as any).ImgUrl ??
+            (song as any).imageUrl ??
+            (song as any).ImageUrl ??
+            (song as any).cover ??
+            (song as any).Cover ??
+            undefined,
+        };
+        
+        // Debug: log first 3 songs to see imgUrl values
+        if (mappedSong.id <= 3) {
+          console.log(`Song ${mappedSong.id} - ${mappedSong.title}:`, {
+            imgUrl: mappedSong.imgUrl,
+            rawSong: song
+          });
+        }
+        
+        return mappedSong;
+      }),
     [songs]
   );
 
