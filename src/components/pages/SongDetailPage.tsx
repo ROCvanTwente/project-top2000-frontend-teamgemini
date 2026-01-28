@@ -155,7 +155,7 @@ const handleAddToPlaylist = async (playlistId: string) => {
         </button>
 
         {/* Song Info */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div className="bg-white rounded-lg shadow-md mb-8">
           <div className="md:flex">
 
             {/* Album Cover */}
@@ -214,19 +214,32 @@ const handleAddToPlaylist = async (playlistId: string) => {
 >
   <Plus size={16} /> Toevoegen aan lijst
 </button>
-                {showPlaylistMenu && (
-                  <div className="absolute mt-2 w-48 bg-white shadow-lg rounded-lg z-50">
-                    {playlists.map(p => (
-                      <button
-                        key={p.id}
-                        onClick={() => handleAddToPlaylist(p.id)}
-                        className="w-full text-left px-4 py-2 hover:bg-red-500"
-                      >
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
+{showPlaylistMenu && (
+  <div
+    className="
+      absolute
+      mt-2
+      w-56
+      bg-white
+      shadow-lg
+      rounded-lg
+      z-50
+max-h-[50vh]
+      overflow-y-auto
+      border
+    "
+  >
+    {playlists.map(p => (
+      <button
+        key={p.id}
+        onClick={() => handleAddToPlaylist(p.id)}
+        className="w-full text-left px-4 py-2 hover:bg-red-500 hover:text-white transition-colors"
+      >
+        {p.name}
+      </button>
+    ))}
+  </div>
+)}
               </div>
 
               {(song.youtube) && (

@@ -83,8 +83,8 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => onNavigate('faq')} className={`header-nav-button ${currentPage === 'faq' ? 'active' : ''}`}>FAQ</button>
             <button onClick={() => onNavigate('contact')} className={`header-nav-button ${currentPage === 'contact' ? 'active' : ''}`}>Contact</button>
 
-
-            {/* {user?.role === 'admin' && ( */}
+            {/* {console.log(user)} */}
+              {/* {user?.role === 'admin' && (   */}
               <div className="relative" ref={adminMenuRef}>
                 <button className="header-nav-button" onClick={() => setAdminMenuOpen(!adminMenuOpen)}>
                   Beheren
@@ -100,7 +100,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                   </div>
                 )}
               </div>
-            {/* )} */}
+              {/* )} */}
 
                         {/* {user?.role === 'user' && (  */}
               <button
