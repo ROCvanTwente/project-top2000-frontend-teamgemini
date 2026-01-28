@@ -61,7 +61,6 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
         const arrayData: Ranking[] = Array.isArray(data)
           ? data
           : data?.$values ?? [];
-console.log("Processed rankings:", arrayData.slice(0, 5));
         setRankings(arrayData);
       } catch (err: any) {
         setError(err.message ?? "Fout bij laden");
@@ -85,9 +84,8 @@ console.log("Processed rankings:", arrayData.slice(0, 5));
       const q = searchTerm.toLowerCase();
       data = data.filter(
         (r) =>
-          r.title.toLowerCase().includes(q) ||
-          r.artist.toLowerCase().includes(q)
-      );
+          r.title.toLowerCase().includes(q) 
+            );
     }
 
     return data;
@@ -177,7 +175,7 @@ console.log("Processed rankings:", arrayData.slice(0, 5));
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Zoek op titel of artiest"
+                placeholder="Zoek op titel"
                 className="w-full border-2 border-gray-200 rounded-lg p-3"
               />
             </div>

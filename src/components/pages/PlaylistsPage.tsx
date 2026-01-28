@@ -172,11 +172,11 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
                   <>
                     <div className="p-6 bg-gray-800 text-white flex justify-between">
                       <h2 className="font-bold">{selectedPlaylist.name}</h2>
-                      {playlistSongs.length > 0 && (
-                        <button className="bg-red-500 px-4 py-2 rounded-lg flex gap-2">
-                          <Play size={16} /> Speel alles
-                        </button>
-                      )}
+                    {playlistSongs.length > 0 && (
+                      <button className="bg-red-500 px-4 py-2 rounded-lg flex items-center gap-2">
+                        <Play size={16} /> Speel alles
+                      </button>
+                    )}
                     </div>
 
                     <div className="flex-1 overflow-y-auto">
