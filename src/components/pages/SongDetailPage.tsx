@@ -143,12 +143,14 @@ const handleAddToPlaylist = async (playlistId: string) => {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
 
-        {/* Toast melding */}
-        {toast && (
-          <div className={`fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg z-50 ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
-            {toast.message}
-          </div>
-        )}
+{toast && (
+  <div
+    className={`fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg z-[9999]
+      ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}
+  >
+    {toast.message}
+  </div>
+)}
 
         <button onClick={() => onNavigate('songs')} className="flex items-center gap-2 text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors mb-8">
           <ArrowLeft size={20} /> Terug naar alle nummers
