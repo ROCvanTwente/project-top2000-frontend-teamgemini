@@ -106,6 +106,8 @@ useEffect(() => {
     [artists]
   );
 
+  console.log("Artists for UI:", artistsForUI);
+
   const filteredAndSortedArtists = useMemo(() => {
     let filtered = artistsForUI;
 
