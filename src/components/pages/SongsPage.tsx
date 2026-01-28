@@ -52,10 +52,9 @@ useEffect(() => {
       setLoading(true);
       const data: any = await fetchFromAPI("songs");
 
-      // debug: inspect raw list response to see if ImgUrl is present / what shape items have
       console.log("API /songs response:", data);
+      console.log("First song sample:", data?.[0] || data?.$values?.[0]);
 
-      // ✅ Zorg dat we een echte array hebben
       const arrayData: SongApi[] = Array.isArray(data)
         ? data
         : data?.$values ?? [];
@@ -232,12 +231,24 @@ useEffect(() => {
                 {/* Song cover section */}
                 <div className="h-48 flex items-center justify-center relative overflow-hidden bg-gray-100">
                   {song.imgUrl ? (
-                    <img src={song.imgUrl} alt={`${song.title} cover`} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center">
-                      <Music2 size={64} className="text-white/60" />
-                    </div>
-                  )}
+                    <img 
+                      src={song.imgUrl} 
+                      alt={`${song.title} cover`} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.log(`Failed to load image for ${song.title}:`, song.imgUrl);
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling;
+                        if (fallback) (fallback as HTMLElement).style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div 
+                    className="w-full h-full bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center"
+                    style={{ display: song.imgUrl ? 'none' : 'flex' }}
+                  >
+                    <Music2 size={64} className="text-white/60" />
+                  </div>
                   {/* Times listed badge */}
                   <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
                     {song.noteringen}x genoteerd
