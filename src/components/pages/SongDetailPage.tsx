@@ -38,6 +38,7 @@ export function SongDetailPage({ songId, onNavigate }: SongDetailPageProps) {
   const [song, setSong] = useState<SongApi | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
   const { user } = useAuth();
   const { playlists, addSongToPlaylist } = usePlaylist();
   const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
@@ -159,9 +160,17 @@ const handleAddToPlaylist = async (playlistId: string) => {
           <div className="md:flex">
 
             {/* Album Cover */}
-            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
-              {song.imgUrl ? (
-                <img src={song.imgUrl} alt={`${song.title} cover`} className="object-cover w-full h-full" />
+            <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center overflow-hidden">
+              {song.imgUrl && !imageError ? (
+                <img 
+                  src={song.imgUrl} 
+                  alt={`${song.title} cover`} 
+                  className="object-cover w-full h-full"
+                  onError={() => {
+                    console.warn('Image failed to load:', song.imgUrl);
+                    setImageError(true);
+                  }}
+                />
               ) : (
                 <div className="text-white text-center p-8">
                   <Play size={80} className="mx-auto mb-4" />
@@ -169,7 +178,7 @@ const handleAddToPlaylist = async (playlistId: string) => {
                   <p className="text-white/80">{song.artist}</p>
                 </div>
               )}
-              </div>
+            </div>
 
             {/* Song Details */}
             <div className="md:w-2/3 p-8">
