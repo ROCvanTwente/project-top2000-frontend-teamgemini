@@ -30,6 +30,7 @@ interface ArtistApi {
   biography?: string | null;
   photo?: string | null;
   songs: Song[];
+  songCount?: number;
 }
 
 interface ArtistUI {
@@ -45,7 +46,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "songs">("name");
+  const [sortBy, setSortBy] = useState<"name">("name");
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -81,13 +82,29 @@ useEffect(() => {
 
   const artistsForUI: ArtistUI[] = useMemo(
     () =>
-      artists.map((artist) => ({
-        id: artist.artistId,
-        name: artist.name,
-        biography: artist.biography,
-        photo: artist.photo,
-        songsCount: artist.songs.length,
-      })),
+      artists.map((artist) => {
+        let count = 0;
+        
+        try {
+          if (Array.isArray(artist.songs)) {
+            count = artist.songs.length;
+          } else if (artist.songs && typeof artist.songs === 'object') {
+            count = Object.keys(artist.songs).length;
+          }
+        } catch (e) {
+          count = 0;
+        }
+        
+        console.log(`Artist ${artist.name}: ${count} songs`);
+        
+        return {
+          id: artist.artistId,
+          name: artist.name,
+          biography: artist.biography,
+          photo: artist.photo,
+          songsCount: count,
+        };
+      }),
     [artists]
   );
 
@@ -101,11 +118,8 @@ useEffect(() => {
       );
     }
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      return b.songsCount - a.songsCount;
-    });
-  }, [artistsForUI, searchTerm, sortBy]);
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name)); // Only sort by name A-Z
+  }, [artistsForUI, searchTerm]);
 
   const totalPages = Math.ceil(
     filteredAndSortedArtists.length / itemsPerPage
@@ -176,14 +190,11 @@ useEffect(() => {
                 <label className="block mb-2">Sorteren op</label>
                 <select
                   value={sortBy}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "name" || value === "songs") setSortBy(value);
-                  }}
+                  onChange={() => {}}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                  disabled
                 >
                   <option value="name">Naam (A-Z)</option>
-                  <option value="songs">Aantal nummers</option>
                 </select>
               </div>
             </div>
@@ -220,7 +231,7 @@ useEffect(() => {
                     )}
 
                     <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
-                      {artist.songsCount} {artist.songsCount === 1 ? "nummer" : "nummers"}
+                      {artist.songsCount}
                     </div>
                   </div>
 
