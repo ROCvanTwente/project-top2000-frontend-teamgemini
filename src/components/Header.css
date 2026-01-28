@@ -162,7 +162,18 @@
   font-size: 2rem;
   cursor: pointer;
 }
+/* Mobiele DJ dropdown */
+.mobile-dropdown-content a {
+  color: white; /* witte links */
+  text-decoration: none;
+  padding-left: 1rem;
+  display: block;
+  margin: 0.2rem 0;
+}
 
+.mobile-dropdown-content a:hover {
+  color: #f3f4f6; /* lichte hover */
+}
 
 /* Pijl naast dropdown-buttons */
 .header-nav-button.dropdown-button {
@@ -195,11 +206,16 @@
 /* =========================
    MOBILE MENU (SECTIE ONDER HEADER MET SCROLL)
 ========================= */
+
 .mobile-nav {
-  border-top: 1px solid rgba(255,255,255,0.2);
-  /* background-color: rgba(17,17,17,0.95); */
-  max-height: calc(100vh - 4rem);
-  overflow-y: auto;
+  position: fixed;
+  top: 4rem; /* hoogte van header */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 4rem);
+  background: rgba(17,17,17,0.95);
+  overflow-y: auto; /* dit maakt menu scrollable */
+  z-index: 150;
   padding: 1rem;
   display: flex;
   flex-direction: column;

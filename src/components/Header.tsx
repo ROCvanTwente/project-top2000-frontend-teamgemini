@@ -12,6 +12,7 @@ interface HeaderProps {
 
 export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [djMenuMobileOpen, setDjMenuMobileOpen] = useState(false);
   const [djMenuOpen, setDjMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -118,12 +119,12 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 </button>
               ) : (
                 <>
-<button
-  className={`header-nav-button dropdown-button ${userMenuOpen ? 'open' : ''}`}
-  onClick={() => setUserMenuOpen(!userMenuOpen)}
->
-  {user.email}
-</button>
+              <button
+                className={`header-nav-button dropdown-button ${userMenuOpen ? 'open' : ''}`}
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+              >
+                {user.email}
+              </button>
 
                   {userMenuOpen && (
                     <div className="dropdown dropdown-right">
@@ -156,6 +157,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
         </div>
 
         {/* MOBILE MENU */}
+
         {mobileMenuOpen && (
           <nav className="show-on-mobile mobile-nav">
             <button onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }} className="mobile-nav-button">Home</button>
@@ -163,7 +165,36 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => { onNavigate('artists'); setMobileMenuOpen(false); }} className="mobile-nav-button">Artiesten</button>
             <button onClick={() => { onNavigate('songs'); setMobileMenuOpen(false); }} className="mobile-nav-button">Nummers</button>
             <button onClick={() => { onNavigate('statistics'); setMobileMenuOpen(false); }} className="mobile-nav-button">Statistieken</button>
-
+{/* DJ MOBILE DROPDOWN */}
+<div className="mobile-nav-dropdown">
+  <button
+    className="mobile-nav-button"
+    onClick={() => setDjMenuMobileOpen(!djMenuMobileOpen)}
+  >
+    DJ's {djMenuMobileOpen ? '▲' : '▼'}
+  </button>
+  {djMenuMobileOpen && (
+    <div className="mobile-dropdown-content">
+      <a
+        href="https://nl.wikipedia.org/wiki/Bart_Arens"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Bart Arens (Opening)
+      </a>
+      {djs.map((dj) => (
+        <a
+          key={dj.name}
+          href={dj.wikipediaLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {dj.name}
+        </a>
+      ))}
+    </div>
+  )}
+</div>
             {/* PLAYLISTS MOBILE — TERUG */}
             {/* {user?.role === 'user' && ( */}
               <button
