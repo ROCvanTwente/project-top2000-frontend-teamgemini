@@ -102,8 +102,8 @@ useEffect(() => {
     }
 
     return [...filtered].sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      return b.songsCount - a.songsCount;
+      if (sortBy === "name") return b.songsCount - a.songsCount; // Sort by song count (descending)
+      return a.name.localeCompare(b.name); // Sort by name (A-Z)
     });
   }, [artistsForUI, searchTerm, sortBy]);
 
