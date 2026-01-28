@@ -53,7 +53,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => onNavigate('home')} className={`header-nav-button ${currentPage === 'home' ? 'active' : ''}`}>Home</button>
             <button onClick={() => onNavigate('rankings')} className={`header-nav-button ${currentPage === 'rankings' ? 'active' : ''}`}>Top2000</button>
             <button onClick={() => onNavigate('artists')} className={`header-nav-button ${currentPage === 'artists' ? 'active' : ''}`}>Artiesten</button>
-            <button onClick={() => onNavigate(' ')} className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}>Nummers</button>
+            <button onClick={() => onNavigate('songs')} className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}>Nummers</button>
             <button onClick={() => onNavigate('statistics')} className={`header-nav-button ${currentPage === 'statistics' ? 'active' : ''}`}>Statistieken</button>
             
 
@@ -83,12 +83,15 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => onNavigate('faq')} className={`header-nav-button ${currentPage === 'faq' ? 'active' : ''}`}>FAQ</button>
             <button onClick={() => onNavigate('contact')} className={`header-nav-button ${currentPage === 'contact' ? 'active' : ''}`}>Contact</button>
 
-
-            {/* {user?.role === 'admin' && ( */}
+            {/* {console.log(user)} */}
+              {/* {user?.role === 'admin' && (   */}
               <div className="relative" ref={adminMenuRef}>
-                <button className="header-nav-button" onClick={() => setAdminMenuOpen(!adminMenuOpen)}>
-                  Beheren
-                </button>
+<button
+  className={`header-nav-button dropdown-button ${adminMenuOpen ? 'open' : ''}`}
+  onClick={() => setAdminMenuOpen(!adminMenuOpen)}
+>
+  Beheren
+</button>
                 {adminMenuOpen && (
                   <div className="dropdown">
                     <button onClick={() => { onNavigate('adminSongs'); setAdminMenuOpen(false); }}>
@@ -100,7 +103,7 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                   </div>
                 )}
               </div>
-            {/* )} */}
+              {/* )} */}
 
                         {/* {user?.role === 'user' && (  */}
               <button

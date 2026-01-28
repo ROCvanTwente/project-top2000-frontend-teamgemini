@@ -79,29 +79,78 @@ useEffect(() => {
     setPage(1);
   }, [searchTerm]);
 
+  const [sortBy, setSortBy] = useState<"name" | "songsCount">("name");
+
   const artistsForUI: ArtistUI[] = useMemo(
-    () =>
-      artists.map((artist) => {
-        // Prefer songCount from API if present, otherwise fallback
-        let count = typeof artist.songCount === 'number'
-          ? artist.songCount
-          : Array.isArray(artist.songs)
-            ? artist.songs.length
-            : 0;
-        return {
-          id: artist.artistId,
-          name: artist.name,
-          biography: artist.biography,
-          photo: artist.photo,
-          songsCount: count,
-        };
-      }),
-    [artists]
+    () => {
+      // Gebruik useMemo om herberekeningen te vermijden tenzij
+      // `artists` of `sortBy` veranderen.
+      // Deduplicate by artist name (case-insensitive)
+      const seen = new Set<string>();
+
+      // Map de raw API-artiesten naar het UI-model.
+      let arr = artists
+        .map((artist) => {
+          // artistAny: loosely typed access omdat API-vormen kunnen verschillen
+          const artistAny = artist as any;
+
+          // rawSongs: probeer verschillende mogelijke property-namen
+          // - camelCase: `songs`
+          // - PascalCase: `Songs`
+          // - EF-serialized object: `$values`
+          const rawSongs = artistAny.songs ?? artistAny.Songs ?? artistAny.$values ?? [];
+
+          // resolveValues: als API een object met `$values` teruggeeft,
+          // haal dan die interne array eruit; anders geef de array terug.
+          const resolveValues = (v: any) => {
+            if (Array.isArray(v)) return v; // al een array
+            if (v && Array.isArray(v.$values)) return v.$values; // EF $values shape
+            return [] as any[]; // fallback: lege lijst
+          };
+
+          // songsArray: nu gegarandeerd een echte array (of leeg)
+          const songsArray = resolveValues(rawSongs);
+
+          // Bepaal het aantal nummers: voorkeursvolgorde:
+          // 1) expliciete `songCount` property (indien aanwezig)
+          // 2) lengte van de `songsArray`
+          const count = typeof artistAny.songCount === 'number'
+            ? artistAny.songCount
+            : songsArray.length;
+
+          // Return het object dat de UI verwacht
+          return {
+            id: artist.artistId,
+            name: artist.name,
+            biography: artist.biography,
+            photo: artist.photo,
+            songsCount: count,
+          };
+        })
+
+        // Deduplicate: verwijder dubbele artiesten op basis van naam (case-insensitive)
+        .filter((artist) => {
+          const nameKey = artist.name.trim().toLowerCase();
+          if (seen.has(nameKey)) return false; // al gezien -> verwijderen
+          seen.add(nameKey); // markeer als gezien
+          return true; // behoud deze artiest
+        });
+      // Sort based on dropdown
+      if (sortBy === "name") {
+        arr = arr.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === "songsCount") {
+        arr = arr.sort((a, b) => b.songsCount - a.songsCount);
+      }
+      return arr;
+    },
+    [artists, sortBy]
   );
 
   const filteredArtists = useMemo(() => {
+    // Begin met de volledige UI-lijst
     let filtered = artistsForUI;
 
+    // Als er een zoekterm is, filter op artiestnaam (case-insensitive)
     if (searchTerm) {
       const q = searchTerm.toLowerCase();
       filtered = filtered.filter((artist) =>
@@ -109,6 +158,7 @@ useEffect(() => {
       );
     }
 
+    // Retourneer de gefilterde lijst (kan leeg zijn)
     return filtered;
   }, [artistsForUI, searchTerm]);
 
@@ -175,6 +225,17 @@ useEffect(() => {
                   placeholder="Typ om te zoeken..."
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
                 />
+              </div>
+              <div>
+                <label className="block mb-2">Sorteren op</label>
+                <select
+                  value={sortBy}
+                  onChange={e => setSortBy(e.target.value as "name" | "songsCount")}
+                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                >
+                  <option value="name">Naam (A-Z)</option>
+                  <option value="songsCount">Aantal nummers (hoog-laag)</option>
+                </select>
               </div>
             </div>
           </div>

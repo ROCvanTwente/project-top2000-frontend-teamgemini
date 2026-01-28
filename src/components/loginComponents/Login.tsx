@@ -3,9 +3,10 @@ import { useAuth } from "../../contexts/AuthContext";
 
 interface LoginProps {
   onForgotPassword: () => void;
+  onLoggedIn: (redirect: string) => void;
 }
 
-export default function Login({ onForgotPassword }: LoginProps) {
+export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -22,13 +23,13 @@ export default function Login({ onForgotPassword }: LoginProps) {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        const message = await response.json();
-        setError(message.message || "Login failed");
+      const data = await response.json();
+
+      if (!response.ok || !data.token) {
+        setError(data.message || "Login failed");
         return;
       }
 
-      const data = await response.json();
       localStorage.setItem("jwt", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
 
@@ -39,6 +40,10 @@ export default function Login({ onForgotPassword }: LoginProps) {
 
       console.log("Login successful", data);
 
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get("redirect") || "/";
+      window.history.replaceState(null, "", "/");
+      onLoggedIn(redirect);
     } catch (err) {
       setError("Login failed");
       console.error(err);
