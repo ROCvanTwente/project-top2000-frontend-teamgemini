@@ -19,6 +19,7 @@ interface Ranking {
   title: string;
   artist: string;
   releaseYear: number;
+  imgUrl?: string; // <-- hier toegevoegd
 }
 
 export function RankingsPage({ onNavigate }: RankingsPageProps) {
@@ -60,7 +61,7 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
         const arrayData: Ranking[] = Array.isArray(data)
           ? data
           : data?.$values ?? [];
-
+console.log("Processed rankings:", arrayData.slice(0, 5));
         setRankings(arrayData);
       } catch (err: any) {
         setError(err.message ?? "Fout bij laden");
@@ -201,35 +202,37 @@ export function RankingsPage({ onNavigate }: RankingsPageProps) {
         {/* Tabel */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <table className="w-full">
-            <thead className="bg-black text-white">
-              <tr>
-                <th className="px-6 py-4 w-24">Positie</th>
-                <th className="px-6 py-4">Titel</th>
-                <th className="px-6 py-4">Artiest</th>
-                <th className="px-6 py-4 w-32">Jaar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedRankings.map((r) => (
-                <tr key={r.songId} className="hover:bg-gray-100 transition">
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-800 font-semibold">
-                      #{r.position}
-                    </span>
-                  </td>
+<thead className="bg-black text-white">
+  <tr>
+    <th className="px-6 py-4 w-24 text-left">#</th>
+    <th className="px-6 py-4 text-left">Titel / Album</th>
+    <th className="px-6 py-4 text-left">Artiest</th>
+    <th className="px-6 py-4 w-32 text-left">Jaar</th>
+  </tr>
+</thead>
+<tbody>
+  {paginatedRankings.map((r) => (
+    <tr key={r.songId} className="hover:bg-gray-100 transition">
+      <td className="px-6 py-4">
+        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-800 font-semibold">
+          #{r.position}
+        </span>
+      </td>
 
-                  <td
-                    className="px-6 py-4 font-medium text-black hover:text-red-600 cursor-pointer transition"
-                    onClick={() => onNavigate("song-detail", { songId: r.songId })}
-                  >
-                    {r.title}
-                  </td>
+      {/* Titel met albumplaatje */}
+      <td
+        className="px-6 py-4 font-medium text-black hover:text-red-600 cursor-pointer transition flex items-center gap-3"
+        onClick={() => onNavigate("song-detail", { songId: r.songId })}
+      >
+{r.imgUrl && <img src={r.imgUrl} alt={r.title} className="w-10 h-10 rounded object-cover" />}
+        <span>{r.title}</span>
+      </td>
 
-                  <td className="px-6 py-4 text-gray-700">{r.artist}</td>
-                  <td className="px-6 py-4 text-gray-600">{r.releaseYear}</td>
-                </tr>
-              ))}
-            </tbody>
+      <td className="px-6 py-4 text-gray-700">{r.artist}</td>
+      <td className="px-6 py-4 text-gray-600">{r.releaseYear}</td>
+    </tr>
+  ))}
+</tbody>
           </table>
           {totalPages > 1 && (
             <div className="flex justify-center py-6">

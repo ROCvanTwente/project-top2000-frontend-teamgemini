@@ -20,17 +20,16 @@ interface SongApi {
   releaseYear: number | null;
   timesListed: number;
   highestPosition: number | null;
-  imgUrl?: string;
 }
 
 interface SongUI {
   id: number;
   title: string;
   artistName: string;
+  imgUrl: string | null;
   releaseYear: number | null;
   noteringen: number;
   highestPosition: number | null;
-  imgUrl?: string;
 }
 
 export function SongsPage({ onNavigate }: SongsPageProps) {
@@ -40,7 +39,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] =
-    useState<"title" | "artist" | "count">("title");
+    useState<"title" | "count">("title");
 
   // 🔹 Pagination
   const [page, setPage] = useState(1);
@@ -51,9 +50,6 @@ useEffect(() => {
     try {
       setLoading(true);
       const data: any = await fetchFromAPI("songs");
-
-      // debug: inspect raw list response to see if ImgUrl is present / what shape items have
-      console.log("API /songs response:", data);
 
       // ✅ Zorg dat we een echte array hebben
       const arrayData: SongApi[] = Array.isArray(data)
@@ -81,19 +77,13 @@ useEffect(() => {
   const songsForUI: SongUI[] = useMemo(
     () =>
       songs.map((song) => ({
-        id: (song as any).songId ?? (song as any).SongId,
-        title: (song as any).title ?? (song as any).Title ?? "",
-        artistName: (song as any).artist ?? (song as any).Artist ?? "",
-        releaseYear: (song as any).releaseYear ?? (song as any).ReleaseYear ?? null,
-        noteringen: (song as any).timesListed ?? (song as any).TimesListed ?? 0,
-        highestPosition: (song as any).highestPosition ?? (song as any).HighestPosition ?? null,
-        imgUrl:
-          (song as any).imgUrl ??
-          (song as any).ImgUrl ??
-          (song as any).imageUrl ??
-          (song as any).ImageUrl ??
-          (song as any).cover ??
-          undefined,
+        id: song.songId,
+        title: song.title,
+        artistName: song.artist,
+        imgUrl: (song as any).imgUrl ?? null, // Ensure imgUrl is mapped
+        releaseYear: song.releaseYear,
+        noteringen: song.timesListed,
+        highestPosition: song.highestPosition,
       })),
     [songs]
   );
@@ -111,10 +101,8 @@ useEffect(() => {
     }
 
     return [...filtered].sort((a, b) => {
-      if (sortBy === "title") return a.title.localeCompare(b.title);
-      if (sortBy === "artist")
-        return a.artistName.localeCompare(b.artistName);
-      return b.noteringen - a.noteringen;
+      if (sortBy === "count") return b.noteringen - a.noteringen;
+      return a.title.localeCompare(b.title);
     });
   }, [songsForUI, searchTerm, sortBy]);
 
@@ -188,30 +176,19 @@ useEffect(() => {
               </div>
 
               <div>
-                <label className="block mb-2">
+                <label className="block mb-2 flex items-center gap-2">
                   Sorteren op
+                  <span className="text-xs text-gray-500">
+                    (eerst op nummers, daarna op letters)
+                  </span>
                 </label>
                 <select
                   value={sortBy}
-                  onChange={(e) =>
-                    setSortBy(
-                      e.target.value as
-                        | "title"
-                        | "artist"
-                        | "count"
-                    )
-                  }
+                  onChange={e => setSortBy(e.target.value as "title" | "count")}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-[var(--color-gray-medium)]"
                 >
-                  <option value="title">
-                    Titel (A-Z)
-                  </option>
-                  <option value="artist">
-                    Artiest (A-Z)
-                  </option>
-                  <option value="count">
-                    Aantal noteringen
-                  </option>
+                  <option value="title">Titel (A-Z)</option>
+                  <option value="count">Aantal noteringen</option>
                 </select>
               </div>
             </div>
@@ -229,31 +206,27 @@ useEffect(() => {
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
                 onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}
               >
-                {/* Song cover section */}
-                <div className="h-48 flex items-center justify-center relative overflow-hidden bg-gray-100">
+                <div className="aspect-square rounded-lg bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
                   {song.imgUrl ? (
-                    <img src={song.imgUrl} alt={`${song.title} cover`} className="w-full h-full object-cover" />
+                    <img
+                      src={song.imgUrl}
+                      alt={song.title}
+                      className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+                    />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center">
-                      <Music2 size={64} className="text-white/60" />
-                    </div>
+                    <Music2 size={64} className="text-white/60" />
                   )}
-                  {/* Times listed badge */}
                   <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
                     {song.noteringen}x genoteerd
                   </div>
                 </div>
-                
-                {/* Song info section */}
                 <div className="p-4">
                   <h3 className="text-lg font-bold text-gray-900 mb-2 hover:text-gray-700 transition-colors">
                     {song.title}
                   </h3>
-                  
                   <p className="text-gray-600 text-sm mb-2">
                     door {song.artistName}
                   </p>
-                  
                   <div className="text-gray-500 text-sm mb-3">
                     {song.releaseYear ? `Uitgebracht in ${song.releaseYear}` : 'Jaar onbekend'}
                     {song.highestPosition && (
@@ -262,8 +235,6 @@ useEffect(() => {
                       </span>
                     )}
                   </div>
-                  
-                  {/* View details button */}
                   <div className="mt-4 pt-3 border-t border-gray-100">
                     <div className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                       Bekijk details →
@@ -272,7 +243,6 @@ useEffect(() => {
                 </div>
               </div>
             ))}
-
             {paginatedSongs.length === 0 && (
               <div className="col-span-full text-center py-12 text-gray-500">
                 Geen nummers gevonden voor deze zoekopdracht

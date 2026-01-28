@@ -30,6 +30,7 @@ interface ArtistApi {
   biography?: string | null;
   photo?: string | null;
   songs: Song[];
+  songCount?: number;
 }
 
 interface ArtistUI {
@@ -45,7 +46,6 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "songs">("name");
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -74,24 +74,32 @@ useEffect(() => {
   loadArtists();
 }, []);
 
-  // Reset page bij search / sort
+  // Reset page bij search
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, sortBy]);
+  }, [searchTerm]);
 
   const artistsForUI: ArtistUI[] = useMemo(
     () =>
-      artists.map((artist) => ({
-        id: artist.artistId,
-        name: artist.name,
-        biography: artist.biography,
-        photo: artist.photo,
-        songsCount: artist.songs.length,
-      })),
+      artists.map((artist) => {
+        // Prefer songCount from API if present, otherwise fallback
+        let count = typeof artist.songCount === 'number'
+          ? artist.songCount
+          : Array.isArray(artist.songs)
+            ? artist.songs.length
+            : 0;
+        return {
+          id: artist.artistId,
+          name: artist.name,
+          biography: artist.biography,
+          photo: artist.photo,
+          songsCount: count,
+        };
+      }),
     [artists]
   );
 
-  const filteredAndSortedArtists = useMemo(() => {
+  const filteredArtists = useMemo(() => {
     let filtered = artistsForUI;
 
     if (searchTerm) {
@@ -101,20 +109,17 @@ useEffect(() => {
       );
     }
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      return b.songsCount - a.songsCount;
-    });
-  }, [artistsForUI, searchTerm, sortBy]);
+    return filtered;
+  }, [artistsForUI, searchTerm]);
 
   const totalPages = Math.ceil(
-    filteredAndSortedArtists.length / itemsPerPage
+    filteredArtists.length / itemsPerPage
   );
 
   const paginatedArtists = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
-    return filteredAndSortedArtists.slice(start, start + itemsPerPage);
-  }, [filteredAndSortedArtists, page]);
+    return filteredArtists.slice(start, start + itemsPerPage);
+  }, [filteredArtists, page]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -171,28 +176,13 @@ useEffect(() => {
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
                 />
               </div>
-
-              <div>
-                <label className="block mb-2">Sorteren op</label>
-                <select
-                  value={sortBy}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "name" || value === "songs") setSortBy(value);
-                  }}
-                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
-                >
-                  <option value="name">Naam (A-Z)</option>
-                  <option value="songs">Aantal nummers</option>
-                </select>
-              </div>
             </div>
           </div>
 
           {/* Result count */}
           <div className="mb-4 text-gray-600">
-            {filteredAndSortedArtists.length}{" "}
-            {filteredAndSortedArtists.length === 1 ? "artiest" : "artiesten"}{" "}
+            {filteredArtists.length}{" "}
+            {filteredArtists.length === 1 ? "artiest" : "artiesten"}{" "}
             gevonden
           </div>
 
@@ -220,7 +210,7 @@ useEffect(() => {
                     )}
 
                     <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
-                      {artist.songsCount} {artist.songsCount === 1 ? "nummer" : "nummers"}
+                      {artist.songsCount}
                     </div>
                   </div>
 
