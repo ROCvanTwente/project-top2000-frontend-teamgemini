@@ -46,7 +46,7 @@ export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "songs">("name");
+  const [sortBy, setSortBy] = useState<"name">("name");
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -118,11 +118,8 @@ useEffect(() => {
       );
     }
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "name") return b.songsCount - a.songsCount; // Sort by song count (descending)
-      return a.name.localeCompare(b.name); // Sort by name (A-Z)
-    });
-  }, [artistsForUI, searchTerm, sortBy]);
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name)); // Only sort by name A-Z
+  }, [artistsForUI, searchTerm]);
 
   const totalPages = Math.ceil(
     filteredAndSortedArtists.length / itemsPerPage
@@ -193,14 +190,11 @@ useEffect(() => {
                 <label className="block mb-2">Sorteren op</label>
                 <select
                   value={sortBy}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "name" || value === "songs") setSortBy(value);
-                  }}
+                  onChange={() => {}}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                  disabled
                 >
-                  <option value="songs">Naam (A-Z)</option>
-                  <option value="name">Aantal nummers (meeste eerst)</option>
+                  <option value="name">Naam (A-Z)</option>
                 </select>
               </div>
             </div>
