@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Music, List, Play } from 'lucide-react';
+import { Plus, Trash2, List, Play } from 'lucide-react';
 import { usePlaylist, type ApiPlaylist } from '../../contexts/PlaylistContext';
 import { useAuth } from '../../contexts/AuthContext';
 
