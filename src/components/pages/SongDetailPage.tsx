@@ -139,13 +139,6 @@ const handleAddToPlaylist = async (playlistId: string) => {
   const maxPosition = songRankings.length > 0 ? Math.max(...songRankings.map(r => r.position)) : 2000;
   const chartWidth = Math.max(800, songRankings.length * 80);
 
-  // Added: normalize possible spotify field names
-  const spotifyUrl = (song as any).spotify
-    ?? (song as any).Spotify
-    ?? (song as any).spotoify
-    ?? (song as any).SpotifyUrl
-    ?? null;
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -257,9 +250,9 @@ const handleAddToPlaylist = async (playlistId: string) => {
                   <ExternalLink size={20} /> Tekst
                 </button>
               )}
-              {spotifyUrl && (
+              {song.spotify && (
                 <a
-                  href={spotifyUrl}
+                  href={song.spotify}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
