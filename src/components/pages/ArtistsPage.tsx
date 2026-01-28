@@ -95,8 +95,6 @@ useEffect(() => {
           count = 0;
         }
         
-        console.log(`Artist ${artist.name}: ${count} songs`);
-        
         return {
           id: artist.artistId,
           name: artist.name,
