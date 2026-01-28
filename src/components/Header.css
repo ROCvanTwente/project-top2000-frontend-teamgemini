@@ -135,6 +135,7 @@
   margin-left: 2rem;
   padding-left: 1rem;
   border-left: 1px solid rgba(255,255,255,0.3);
+  
 }
 
 .header-login-button {
@@ -160,6 +161,35 @@
   color: white;
   font-size: 2rem;
   cursor: pointer;
+}
+
+
+/* Pijl naast dropdown-buttons */
+.header-nav-button.dropdown-button {
+  position: relative;
+  padding-right: 1.5rem; /* ruimte voor de pijl */
+}
+/* User dropdown iets naar boven en links */
+.header-user-section .dropdown.dropdown-right {
+  top: 100%;          /* standaard was 120%, nu 100% (iets hoger) */
+  right: 50px;            /* standaard rechts uitlijnen */
+  transform: translateY(-10px); /* schuift het 10px omhoog */
+}
+.header-nav-button.dropdown-button::after {
+  content: "▼"; /* je kan ook een unicode pijl gebruiken zoals \25BE */
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem; /* klein formaat */
+  pointer-events: none; /* niet klikbaar */
+  transition: transform 0.2s;
+}
+
+/* draai de pijl omhoog als menu open is */
+.header-nav-button.dropdown-button.active::after,
+.header-nav-button.dropdown-button.open::after {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 /* =========================

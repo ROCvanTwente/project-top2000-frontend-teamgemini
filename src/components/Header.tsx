@@ -58,9 +58,12 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
 
             {/* DJ DROPDOWN */}
             <div className="relative" ref={djMenuRef}>
-              <button className="header-nav-button" onClick={() => setDjMenuOpen(!djMenuOpen)}>
-                DJ's 
-              </button>
+<button
+  className={`header-nav-button dropdown-button ${djMenuOpen ? 'open' : ''}`}
+  onClick={() => setDjMenuOpen(!djMenuOpen)}
+>
+  DJ's
+</button>
               {djMenuOpen && (
                 <div className="dropdown">
                   <a href="https://nl.wikipedia.org/wiki/Bart_Arens" target="_blank" rel="noopener noreferrer">
@@ -115,9 +118,12 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 </button>
               ) : (
                 <>
-                  <button className="header-nav-button" onClick={() => setUserMenuOpen(!userMenuOpen)}>
-                    {user.email}
-                  </button>
+<button
+  className={`header-nav-button dropdown-button ${userMenuOpen ? 'open' : ''}`}
+  onClick={() => setUserMenuOpen(!userMenuOpen)}
+>
+  {user.email}
+</button>
 
                   {userMenuOpen && (
                     <div className="dropdown dropdown-right">
