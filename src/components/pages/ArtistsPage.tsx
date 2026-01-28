@@ -83,20 +83,12 @@ useEffect(() => {
   const artistsForUI: ArtistUI[] = useMemo(
     () =>
       artists.map((artist) => {
-        let count = 0;
-        
-        try {
-          if (Array.isArray(artist.songs)) {
-            count = artist.songs.length;
-          } else if (artist.songs && typeof artist.songs === 'object') {
-            count = Object.keys(artist.songs).length;
-          }
-        } catch (e) {
-          count = 0;
-        }
-        
-        console.log(`Artist ${artist.name}: ${count} songs`);
-        
+        // Prefer songCount from API if present, otherwise fallback
+        let count = typeof artist.songCount === 'number'
+          ? artist.songCount
+          : Array.isArray(artist.songs)
+            ? artist.songs.length
+            : 0;
         return {
           id: artist.artistId,
           name: artist.name,
