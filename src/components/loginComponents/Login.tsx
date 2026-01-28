@@ -16,7 +16,7 @@ export default function Login({ onForgotPassword }: LoginProps) {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5237/api/auth/login", {
+      const response = await fetch("https://demotop2000.runasp.net/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -82,6 +82,10 @@ export default function Login({ onForgotPassword }: LoginProps) {
       >
         Inloggen
       </button>
+      <p className="text-sm text-neutral-600">
+        Username: User@home.nl<br></br> 
+        Password: User123
+      </p>
     </form>
   );
 }

@@ -20,6 +20,7 @@ interface SongApi {
   releaseYear: number | null;
   timesListed: number;
   highestPosition: number | null;
+  imgUrl?: string;
 }
 
 interface SongUI {
@@ -29,6 +30,7 @@ interface SongUI {
   releaseYear: number | null;
   noteringen: number;
   highestPosition: number | null;
+  imgUrl?: string;
 }
 
 export function SongsPage({ onNavigate }: SongsPageProps) {
@@ -49,6 +51,9 @@ useEffect(() => {
     try {
       setLoading(true);
       const data: any = await fetchFromAPI("songs");
+
+      // debug: inspect raw list response to see if ImgUrl is present / what shape items have
+      console.log("API /songs response:", data);
 
       // ✅ Zorg dat we een echte array hebben
       const arrayData: SongApi[] = Array.isArray(data)
@@ -76,12 +81,19 @@ useEffect(() => {
   const songsForUI: SongUI[] = useMemo(
     () =>
       songs.map((song) => ({
-        id: song.songId,
-        title: song.title,
-        artistName: song.artist,
-        releaseYear: song.releaseYear,
-        noteringen: song.timesListed,
-        highestPosition: song.highestPosition,
+        id: (song as any).songId ?? (song as any).SongId,
+        title: (song as any).title ?? (song as any).Title ?? "",
+        artistName: (song as any).artist ?? (song as any).Artist ?? "",
+        releaseYear: (song as any).releaseYear ?? (song as any).ReleaseYear ?? null,
+        noteringen: (song as any).timesListed ?? (song as any).TimesListed ?? 0,
+        highestPosition: (song as any).highestPosition ?? (song as any).HighestPosition ?? null,
+        imgUrl:
+          (song as any).imgUrl ??
+          (song as any).ImgUrl ??
+          (song as any).imageUrl ??
+          (song as any).ImageUrl ??
+          (song as any).cover ??
+          undefined,
       })),
     [songs]
   );
@@ -218,8 +230,14 @@ useEffect(() => {
                 onClick={() => onNavigate('song-detail', { songId: song.id.toString() })}
               >
                 {/* Song cover section */}
-                <div className="h-48 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center relative overflow-hidden">
-                  <Music2 size={64} className="text-white/60" />
+                <div className="h-48 flex items-center justify-center relative overflow-hidden bg-gray-100">
+                  {song.imgUrl ? (
+                    <img src={song.imgUrl} alt={`${song.title} cover`} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] flex items-center justify-center">
+                      <Music2 size={64} className="text-white/60" />
+                    </div>
+                  )}
                   {/* Times listed badge */}
                   <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
                     {song.noteringen}x genoteerd

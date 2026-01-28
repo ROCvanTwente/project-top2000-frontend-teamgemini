@@ -19,6 +19,7 @@ import { EditArtistPage } from './components/pages/EditArtistPage';
 import { EditSongPage } from './components/pages/EditSongPage';
 import { StatisticsPage } from './components/pages/StatisticsPage';
 import  AdminSongsPage  from './components/pages/AdminSongsPage';
+import AdminArtistsPage from './components/pages/AdminArtistsPage';
 
 
 type PageType = 
@@ -35,6 +36,7 @@ type PageType =
   | 'login'
   | 'playlists'
   |'adminSongs'
+  | 'adminArtists'
   | 'admin'
   | 'edit-artist'
   | 'edit-song'
@@ -70,6 +72,7 @@ export default function App() {
       case 'history': return <HistoryPage />;
       case 'faq': return <FAQPage />;
       case 'adminSongs':return <AdminSongsPage />;
+      case 'adminArtists':return <AdminArtistsPage />;
 
       case 'contact': return <ContactPage />;
       case 'login': return <LoginPage/>;
