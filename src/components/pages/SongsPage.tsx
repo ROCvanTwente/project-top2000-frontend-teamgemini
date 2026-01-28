@@ -52,6 +52,9 @@ useEffect(() => {
       setLoading(true);
       const data: any = await fetchFromAPI("songs");
 
+      // debug: inspect raw list response to see if ImgUrl is present / what shape items have
+      console.log("API /songs response:", data);
+
       // ✅ Zorg dat we een echte array hebben
       const arrayData: SongApi[] = Array.isArray(data)
         ? data
@@ -78,17 +81,18 @@ useEffect(() => {
   const songsForUI: SongUI[] = useMemo(
     () =>
       songs.map((song) => ({
-        id: song.songId,
-        title: song.title,
-        artistName: song.artist,
-        releaseYear: song.releaseYear,
-        noteringen: song.timesListed,
-        highestPosition: song.highestPosition,
+        id: (song as any).songId ?? (song as any).SongId,
+        title: (song as any).title ?? (song as any).Title ?? "",
+        artistName: (song as any).artist ?? (song as any).Artist ?? "",
+        releaseYear: (song as any).releaseYear ?? (song as any).ReleaseYear ?? null,
+        noteringen: (song as any).timesListed ?? (song as any).TimesListed ?? 0,
+        highestPosition: (song as any).highestPosition ?? (song as any).HighestPosition ?? null,
         imgUrl:
           (song as any).imgUrl ??
           (song as any).ImgUrl ??
           (song as any).imageUrl ??
           (song as any).ImageUrl ??
+          (song as any).cover ??
           undefined,
       })),
     [songs]
