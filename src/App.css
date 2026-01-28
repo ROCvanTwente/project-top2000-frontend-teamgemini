@@ -50,6 +50,11 @@ footer {
     margin: 0;
 }
 
+.footerButton:hover {
+    text-decoration: underline;
+    color: rgb(222, 220, 220);
+}
+
 .footerLi {
     margin-bottom: 0.5rem;
 }
