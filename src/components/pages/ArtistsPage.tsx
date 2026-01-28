@@ -87,11 +87,17 @@ useEffect(() => {
       const seen = new Set<string>();
       let arr = artists
         .map((artist) => {
-          let count = typeof artist.songCount === 'number'
-            ? artist.songCount
-            : Array.isArray(artist.songs)
-              ? artist.songs.length
-              : 0;
+          const artistAny = artist as any;
+          const rawSongs = artistAny.songs ?? artistAny.Songs ?? artistAny.$values ?? [];
+          const resolveValues = (v: any) => {
+            if (Array.isArray(v)) return v;
+            if (v && Array.isArray(v.$values)) return v.$values;
+            return [] as any[];
+          };
+          const songsArray = resolveValues(rawSongs);
+          const count = typeof artistAny.songCount === 'number'
+            ? artistAny.songCount
+            : songsArray.length;
           return {
             id: artist.artistId,
             name: artist.name,
