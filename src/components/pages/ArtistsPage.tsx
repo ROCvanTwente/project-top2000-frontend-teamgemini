@@ -82,13 +82,29 @@ useEffect(() => {
 
   const artistsForUI: ArtistUI[] = useMemo(
     () =>
-      artists.map((artist) => ({
-        id: artist.artistId,
-        name: artist.name,
-        biography: artist.biography,
-        photo: artist.photo,
-        songsCount: artist.songCount ?? artist.songs?.length ?? 0,
-      })),
+      artists.map((artist) => {
+        let count = 0;
+        
+        try {
+          if (Array.isArray(artist.songs)) {
+            count = artist.songs.length;
+          } else if (artist.songs && typeof artist.songs === 'object') {
+            count = Object.keys(artist.songs).length;
+          }
+        } catch (e) {
+          count = 0;
+        }
+        
+        console.log(`Artist ${artist.name}: ${count} songs`);
+        
+        return {
+          id: artist.artistId,
+          name: artist.name,
+          biography: artist.biography,
+          photo: artist.photo,
+          songsCount: count,
+        };
+      }),
     [artists]
   );
 
