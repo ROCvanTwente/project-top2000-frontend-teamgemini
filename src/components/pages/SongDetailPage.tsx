@@ -17,6 +17,7 @@ interface SongApi {
   releaseYear: number | null;
   imgUrl?: string;
   youtube?: string;
+  spotify?: string;
   lyrics?: string;
   stats: {
     timesListed: number;
@@ -77,6 +78,7 @@ const handleAddToPlaylist = async (playlistId: string) => {
         setLoading(true);
         setError(null);
         const data: any = await fetchFromAPI(`songs/${songId}`);
+        console.log('API /songs/' + songId + ' response:', data); // <-- added
         setSong(data);
       } catch (err: any) {
         setError(err.message);
@@ -158,12 +160,16 @@ const handleAddToPlaylist = async (playlistId: string) => {
 
             {/* Album Cover */}
             <div className="md:w-1/3 bg-gradient-to-br from-[var(--bright-blue)] to-[var(--vivid-purple)] aspect-square flex items-center justify-center">
-              <div className="text-white text-center p-8">
-                <Play size={80} className="mx-auto mb-4" />
-                <h2 className="text-white mb-2">{song.title}</h2>
-                <p className="text-white/80">{song.artist}</p>
+              {song.imgUrl ? (
+                <img src={song.imgUrl} alt={`${song.title} cover`} className="object-cover w-full h-full" />
+              ) : (
+                <div className="text-white text-center p-8">
+                  <Play size={80} className="mx-auto mb-4" />
+                  <h2 className="text-white mb-2">{song.title}</h2>
+                  <p className="text-white/80">{song.artist}</p>
+                </div>
+              )}
               </div>
-            </div>
 
             {/* Song Details */}
             <div className="md:w-2/3 p-8">
@@ -231,6 +237,27 @@ const handleAddToPlaylist = async (playlistId: string) => {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <ExternalLink size={20} /> Beluister op YouTube
+                </a>
+              )}
+              {song.lyrics && (
+                <button
+                  onClick={() => {
+                    // Handle lyrics display - you can navigate to a lyrics page or show a modal
+                    alert(song.lyrics);
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105 ml-4"
+                >
+                  <ExternalLink size={20} /> Tekst
+                </button>
+              )}
+              {song.spotify && (
+                <a
+                  href={song.spotify}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md hover:shadow-lg transform hover:scale-105"
+                >
+                  <ExternalLink size={20} /> Beluister op Spotify
                 </a>
               )}
             </div>
