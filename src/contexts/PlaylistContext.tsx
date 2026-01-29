@@ -1,80 +1,128 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { type Playlist } from '../data/mockData';
-import { useAuth } from './AuthContext';
+import { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+export interface Song {
+  id: string;
+  title: string;
+  artistName: string;
+}
+
+export interface ApiPlaylist {
+  id: string;
+  name: string;
+  createdAt: string;
+  songs: Song[];
+}
 
 interface PlaylistContextType {
-  playlists: Playlist[];
-  createPlaylist: (name: string) => void;
-  deletePlaylist: (id: string) => void;
-  addSongToPlaylist: (playlistId: string, songId: string) => boolean;
-  removeSongFromPlaylist: (playlistId: string, songId: string) => void;
+  playlists: ApiPlaylist[];
+  createPlaylist: (name: string) => Promise<void>;
+  deletePlaylist: (id: string) => Promise<void>;
+  removeSongFromPlaylist: (playlistId: string, songId: string) => Promise<void>;
+  addSongToPlaylist: (playlistId: string, songId: string, title: string, artistName: string) => Promise<boolean>;  // Nieuwe parameters toegevoegd
 }
 
 const PlaylistContext = createContext<PlaylistContextType | undefined>(undefined);
 
 export function PlaylistProvider({ children }: { children: React.ReactNode }) {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const { user } = useAuth();
+  const [playlists, setPlaylists] = useState<ApiPlaylist[]>([]);
 
   useEffect(() => {
-    if (user) {
-      const savedPlaylists = localStorage.getItem(`top2000_playlists_${user.id}`);
-      if (savedPlaylists) {
-        setPlaylists(JSON.parse(savedPlaylists));
+    async function fetchPlaylists() {
+      try {
+        const res = await axios.get(`${API_URL}/api/Playlist`);
+        console.log('RAW playlists from API:', res.data);
+
+        const raw = res.data.$values ?? [];
+
+        // Filter refs eruit
+        const formattedPlaylists = raw
+          .filter((p: any) => p.id !== undefined)
+          .map((p: any) => ({
+            id: p.id.toString(),
+            name: p.name,
+            createdAt: p.createdAt,
+            songs: (p.songs?.$values || []).map((s: any) => ({
+              id: s.songId.toString(),
+              title: s.title,
+              artistName: s.artist
+            }))
+          }));
+
+        setPlaylists(formattedPlaylists);
+      } catch (err) {
+        console.error('Fout bij ophalen playlists:', err);
+        setPlaylists([]);
       }
-    } else {
-      setPlaylists([]);
     }
-  }, [user]);
 
-  const savePlaylists = (newPlaylists: Playlist[]) => {
-    if (user) {
-      localStorage.setItem(`top2000_playlists_${user.id}`, JSON.stringify(newPlaylists));
-      setPlaylists(newPlaylists);
+    fetchPlaylists();
+  }, []);
+
+  const createPlaylist = async (name: string) => {
+    try {
+      const res = await axios.post(`${API_URL}/api/Playlist`, { name });
+      const newPlaylist = { ...res.data, id: res.data.id.toString(), songs: [] };
+      setPlaylists(prev => [...prev, newPlaylist]);
+    } catch (err) {
+      console.error('Fout bij aanmaken playlist:', err);
     }
   };
 
-  const createPlaylist = (name: string) => {
-    if (!user) return;
-    const newPlaylist: Playlist = {
-      id: Date.now().toString(),
-      userId: user.id,
-      name,
-      songIds: [],
-      createdAt: new Date(),
-    };
-    savePlaylists([...playlists, newPlaylist]);
+  const deletePlaylist = async (id: string) => {
+    try {
+      await axios.delete(`${API_URL}/api/Playlist/${id}`);
+      setPlaylists(prev => prev.filter(p => p.id !== id));
+    } catch (err) {
+      console.error('Fout bij verwijderen playlist:', err);
+    }
   };
 
-  const deletePlaylist = (id: string) => {
-    savePlaylists(playlists.filter(p => p.id !== id));
+  const removeSongFromPlaylist = async (playlistId: string, songId: string) => {
+    try {
+      await axios.delete(`${API_URL}/api/Playlist/${playlistId}/songs/${songId}`);
+      setPlaylists(prev =>
+        prev.map(p =>
+          p.id === playlistId ? { ...p, songs: p.songs.filter(s => s.id !== songId) } : p
+        )
+      );
+    } catch (err) {
+      console.error('Fout bij verwijderen nummer:', err);
+    }
   };
 
-  const addSongToPlaylist = (playlistId: string, songId: string): boolean => {
+const addSongToPlaylist = async (playlistId: string, songId: string, title: string, artistName: string): Promise<boolean> => {
+  try {
     const playlist = playlists.find(p => p.id === playlistId);
     if (!playlist) return false;
-    if (playlist.songIds.includes(songId)) return false;
+    if (playlist.songs.some(s => s.id === songId)) return false;
 
-    const updatedPlaylists = playlists.map(p =>
-      p.id === playlistId
-        ? { ...p, songIds: [...p.songIds, songId] }
-        : p
+    await axios.post(`${API_URL}/api/Playlist/${playlistId}/songs/${songId}`);
+
+    setPlaylists(prev =>
+      prev.map(p =>
+        p.id === playlistId
+          ? {
+              ...p,
+              songs: [...p.songs, { id: songId, title, artistName }]
+            }
+          : p
+      )
     );
-    savePlaylists(updatedPlaylists);
+
     return true;
-  };
-
-  const removeSongFromPlaylist = (playlistId: string, songId: string) => {
-    const updatedPlaylists = playlists.map(p =>
-      p.id === playlistId
-        ? { ...p, songIds: p.songIds.filter(id => id !== songId) }
-        : p
-    );
-    savePlaylists(updatedPlaylists);
-  };
+  } catch (err) {
+    console.error('Fout bij toevoegen nummer:', err);
+    return false;
+  }
+};
 
   return (
-    <PlaylistContext.Provider value={{ playlists, createPlaylist, deletePlaylist, addSongToPlaylist, removeSongFromPlaylist }}>
+    <PlaylistContext.Provider
+      value={{ playlists, createPlaylist, deletePlaylist, removeSongFromPlaylist, addSongToPlaylist }}
+    >
       {children}
     </PlaylistContext.Provider>
   );
@@ -82,8 +130,6 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
 
 export function usePlaylist() {
   const context = useContext(PlaylistContext);
-  if (context === undefined) {
-    throw new Error('usePlaylist must be used within a PlaylistProvider');
-  }
+  if (!context) throw new Error('usePlaylist must be used within a PlaylistProvider');
   return context;
 }

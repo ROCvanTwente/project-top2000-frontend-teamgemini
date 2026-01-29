@@ -13,7 +13,7 @@ export function EditSongPage({ songId: _songId, onNavigate }: EditSongPageProps)
       <div className="max-w-4xl mx-auto px-4">
         <button
           onClick={() => onNavigate('admin')}
-          className="flex items-center gap-2 text-[var(--bright-blue)] hover:text-[var(--vivid-purple)] transition-colors mb-8"
+          className="flex items-center gap-2 text-(--bright-blue) hover:text-(--vivid-purple) transition-colors mb-8"
         >
           <ArrowLeft size={20} />
           Terug naar beheer

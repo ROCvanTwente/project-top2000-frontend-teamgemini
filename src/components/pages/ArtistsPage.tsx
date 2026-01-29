@@ -1,11 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Search, User, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from "react";
+import { Search, User } from "lucide-react";
+// @ts-ignore
+import { fetchFromAPI } from "../../api.js";
+
+// ✅ MUI Pagination
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 interface ArtistsPageProps {
-  // No props needed for popup implementation
+  onNavigate?: (page: string, params?: any) => void;
 }
 
-// Song interface for API response
 interface Song {
   songId: number;
   artistId: number;
@@ -17,16 +24,15 @@ interface Song {
   top2000Entries: any[];
 }
 
-// API response interface
 interface ArtistApi {
   artistId: number;
   name: string;
   biography?: string | null;
   photo?: string | null;
   songs: Song[];
+  songCount?: number;
 }
 
-// UI interface for artist display
 interface ArtistUI {
   id: number;
   name: string;
@@ -35,174 +41,287 @@ interface ArtistUI {
   songsCount: number;
 }
 
-// Popup component for artist details
-interface ArtistPopupProps {
-  artist: ArtistUI;
-  onClose: () => void;
-}
-
-const ArtistPopup: React.FC<ArtistPopupProps> = ({ artist, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
-      <div className="flex justify-between items-start mb-4">
-        <h2 className="text-xl font-bold">{artist.name}</h2>
-        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-          <X size={24} />
-        </button>
-      </div>
-      <div className="space-y-3">
-        {artist.photo && (
-          <img 
-            src={artist.photo} 
-            alt={artist.name}
-            className="w-full h-48 object-cover rounded-lg"
-          />
-        )}
-        <p><strong>Naam:</strong> {artist.name}</p>
-        <p><strong>Aantal nummers:</strong> {artist.songsCount}</p>
-        {artist.biography && (
-          <div>
-            <strong>Biografie:</strong>
-            <p className="mt-1 text-sm text-gray-700">{artist.biography}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
-export function ArtistsPage({}: ArtistsPageProps) {
+export function ArtistsPage({ onNavigate }: ArtistsPageProps) {
   const [artists, setArtists] = useState<ArtistApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'songs'>('name');
-  const [selectedArtist, setSelectedArtist] = useState<ArtistUI | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // Pagination
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Load artists
+useEffect(() => {
+  const loadArtists = async () => {
+    try {
+      setLoading(true);
+      const data: any = await fetchFromAPI("artist");
+
+      // Zet altijd een echte array
+      const arrayData: ArtistApi[] = Array.isArray(data)
+        ? data
+        : data?.$values ?? [];
+
+      setArtists(arrayData);
+    } catch (err: any) {
+      setError(err.message ?? "Fout bij laden");
+      setArtists([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadArtists();
+}, []);
+
+  // Reset page bij search
   useEffect(() => {
-    fetch('https://localhost:7003/artist')
-      .then(res => { if(!res.ok) throw new Error('Kon artiesten niet laden'); return res.json(); })
-      .then((data: ArtistApi[]) => { setArtists(data); setLoading(false); })
-      .catch(err => { setError(err.message); setLoading(false); });
-  }, []);
+    setPage(1);
+  }, [searchTerm]);
 
-  const artistsForUI: ArtistUI[] = useMemo(() => {
-    return artists.map(artist => ({
-      id: artist.artistId,
-      name: artist.name,
-      biography: artist.biography,
-      photo: artist.photo,
-      songsCount: artist.songs.length
-    }));
-  }, [artists]);
+  const [sortBy, setSortBy] = useState<"name" | "songsCount">("name");
 
-  const filteredAndSortedArtists = useMemo(() => {
+  const artistsForUI: ArtistUI[] = useMemo(
+    () => {
+      // Gebruik useMemo om herberekeningen te vermijden tenzij
+      // `artists` of `sortBy` veranderen.
+      // Deduplicate by artist name (case-insensitive)
+      const seen = new Set<string>();
+
+      // Map de raw API-artiesten naar het UI-model.
+      let arr = artists
+        .map((artist) => {
+          // artistAny: loosely typed access omdat API-vormen kunnen verschillen
+          const artistAny = artist as any;
+
+          // rawSongs: probeer verschillende mogelijke property-namen
+          // - camelCase: `songs`
+          // - PascalCase: `Songs`
+          // - EF-serialized object: `$values`
+          const rawSongs = artistAny.songs ?? artistAny.Songs ?? artistAny.$values ?? [];
+
+          // resolveValues: als API een object met `$values` teruggeeft,
+          // haal dan die interne array eruit; anders geef de array terug.
+          const resolveValues = (v: any) => {
+            if (Array.isArray(v)) return v; // al een array
+            if (v && Array.isArray(v.$values)) return v.$values; // EF $values shape
+            return [] as any[]; // fallback: lege lijst
+          };
+
+          // songsArray: nu gegarandeerd een echte array (of leeg)
+          const songsArray = resolveValues(rawSongs);
+
+          // Bepaal het aantal nummers: voorkeursvolgorde:
+          // 1) expliciete `songCount` property (indien aanwezig)
+          // 2) lengte van de `songsArray`
+          const count = typeof artistAny.songCount === 'number'
+            ? artistAny.songCount
+            : songsArray.length;
+
+          // Return het object dat de UI verwacht
+          return {
+            id: artist.artistId,
+            name: artist.name,
+            biography: artist.biography,
+            photo: artist.photo,
+            songsCount: count,
+          };
+        })
+
+        // Deduplicate: verwijder dubbele artiesten op basis van naam (case-insensitive)
+        .filter((artist) => {
+          const nameKey = artist.name.trim().toLowerCase();
+          if (seen.has(nameKey)) return false; // al gezien -> verwijderen
+          seen.add(nameKey); // markeer als gezien
+          return true; // behoud deze artiest
+        });
+      // Sort based on dropdown
+      if (sortBy === "name") {
+        arr = arr.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === "songsCount") {
+        arr = arr.sort((a, b) => b.songsCount - a.songsCount);
+      }
+      return arr;
+    },
+    [artists, sortBy]
+  );
+
+  const filteredArtists = useMemo(() => {
+    // Begin met de volledige UI-lijst
     let filtered = artistsForUI;
-    if(searchTerm) {
-      filtered = filtered.filter(artist =>
-        artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+    // Als er een zoekterm is, filter op artiestnaam (case-insensitive)
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      filtered = filtered.filter((artist) =>
+        artist.name.toLowerCase().includes(q)
       );
     }
-    const sorted = [...filtered].sort((a,b) => {
-      if(sortBy==='name') return a.name.localeCompare(b.name);
-      return b.songsCount - a.songsCount;
-    });
-    
-    // Show only 9 artists if not searching and not showing all
-    if (!searchTerm && !showAll) {
-      return sorted.slice(0, 9);
-    }
-    return sorted;
-  }, [artistsForUI, searchTerm, sortBy, showAll]);
 
-  if(loading) return <div className="text-center py-20">Laden…</div>;
-  if(error) return <div className="text-center py-20 text-red-500">{error}</div>;
+    // Retourneer de gefilterde lijst (kan leeg zijn)
+    return filtered;
+  }, [artistsForUI, searchTerm]);
+
+  const totalPages = Math.ceil(
+    filteredArtists.length / itemsPerPage
+  );
+
+  const paginatedArtists = useMemo(() => {
+    const start = (page - 1) * itemsPerPage;
+    return filteredArtists.slice(start, start + itemsPerPage);
+  }, [filteredArtists, page]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4">
-
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-12 bg-gradient-to-b from-[var(--color-gray-dark)] to-[var(--color-gray-medium)]"></div>
-          <h1>Alle Artiesten in de TOP 2000</h1>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-2"><Search size={16} className="inline mr-2"/>Zoeken op artiestnaam</label>
-              <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Typ om te zoeken..." className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-[var(--color-gray-medium)]" />
+      {/* Loading overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+          <div className="text-center">
+            <div className="relative mx-auto mb-4 w-16 h-16">
+              <div className="absolute inset-0 rounded-full border-4 border-red-500/30"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-red-600 border-t-transparent animate-spin"></div>
             </div>
-            <div>
-              <label className="block mb-2">Sorteren op</label>
-              <select value={sortBy} onChange={e=>setSortBy(e.target.value as any)} className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-[var(--color-gray-medium)]">
-                <option value="name">Naam (A-Z)</option>
-                <option value="songs">Aantal nummers</option>
-              </select>
+            <h2 className="text-2xl font-black text-white mb-2">Laden...</h2>
+            <p className="text-white/80">Even geduld</p>
+            <div className="mt-4 flex items-center justify-center gap-1">
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
+              <span
+                className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0.15s" }}
+              ></span>
+              <span
+                className="w-2 h-2 bg-red-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0.3s" }}
+              ></span>
             </div>
           </div>
         </div>
+      )}
 
-        <div className="mb-4 flex justify-between items-center">
-          <div className="text-gray-600">
-            {searchTerm ? 
-              `${filteredAndSortedArtists.length} ${filteredAndSortedArtists.length===1?'artiest':'artiesten'} gevonden` :
-              showAll ? 
-                `Alle ${artistsForUI.length} artiesten weergegeven` :
-                `Eerste 9 van ${artistsForUI.length} artiesten`
-            }
+      {/* Error */}
+      {error && <div className="text-center py-20 text-red-500">{error}</div>}
+
+      {/* Main content */}
+      {!loading && !error && (
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-1 h-12 bg-gradient-to-b from-gray-800 to-gray-400"></div>
+            <h1>Alle Artiesten in de TOP 2000</h1>
           </div>
-          {!searchTerm && !showAll && artistsForUI.length > 9 && (
-            <button 
-              onClick={() => setShowAll(true)}
-              className="text-blue-600 hover:text-blue-800 underline"
-            >
-              Toon alle artiesten
-            </button>
-          )}
-        </div>
 
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="divide-y divide-gray-100">
-            {filteredAndSortedArtists.map(artist => (
-              <div key={artist.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                onClick={() => setSelectedArtist(artist)}>
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--color-gray-dark)] to-[var(--color-gray-medium)] rounded-lg flex items-center justify-center text-white">
-                    <User size={24} />
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="mb-1 hover:text-[var(--color-gray-medium)]">{artist.name}</h3>
-                    <p className="text-gray-600 text-sm">{artist.songsCount} {artist.songsCount === 1 ? 'nummer' : 'nummers'}</p>
-                  </div>
-                  {artist.photo && (
-                    <div className="flex-shrink-0">
-                      <img 
-                        src={artist.photo} 
-                        alt={artist.name}
-                        className="w-12 h-12 object-cover rounded-full"
-                      />
-                    </div>
-                  )}
-                </div>
+          {/* Filters */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-2">
+                  <Search size={16} className="inline mr-2" />
+                  Zoeken op artiestnaam
+                </label>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Typ om te zoeken..."
+                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                />
               </div>
-            ))}
+              <div>
+                <label className="block mb-2">Sorteren op</label>
+                <select
+                  value={sortBy}
+                  onChange={e => setSortBy(e.target.value as "name" | "songsCount")}
+                  className="w-full border-2 border-gray-200 rounded-lg p-3 focus:outline-none focus:border-gray-400"
+                >
+                  <option value="name">Naam (A-Z)</option>
+                  <option value="songsCount">Aantal nummers (hoog-laag)</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          {filteredAndSortedArtists.length===0 && (
-            <div className="text-center py-12 text-gray-500">Geen artiesten gevonden voor deze zoekopdracht</div>
+          {/* Result count */}
+          <div className="mb-4 text-gray-600">
+            {filteredArtists.length}{" "}
+            {filteredArtists.length === 1 ? "artiest" : "artiesten"}{" "}
+            gevonden
+          </div>
+
+          {/* Artist grid */}
+          {paginatedArtists.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedArtists.map((artist) => (
+                <div
+                  key={artist.id}
+                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                  onClick={() =>
+                    onNavigate?.("artist-detail", { artistId: artist.id.toString() })
+                  }
+                >
+                  {/* Photo */}
+                  <div className="h-48 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center relative overflow-hidden">
+                    {artist.photo ? (
+                      <img
+                        src={artist.photo}
+                        alt={artist.name}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <User size={64} className="text-white/60" />
+                    )}
+
+                    <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
+                      {artist.songsCount}
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 hover:text-gray-700 transition-colors">
+                      {artist.name}
+                    </h3>
+                    <div className="text-gray-600 text-sm leading-relaxed">
+                      {artist.biography ? (
+                        <p className="line-clamp-4">{artist.biography}</p>
+                      ) : (
+                        <p className="italic text-gray-400">Geen biografie beschikbaar voor deze artiest.</p>
+                      )}
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-gray-100">
+                      <div className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        Bekijk details →
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500">
+              Geen artiesten gevonden voor deze zoekopdracht
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center py-6">
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={(_, value: number) => setPage(value)}
+                shape="rounded"
+                size="large"
+                renderItem={(item) => (
+                  <PaginationItem
+                    slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                    {...item}
+                  />
+                )}
+              />
+            </div>
           )}
         </div>
-      </div>
-      
-      {/* Popup for artist details */}
-      {selectedArtist && (
-        <ArtistPopup 
-          artist={selectedArtist} 
-          onClose={() => setSelectedArtist(null)} 
-        />
       )}
     </div>
   );
