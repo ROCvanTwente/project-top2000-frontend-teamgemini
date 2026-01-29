@@ -4,7 +4,11 @@ import Register from "../loginComponents/Register";
 import ForgotPassword from "../loginComponents/ForgotPassword";
 import { LogIn, UserPlus } from "lucide-react";
 
-export default function LoginPage() {
+interface LoginPageProps {
+  onNavigate: (page: string, params?: any) => void;
+}
+
+export default function LoginPage({ onNavigate }: LoginPageProps) {
   const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
 
   const renderForm = () => {
@@ -13,15 +17,22 @@ export default function LoginPage() {
         return (
           <Login
             onForgotPassword={() => setMode("forgot")}
-            onLoggedIn={(redirect) => {
-              window.location.href = redirect; // redirect to homepage after login
+            onLoggedIn={() => {
+              // 🔥 reset oude pagina
+              localStorage.removeItem("navigation");
+
+              // 🔥 netjes naar home
+              onNavigate("home");
             }}
           />
         );
+
       case "register":
         return <Register onRegistered={() => setMode("login")} />;
+
       case "forgot":
         return <ForgotPassword onBack={() => setMode("login")} />;
+
       default:
         return null;
     }
@@ -42,11 +53,13 @@ export default function LoginPage() {
             {mode === "login"
               ? "Inloggen"
               : mode === "register"
-                ? "Registreren"
-                : "Wachtwoord vergeten"}
+              ? "Registreren"
+              : "Wachtwoord vergeten"}
           </h1>
         </div>
+
         {renderForm()}
+
         {mode !== "forgot" && (
           <div className="mt-6 text-center">
             <button
