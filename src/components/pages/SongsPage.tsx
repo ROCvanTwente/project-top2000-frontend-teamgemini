@@ -39,7 +39,7 @@ export function SongsPage({ onNavigate }: SongsPageProps) {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] =
-    useState<"title" | "count">("title");
+    useState<"title" | "count" | "original">("original");
 
   // 🔹 Pagination
   const [page, setPage] = useState(1);
@@ -95,10 +95,12 @@ useEffect(() => {
       const q = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (song) =>
-          song.title.toLowerCase().includes(q) ||
-          song.artistName.toLowerCase().includes(q)
+          song.title.toLowerCase().includes(q)
       );
     }
+
+    // If user requested the original order, don't sort — keep API order
+    if (sortBy === "original") return filtered.slice();
 
     return [...filtered].sort((a, b) => {
       if (sortBy === "count") return b.noteringen - a.noteringen;
@@ -184,9 +186,10 @@ useEffect(() => {
                 </label>
                 <select
                   value={sortBy}
-                  onChange={e => setSortBy(e.target.value as "title" | "count")}
+                  onChange={e => setSortBy(e.target.value as "title" | "count" | "original")}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-[var(--color-gray-medium)]"
                 >
+                  <option value="original">Originele volgorde</option>
                   <option value="title">Titel (A-Z)</option>
                   <option value="count">Aantal noteringen</option>
                 </select>
