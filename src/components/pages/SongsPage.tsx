@@ -92,11 +92,10 @@ useEffect(() => {
     let filtered = songsForUI;
 
     if (searchTerm) {
-      const q = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (song) =>
-          song.title.toLowerCase().includes(q) ||
-          song.artistName.toLowerCase().includes(q)
+      const q = searchTerm.toLowerCase().trim();
+      // Zoek alleen in titels, niet in artiestnamen
+      filtered = filtered.filter((song) =>
+        song.title.toLowerCase().includes(q)
       );
     }
 
