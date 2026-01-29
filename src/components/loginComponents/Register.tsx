@@ -3,7 +3,7 @@ import { useState } from "react";
 interface RegisterProps {
   onRegistered: () => void;
 }
-
+// Alle data voor registratie wordt hier afgehandeld
 export default function Register({ onRegistered }: RegisterProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,6 +21,7 @@ export default function Register({ onRegistered }: RegisterProps) {
     e.preventDefault();
     setErrors([]);
 
+    // Check of wachtwoorden overeenkomen
     if (password !== confirmPassword) {
       setErrors(["Passwords do not match"]);
       return;
@@ -41,11 +42,10 @@ export default function Register({ onRegistered }: RegisterProps) {
           const errorData = await response.json();
           const errorList: string[] = [];
 
-          // ModelState errors zijn meestal in data[""]
+// Error check en errors eruit halen
           if (errorData?.[""]) {
             errorList.push(...errorData[""]);
           } else if (errorData?.errors) {
-            // Identity errors kunnen ook hier staan
             Object.values(errorData.errors).forEach((arr: any) => {
               if (Array.isArray(arr)) errorList.push(...arr);
             });
@@ -62,7 +62,7 @@ export default function Register({ onRegistered }: RegisterProps) {
         }
         return;
       }
-
+// jwt token opslaan in localstorage
       const data = await response.json();
       localStorage.setItem("jwt", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
@@ -81,7 +81,7 @@ export default function Register({ onRegistered }: RegisterProps) {
       console.error(err);
     }
   };
-
+// Formulier voor registratie met error handling
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <input
