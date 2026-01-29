@@ -186,7 +186,7 @@ useEffect(() => {
                 </label>
                 <select
                   value={sortBy}
-                  onChange={e => setSortBy(e.target.value as "title" | "count")}
+                  onChange={e => setSortBy(e.target.value as "title" | "count" | "original")}
                   className="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-[var(--color-gray-medium)]"
                 >
                   <option value="original">Originele volgorde</option>
