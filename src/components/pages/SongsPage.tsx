@@ -95,8 +95,7 @@ useEffect(() => {
       const q = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (song) =>
-          song.title.toLowerCase().includes(q) ||
-          song.artistName.toLowerCase().includes(q)
+          song.title.toLowerCase().includes(q)
       );
     }
 
