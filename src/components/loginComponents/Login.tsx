@@ -6,6 +6,7 @@ interface LoginProps {
   onLoggedIn: (redirect: string) => void;
 }
 
+// Alle data voor login
 export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -15,7 +16,7 @@ export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
+// Try to log in en fetch
     try {
       const response = await fetch("https://demotop2000.runasp.net/api/auth/login", {
         method: "POST",
@@ -37,7 +38,7 @@ export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
         email: data.email,
         role: data.roles[0] || "user",
       });
-
+// Login successful
       console.log("Login successful", data);
 
       const params = new URLSearchParams(window.location.search);
@@ -49,7 +50,7 @@ export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
       console.error(err);
     }
   };
-
+// Return form
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <input
@@ -87,6 +88,7 @@ export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
       >
         Inloggen
       </button>
+      {/* Test user */}
       <p className="text-sm text-neutral-600">
         Username: User@home.nl<br></br> 
         Password: User123

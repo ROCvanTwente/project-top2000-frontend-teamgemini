@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+// Werkt niet echt, alleen voor de flow in loginpagina
 interface ForgotPasswordProps {
   onBack: () => void;
 }

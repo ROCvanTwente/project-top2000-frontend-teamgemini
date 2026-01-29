@@ -4,6 +4,7 @@ import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { fetchFromAPI } from "../../api.js";
 import "../../styles/HomePage.css";
 
+// Carousel images data
 const carouselImages = [
   {
     url: "https://images.unsplash.com/photo-1756978303719-57095d8bd250?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
@@ -148,7 +149,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
           </div>
         ))}
-
+{/* Dots onder de Slideshow */}
         <div className="carouselDotContainer">
           {carouselImages.map((_, index) => (
             <span
@@ -158,7 +159,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             ></span>
           ))}
         </div>
-
+{/* Slideshow arrows */}
         <button className="carouselArrow left" onClick={prevSlide}>
           ‹
         </button>
@@ -172,6 +173,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       >
         <div className="responsive-grid-2">
           <div>
+            {/* Top 5 songs ophalen */}
             <h2>Top 5 van 2024</h2>
             {loading && <p>Bezig met laden...</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
@@ -205,7 +207,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               Bekijk volledige lijst 2024
             </button>
           </div>
-
+          {/* Extra informatie website */}
           <div>
             <div className="welcomeHeader">
               <div className="welcomeLine"></div>
@@ -267,7 +269,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </li>
               </ul>
             </div>
-
+{/* Design buttons */}
             <div className="welcomeGridStats">
               <div className="welcomeStat black">
                 <div style={{ fontSize: "1.875rem", marginBottom: "0.5rem" }}>
