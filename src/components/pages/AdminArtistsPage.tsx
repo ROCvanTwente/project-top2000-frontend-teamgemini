@@ -132,13 +132,6 @@ export default function AdminArtistsPage() {
   {/* Zoekvelden gecentreerd */}
   <div className="flex flex-col sm:flex-row gap-2 mb-6 items-center justify-center">
     <input
-      type="number"
-      placeholder="ID"
-      value={artistIdInput}
-      onChange={(e) => setArtistIdInput(e.target.value)}
-      className="border p-2 rounded w-full sm:w-32"
-    />
-    <input
       type="text"
       placeholder="Naam (optioneel)"
       value={artistNameInput}

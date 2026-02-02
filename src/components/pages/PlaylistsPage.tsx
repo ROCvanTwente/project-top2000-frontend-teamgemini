@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, List, Play } from 'lucide-react';
 import { usePlaylist, type ApiPlaylist } from '../../contexts/PlaylistContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -18,15 +18,25 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(
-    playlists.length > 0 ? playlists[0]?.id : null
-  );
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // =========================
+  // AUTOMATISCH EERSTE PLAYLIST SELECTEREN
+  // =========================
+  useEffect(() => {
+    if (playlists.length > 0 && selectedPlaylistId === null) {
+      setSelectedPlaylistId(playlists[0].id);
+    }
+  }, [playlists, selectedPlaylistId]);
 
   const selectedPlaylist: ApiPlaylist | undefined =
     playlists.find(p => p.id === selectedPlaylistId);
   const playlistSongs = selectedPlaylist?.songs ?? [];
 
+  // =========================
+  // HANDLE CREATE PLAYLIST
+  // =========================
   const handleCreatePlaylist = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPlaylistName.trim()) return;
@@ -37,15 +47,23 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
       message: `Playlist "${newPlaylistName}" succesvol aangemaakt`,
     });
 
+    // Selecteer direct de nieuw aangemaakte playlist
+    const newPlaylist = playlists.find(p => p.name === newPlaylistName);
+    if (newPlaylist) setSelectedPlaylistId(newPlaylist.id);
+
     setNewPlaylistName('');
     setShowCreateForm(false);
     setTimeout(() => setToast(null), 3000);
   };
 
+  // =========================
+  // HANDLE DELETE PLAYLIST
+  // =========================
   const handleDeletePlaylist = async (id: string) => {
     await deletePlaylist(id);
     setToast({ type: 'success', message: 'Playlist succesvol verwijderd' });
 
+    // Als de verwijderde playlist geselecteerd was, selecteer de eerste in de lijst
     if (selectedPlaylistId === id) {
       setSelectedPlaylistId(playlists[0]?.id ?? null);
     }
@@ -53,6 +71,9 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // =========================
+  // HANDLE REMOVE SONG
+  // =========================
   const handleRemoveSong = async (playlistId: string, songId: string) => {
     await removeSongFromPlaylist(playlistId, songId);
     setToast({ type: 'success', message: 'Nummer succesvol uit playlist verwijderd' });
@@ -61,7 +82,7 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
 
   return (
     <>
-      {/* ✅ TOAST – ALTIJD BOVEN ALLES */}
+      {/* TOAST */}
       {toast && (
         <div
           className={`fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg z-[9999]
@@ -89,7 +110,6 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
       ) : (
         <div className="min-h-screen bg-[var(--color-gray-lighter)] py-6 px-4 sm:py-12 sm:px-6">
           <div className="max-w-7xl mx-auto">
-
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
               <div>
@@ -106,7 +126,7 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
               </button>
             </div>
 
-            {/* Create Playlist */}
+            {/* Create Playlist Form */}
             {showCreateForm && (
               <div className="bg-white rounded-xl p-6 mb-8 shadow">
                 <form onSubmit={handleCreatePlaylist} className="flex gap-4">
@@ -150,7 +170,7 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
                     <div>
                       <div className="font-medium">{p.name}</div>
                       <div className="text-sm text-gray-500">
-                        {(p.songs ?? []).length} nummers
+                        {p.songs.length} nummers
                       </div>
                     </div>
                     <button
@@ -172,11 +192,11 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
                   <>
                     <div className="p-6 bg-gray-800 text-white flex justify-between">
                       <h2 className="font-bold">{selectedPlaylist.name}</h2>
-                    {playlistSongs.length > 0 && (
-                      <button className="bg-red-500 px-4 py-2 rounded-lg flex items-center gap-2">
-                        <Play size={16} /> Speel alles
-                      </button>
-                    )}
+                      {playlistSongs.length > 0 && (
+                        <button className="bg-red-500 px-4 py-2 rounded-lg flex items-center gap-2">
+                          <Play size={16} /> Speel alles
+                        </button>
+                      )}
                     </div>
 
                     <div className="flex-1 overflow-y-auto">
@@ -199,9 +219,7 @@ export function PlaylistsPage({ onNavigate }: PlaylistsPageProps) {
                               <div className="font-medium">
                                 {i + 1}. {song.title}
                               </div>
-                              <div className="text-gray-500">
-                                {song.artistName}
-                              </div>
+                              <div className="text-gray-500">{song.artistName}</div>
                             </div>
 
                             <button

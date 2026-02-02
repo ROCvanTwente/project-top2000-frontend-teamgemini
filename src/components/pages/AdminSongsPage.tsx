@@ -156,13 +156,6 @@ const MAX_SONG_ID = 5970;
   {/* Zoekvelden gecentreerd */}
   <div className="song-search-input flex flex-col sm:flex-row gap-2 mb-6 items-center justify-center">
     <input
-      type="number"
-      placeholder="ID"
-      value={songIdInput}
-      onChange={(e) => setSongIdInput(e.target.value)}
-      className="border p-2 rounded w-full sm:w-32"
-    />
-    <input
       type="text"
       placeholder="Titel (optioneel)"
       value={songTitleInput}
