@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/* Simple CSS Variables */
+:root {
+  --color-black: #2a2a2a;
+  --color-gray-dark: #3a3a3a;
+  --color-gray-medium: #4a4a4a;
+  --color-gray-light: #e5e5e5;
+  --color-white: #ffffff;
+}
+
+/* Basic Reset and Body Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--color-white);
+  color: var(--color-gray-dark);
+  line-height: 1.6;
+  
+}
+
+/* Overlay die hele pagina blokkeert */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* zwarte transparante achtergrond */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* Spinner cirkel */
+.spinner {
+    border: 8px solid #f3f3f3; /* lichte rand */
+    border-top: 8px solid #ff0000; /* rode rand die draait */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 3s linear infinite;
+}
+
+/* Animatie draaien */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Simple Typography */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+/* Simple Links */
+a {
+  color: var(--color-gray-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Simple Buttons */
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Responsive utility classes */
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+.responsive-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.hide-on-mobile {
+  display: none;
+}
+
+.show-on-mobile {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .responsive-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .responsive-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .hide-on-mobile {
+    display: flex;
+  }
+  
+  .show-on-mobile {
+    display: none;
+  }
+}
