@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('top2000_user', JSON.stringify(userFromBackend));
   };
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role?.toLowerCase() === "admin";
 
   return (
     <AuthContext.Provider value={{ user, logout, isAdmin, setUserFromBackend }}>

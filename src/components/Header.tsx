@@ -17,14 +17,17 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
+
+    console.log('USER OBJECT:', user);
 
   const djMenuRef = useRef<HTMLDivElement>(null);
   const adminMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-  document.body.style.overflow = mobileMenuOpen ? 'hidden' : 'auto';
-}, [mobileMenuOpen]);
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : 'auto';
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,16 +58,15 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => onNavigate('artists')} className={`header-nav-button ${currentPage === 'artists' ? 'active' : ''}`}>Artiesten</button>
             <button onClick={() => onNavigate('songs')} className={`header-nav-button ${currentPage === 'songs' ? 'active' : ''}`}>Nummers</button>
             <button onClick={() => onNavigate('statistics')} className={`header-nav-button ${currentPage === 'statistics' ? 'active' : ''}`}>Statistieken</button>
-            
 
             {/* DJ DROPDOWN */}
             <div className="relative" ref={djMenuRef}>
-<button
-  className={`header-nav-button dropdown-button ${djMenuOpen ? 'open' : ''}`}
-  onClick={() => setDjMenuOpen(!djMenuOpen)}
->
-  DJ's
-</button>
+              <button
+                className={`header-nav-button dropdown-button ${djMenuOpen ? 'open' : ''}`}
+                onClick={() => setDjMenuOpen(!djMenuOpen)}
+              >
+                DJ's
+              </button>
               {djMenuOpen && (
                 <div className="dropdown">
                   <a href="https://nl.wikipedia.org/wiki/Bart_Arens" target="_blank" rel="noopener noreferrer">
@@ -83,15 +85,15 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => onNavigate('faq')} className={`header-nav-button ${currentPage === 'faq' ? 'active' : ''}`}>FAQ</button>
             <button onClick={() => onNavigate('contact')} className={`header-nav-button ${currentPage === 'contact' ? 'active' : ''}`}>Contact</button>
 
-            {/* {console.log(user)} */}
-              {/* {user?.role === 'admin' && (   */}
+            {/* ADMIN MENU (desktop) — ALLEEN VOOR ADMINS */}
+            {isAdmin && (
               <div className="relative" ref={adminMenuRef}>
-<button
-  className={`header-nav-button dropdown-button ${adminMenuOpen ? 'open' : ''}`}
-  onClick={() => setAdminMenuOpen(!adminMenuOpen)}
->
-  Beheren
-</button>
+                <button
+                  className={`header-nav-button dropdown-button ${adminMenuOpen ? 'open' : ''}`}
+                  onClick={() => setAdminMenuOpen(!adminMenuOpen)}
+                >
+                  Beheren
+                </button>
                 {adminMenuOpen && (
                   <div className="dropdown">
                     <button onClick={() => { onNavigate('adminSongs'); setAdminMenuOpen(false); }}>
@@ -103,16 +105,15 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                   </div>
                 )}
               </div>
-              {/* )} */}
+            )}
 
-                        {/* {user?.role === 'user' && (  */}
-              <button
-                onClick={() => onNavigate('playlists')}
-                className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}
-              >
-                Playlists
-              </button>
-            {/* )} */}
+            {/* PLAYLISTS */}
+            <button
+              onClick={() => onNavigate('playlists')}
+              className={`header-nav-button ${currentPage === 'playlists' ? 'active' : ''}`}
+            >
+              Playlists
+            </button>
 
             {/* USER DROPDOWN */}
             <div className="header-user-section" ref={userMenuRef}>
@@ -122,24 +123,18 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 </button>
               ) : (
                 <>
-              <button
-                className={`header-nav-button dropdown-button ${userMenuOpen ? 'open' : ''}`}
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-              >
-                {user.email}
-              </button>
+                  <button
+                    className={`header-nav-button dropdown-button ${userMenuOpen ? 'open' : ''}`}
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  >
+                    {user.email}
+                  </button>
 
                   {userMenuOpen && (
                     <div className="dropdown dropdown-right">
-                      { <button onClick={() => { onNavigate('profile'); setUserMenuOpen(false); }}>
+                      <button onClick={() => { onNavigate('profile'); setUserMenuOpen(false); }}>
                         Profiel
-                      </button> }
-
-                      {/* {user.role === 'admin' && (
-                        <button onClick={() => { onNavigate('adminSongs'); setUserMenuOpen(false); }}>
-                          Admin
-                        </button>
-                      )} */}
+                      </button>
 
                       <div className="dropdown-divider" />
 
@@ -160,7 +155,6 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
         </div>
 
         {/* MOBILE MENU */}
-
         {mobileMenuOpen && (
           <nav className="show-on-mobile mobile-nav">
             <button onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }} className="mobile-nav-button">Home</button>
@@ -168,45 +162,45 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <button onClick={() => { onNavigate('artists'); setMobileMenuOpen(false); }} className="mobile-nav-button">Artiesten</button>
             <button onClick={() => { onNavigate('songs'); setMobileMenuOpen(false); }} className="mobile-nav-button">Nummers</button>
             <button onClick={() => { onNavigate('statistics'); setMobileMenuOpen(false); }} className="mobile-nav-button">Statistieken</button>
-{/* DJ MOBILE DROPDOWN */}
-<div className="mobile-nav-dropdown">
-  <button
-    className="mobile-nav-button"
-    onClick={() => setDjMenuMobileOpen(!djMenuMobileOpen)}
-  >
-    DJ's {djMenuMobileOpen ? '▲' : '▼'}
-  </button>
-  {djMenuMobileOpen && (
-    <div className="mobile-dropdown-content">
-      <a
-        href="https://nl.wikipedia.org/wiki/Bart_Arens"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Bart Arens (Opening)
-      </a>
-      {djs.map((dj) => (
-        <a
-          key={dj.name}
-          href={dj.wikipediaLink}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {dj.name}
-        </a>
-      ))}
-    </div>
-  )}
-</div>
-            {/* PLAYLISTS MOBILE — TERUG */}
-            {/* {user?.role === 'user' && ( */}
+
+            {/* DJ MOBILE DROPDOWN */}
+            <div className="mobile-nav-dropdown">
               <button
-                onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
                 className="mobile-nav-button"
+                onClick={() => setDjMenuMobileOpen(!djMenuMobileOpen)}
               >
-                Playlists
+                DJ's {djMenuMobileOpen ? '▲' : '▼'}
               </button>
-            {/* )} */}
+              {djMenuMobileOpen && (
+                <div className="mobile-dropdown-content">
+                  <a
+                    href="https://nl.wikipedia.org/wiki/Bart_Arens"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Bart Arens (Opening)
+                  </a>
+                  {djs.map((dj) => (
+                    <a
+                      key={dj.name}
+                      href={dj.wikipediaLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {dj.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* PLAYLISTS MOBILE */}
+            <button
+              onClick={() => { onNavigate('playlists'); setMobileMenuOpen(false); }}
+              className="mobile-nav-button"
+            >
+              Playlists
+            </button>
 
             <button onClick={() => { onNavigate('faq'); setMobileMenuOpen(false); }} className="mobile-nav-button">FAQ</button>
             <button onClick={() => { onNavigate('contact'); setMobileMenuOpen(false); }} className="mobile-nav-button">Contact</button>
@@ -224,17 +218,10 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
                 <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="mobile-nav-button danger">
                   Uitloggen
                 </button>
-                {
+
                 <button onClick={() => { onNavigate('profile'); setMobileMenuOpen(false); }} className="mobile-nav-button">
                   Profiel
-                </button> }
-{/* 
-                {user.role === 'admin' && (
-                  <button onClick={() => { onNavigate('adminSongs'); setMobileMenuOpen(false); }} className="mobile-nav-button">
-                    Admin
-                  </button>
-                )} */}
-
+                </button>
               </>
             )}
           </nav>

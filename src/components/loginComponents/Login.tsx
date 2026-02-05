@@ -13,16 +13,26 @@ export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
   const [error, setError] = useState<string | null>(null);
   const { setUserFromBackend } = useAuth();
 
+  const parseJwt = (token: string) => {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const json = atob(base64);
+    return JSON.parse(json);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-// Try to log in en fetch
+    // Try to log in en fetch
     try {
-      const response = await fetch("https://demotop2000.runasp.net/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "https://demotop2000.runasp.net/api/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        },
+      );
 
       const data = await response.json();
 
@@ -34,11 +44,32 @@ export default function Login({ onForgotPassword, onLoggedIn }: LoginProps) {
       localStorage.setItem("jwt", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
 
+      const roleFromResponse = data.role ?? data.roles?.[0];
+      let roleFromToken: string | undefined;
+      try {
+        const payload = parseJwt(data.token);
+        const tokenRole =
+          payload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ] ||
+          payload.role ||
+          payload.roles?.[0];
+        roleFromToken = Array.isArray(tokenRole) ? tokenRole[0] : tokenRole;
+      } catch {
+        roleFromToken = undefined;
+      }
+
+      const normalizedRole = (
+        roleFromResponse ||
+        roleFromToken ||
+        "user"
+      ).toLowerCase();
+
       setUserFromBackend({
         email: data.email,
-        role: data.roles[0] || "user",
+        role: normalizedRole,
       });
-// Login successful
+      // Login successful
       console.log("Login successful", data);
 
       const params = new URLSearchParams(window.location.search);
